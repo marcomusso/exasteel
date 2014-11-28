@@ -1,0 +1,24 @@
+% layout 'default';
+% title 'Access denied';
+
+<div class="row text-center">
+  <div class="col-md-4 col-md-offset-4">
+    <div class="alert alert-danger" style="margin-top:40%;">Access denied</div>
+  </div>
+</div>
+
+<div class="row text-center">
+  <div class="col-md-4 col-md-offset-4">
+    <div class="alert alert-info">
+    Chi siete?<br>
+    Da dove venite?<br>
+    Cosa portate?<br>
+    Dove andate?<br>
+    Sì, ma quanti siete?<br>
+    Un fiorino...<br>
+    (quote from <a href="http://www.imdb.com/title/tt0087814">Non ci resta che piangere</a>)
+    <hr>
+    <p>...maybe you should try a valid username/password on the <a href="/login">login page</a> ?</p>
+    </div>
+  </div>
+</div>

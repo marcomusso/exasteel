@@ -1,0 +1,138 @@
+% layout 'default';
+% title 'Settings - Exasteel';
+
+<%# Javascript  %>
+  %= javascript '/js/settings.js'
+
+<div id="settings_container">
+
+<div class="row">
+  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          EMOCs
+        </h4>
+      </div>
+      <div class="panel-body">
+        % if (1) {
+          <div class="row text-center">
+          There are no EMOC configured.<br>
+          <button type="button" class="btn btn-sm btn-primary">Add</button> one.
+          </div>
+        % } else {
+          <table>
+          </table>
+        % }
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+    <div id="emoc_details" class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          Insert EMOC details
+        </h4>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          ...
+          <button type="button" class="btn btn-sm btn-danger">Save</button>.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          Other settings
+        </h4>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-1 col-lg-1"></div>
+          <div class="col-md-10 col-lg-10">
+            <div class="row">
+              <div class="col-md-12 col-lg-12">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-bar-chart-o"></i>&nbsp;<a target=_blank href="http://en.wikipedia.org/wiki/Binary_prefix">Units</a></span>
+                  <select class="form-control selectpicker" name="units" id="units">
+                    <option value="SI">base 10 (kB, MB, ... where 1 MB = 1.000.000 bytes) [S.I.]</option>
+                    <option value="IEC">base 2   (KiB, MiB, ... where 1 MB = 1.048.576 bytes) [I.E.C.]</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-md-4 col-lg-4"></div>
+              <div class="col-md-4 col-lg-4">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-desktop"></i>&nbsp;Theme</span>
+                  <select class="form-control selectpicker" name="theme" id="theme">
+                    <option value="default">default</option>
+                    <option value="cosmo">cosmo</option>
+                    <option value="flatly">flatly</option>
+                    <option value="slate">slate</option>
+                    <option value="spacelab">spacelab</option>
+                    <option value="yeti">yeti</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4 col-lg-4"></div>
+            </div>
+          </div>
+          <div class="col-md-1 col-lg-1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  function startIntro(){
+    var intro = introJs();
+    intro.setOptions({
+          steps: [
+            {
+              intro: "Settings"
+            },
+            {
+              element: '#a',
+              intro: "TBD",
+            },
+            {
+              element: '#b',
+              intro: "TBD",
+              position: 'bottom'
+            },
+            {
+              element: '#c',
+              intro: "TBD",
+              position: 'left'
+            },
+            {
+              element: '#d',
+              intro: "TBD",
+              position: 'top'
+            },
+            {
+              element: '#e',
+              intro: "TBD",
+              position: 'top'
+            },
+            {
+              element: '#theme',
+              intro: "TBD",
+              position: 'top'
+            }
+          ]
+    });
+    intro.start();
+  }
+</script>
