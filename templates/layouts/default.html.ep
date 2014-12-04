@@ -85,8 +85,8 @@
           <li id="nav1" class="dropdown" data-step="1">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle">Pages&nbsp;<b class="caret"></b></a>
             <ul class="dropdown-menu multi-level">
-              <li><a href="#"><i class="fa fa-check text-success"></i>&nbsp;KPI</a></li>
-              <li><a href="#"><i class="fa fa-check text-success"></i>&nbsp;Guests distribution</a></li>
+              <li><a href="/kpi"><i class="fa fa-check text-success"></i>&nbsp;KPI</a></li>
+              <li><a href="/map"><i class="fa fa-check text-success"></i>&nbsp;Map</a></li>
               <li class="dropdown-submenu">
                 <a tabindex="-1" href="#">Submenu</a>
                 <ul class="dropdown-menu">
@@ -146,9 +146,9 @@
         <ul class="nav navbar-nav">
           <li id="credits"><a href="/credits"><i class="fa fa-users"></i>&nbsp;Credits</a></li>
           <li id="help"><a onclick="javascript:startIntro();" href="javascript:void(0);"><i class="fa fa-support"></i>&nbsp;Help</a></li>
-          <li id="api"><a target="_blank" href="/api/v1/docs"><i class="fa fa-code"></i>&nbsp;Developers</a></li>
+          <li id="api"><a target="_blank" href="/api/v1/docs"><i class="fa fa-code"></i>&nbsp;API</a></li>
           % if (defined $self->session->{username} and $self->session->{username} ne '') {
-            <li><a target="_blank" href="/api/docs"><i class="fa fa-code"></i>&nbsp;Private APIs</a></li>
+            <li><a target="_blank" href="/api/docs"><i class="fa fa-code"></i>&nbsp;Private API</a></li>
           % }
         </ul>
       </div><!--/.nav-collapse -->

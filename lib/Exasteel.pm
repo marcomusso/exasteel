@@ -71,6 +71,8 @@ sub startup {
     my $auth = $r->under->to('auth#check');
 
     $auth->get('/settings')          ->to('pages#settings')    ->name('settings');
+    $auth->get('/kpi')               ->to('pages#kpi')         ->name('kpi');
+    $auth->get('/map')               ->to('pages#map')         ->name('map');
   ###################################################################################################
 
   ###################################################################################################

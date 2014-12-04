@@ -76,34 +76,54 @@
   </div>
 </div>
 
-<%# Modal for insertin EMOC data %>
+<%# Modal for inserting EMOC data %>
 <div class="modal fade" id="addEMOCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add EMOC</h4>
+        <h4 class="modal-title" id="myModalLabel">Edit EMOC</h4>
       </div>
       <div class="modal-body">
         <div class="input-group">
-          <span class="input-group-addon">@</span>
-          <input type="text" class="form-control" placeholder="Username">
+          <span class="input-group-addon">EMOC display name</span>
+          <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My EMOC">
         </div>
-
+        <br>
         <div class="input-group">
-          <input type="text" class="form-control">
-          <span class="input-group-addon">.00</span>
+          <span class="input-group-addon">API endpoint</span>
+          <input id="endpoint" name="namepoint" type="url" class="form-control" placeholder="http[s]://<hostname>[:port]/...">
         </div>
-
+        <br>
         <div class="input-group">
-          <span class="input-group-addon">$</span>
-          <input type="text" class="form-control">
-          <span class="input-group-addon">.00</span>
+          <span class="input-group-addon">Username</span>
+          <input id="username" name="username" type="text" class="form-control" placeholder="cloudadmin">
         </div>
+        <br>
+        <div class="input-group">
+          <span class="input-group-addon">Password</span>
+          <input id="password" name="password" type="password" class="form-control" placeholder="password">
+        </div>
+        <br>
+        <div class="input-group">
+          <span class="input-group-addon">Description</span>
+          <input id="description" name="description" type="text" class="form-control disabled" placeholder="(autofilled if possible)">
+        </div>
+        <br>
+        <div class="input-group">
+          <span class="input-group-addon">Tags</span>
+          <input id="tags" name="tags" type="text" class="form-control" placeholder="examples: main-site, dr-site, vaulting-location, production, dev">
+        </div>
+        <br>
+        <div class="input-group">
+          <span class="input-group-addon">Ignored accounts</span>
+          <input id="ignored_accounts" name="ignored_accounts" type="text" class="form-control" placeholder="space separated account names">
+        </div>
+        <br>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="saveEMOC" type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>

@@ -1,3 +1,13 @@
+
+function validateConfigAndSave() {
+  console.log('check params and save emoc');
+  $('#addEMOCmodal').modal('hide');
+}
+
+function checkEndpoint() {
+  console.log('password entered, check endpoint access and get description');
+}
+
 function initPage() {
   console.log( "initPage called" );
   // Enable tooltips
@@ -22,6 +32,10 @@ function initPage() {
   $('#addEMOC').click(function() {
     $('#addEMOCmodal').modal('show');
   });
+
+  $('#password').on('click', checkEndpoint);
+
+  $('#saveEMOC').on('click', validateConfigAndSave);
 
   $('#theme').click(function() {
     mySessionData['theme']=$(this).text();
