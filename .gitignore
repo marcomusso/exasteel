@@ -1,0 +1,4 @@
+log/*
+.project
+script/hypnotoad.*
+templates/api/docs.html.ep

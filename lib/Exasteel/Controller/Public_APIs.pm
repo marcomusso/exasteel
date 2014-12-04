@@ -37,20 +37,63 @@ TBD
 
 =cut
 sub getVCDKPI {
-	my $self           = shift;
+	my $self = shift;
   my %hash = ();
   my $csv_data='';
 
 	my $ua=$self->req->headers->user_agent;
 	my $ip=$self->tx->remote_address;
 	if ($debug>0) {
-		$log->debug("Exasteel::Controller::API_pubbliche::getVCDKPI | Request by $ua @ $ip");
+		$log->debug("Exasteel::Controller::Public_APIs::getVCDKPI | Request by $ua @ $ip");
 	}
 
 	$self->respond_to(
 	  json =>	{ json => \%hash },
 	  csv  =>	{ text => $csv_data }
 	);
+}
+
+sub getEMOCAccounts {
+  my $self = shift;
+  my $emoc = $self->param('emoc');
+  my @accounts = ();
+
+  my $ua=$self->req->headers->user_agent;
+  my $ip=$self->tx->remote_address;
+  if ($debug>0) {
+    $log->debug("Exasteel::Controller::Public_APIs::getEMOCAccounts | Request by $ua @ $ip");
+  }
+
+  my $emoc_ua = Mojo::UserAgent->new;
+
+  # get EMOC parameters from db
+
+  # for testing purposes
+  my $user="";
+  my $password="";
+  my $emoc_endpoint="";
+
+  my $data=$emoc_ua->get('https://'.$user.':'.$password.'@'.$emoc_endpoint.'/akm/?Action=DescribeAccounts&Version=1&Timestamp=1416930951&Expires=1436930951');
+  if (my $res = $data->success) {
+    # force XML semantics
+    $res->dom->xml(1);
+    if ($debug>1) {
+      $log->debug("Exasteel::Controller::Public_APIs::getEMOCAccounts | # of accounts found: ".$res->dom->find('name')->text->size);
+    }
+    push @accounts,map {@$_} $res->dom->find('name')->text->uniq->to_array;
+  } else {
+    $log->debug("Exasteel::Controller::Public_APIs::getEMOCAccounts | Error in request to EMOC");
+  }
+
+  # lowercase & sort array
+  @accounts = sort @accounts;
+  if ($debug>0) {
+    $log->debug("Exasteel::Controller::Public_APIs::getEMOCAccounts | Accounts: ".Dumper(@accounts));
+  }
+
+  $self->respond_to(
+    json => { json => \@accounts }
+  );
 }
 
 "I came here to find the Southern Oracle (Neverending Story, 1984)";

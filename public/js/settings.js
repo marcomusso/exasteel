@@ -1,5 +1,9 @@
 function initPage() {
   console.log( "initPage called" );
+  // Enable tooltips
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
   $( "#settings_container .form-control" ).change(function() {
     console.log("form changed: "+$(this).attr('id')+" = "+ $(this).val());
     switch($(this).attr('id')) {

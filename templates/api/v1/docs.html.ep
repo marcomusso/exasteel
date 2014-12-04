@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:U0F9908@sgevmt001.sede.corp.sanpaoloimi.com" />
+</head>
+
+<body style="background-color: white">
+
+
+
+<ul id="index">
+  <li><a href="#Exasteel-API-v1">Exasteel API v1</a>
+    <ul>
+      <li><a href="#getVCDKPI">getVCDKPI</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="Exasteel-API-v1">Exasteel API v1</h1>
+
+<p>This are the public APIs for Exasteel. You can call every method via an HTTP GET:</p>
+
+<pre><code>        http://&lt;EXASTEEL_URL&gt;/api/v1/&lt;method&gt;/&lt;parameters...&gt;</code></pre>
+
+<p>Example:</p>
+
+<pre><code>        http://&lt;EXASTEEL_URL&gt;/api/v1/getVCDKPI/&lt;KPI&gt;.csv</code></pre>
+
+<p>The HTTP response will be according to the extension requested (mostly supported: CSV and JSON).</p>
+
+<p>Method list:</p>
+
+<h2 id="getVCDKPI">getVCDKPI</h2>
+
+<p>TBD</p>
+
+
+</body>
+
+</html>
+
+

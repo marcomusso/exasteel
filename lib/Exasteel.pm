@@ -55,11 +55,13 @@ sub startup {
 
   ###################################################################################################
   # Public APIs
-    $r->get('/api/v1/docs')          ->to('Public_APIs#docs');
+    $r->get('/api/v1/docs')                                           ->to('Public_APIs#docs');
+    $r->route('/api/v1/getemocaccounts/:emoc', format => [qw(json)])    ->to('Public_APIs#getEMOCAccounts');
   ###################################################################################################
 
   ###################################################################################################
   # Private APIs
+    $r->get('/api/docs')                                  ->to('Private_APIs#docs');
     $r->route('/api/getsession', format => [qw(json)])    ->to('Private_APIs#getSession');
     $r->route('/api/setsession')                          ->to('Private_APIs#setSession');
   ###################################################################################################
@@ -82,3 +84,5 @@ sub startup {
 }
 
 "Raging bull (1979)";
+
+# http://stackoverflow.com/questions/1860869/what-are-valid-perl-module-return-values

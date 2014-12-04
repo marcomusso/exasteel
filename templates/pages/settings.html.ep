@@ -6,11 +6,11 @@
 
 <div id="settings_container">
   <div class="row">
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
-            EMOCs<span class="pull-right"><button id="addEMOC" class="btn btn-xs"><i class="fa fa-plus"></i></button></span>
+            EMOCs<span class="pull-right"><button id="addEMOC" class="btn btn-xs" data-toggle="tooltip" title="Add EMOC"><i class="fa fa-plus"></i></button></span>
           </h4>
         </div>
         <div class="panel-body">
@@ -22,20 +22,6 @@
             <table>
             </table>
           % }
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-      <div id="emoc_details" class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            EMOC details
-          </h4>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            ...
-          </div>
         </div>
       </div>
     </div>
@@ -99,7 +85,21 @@
         <h4 class="modal-title" id="myModalLabel">Add EMOC</h4>
       </div>
       <div class="modal-body">
-        ...
+        <div class="input-group">
+          <span class="input-group-addon">@</span>
+          <input type="text" class="form-control" placeholder="Username">
+        </div>
+
+        <div class="input-group">
+          <input type="text" class="form-control">
+          <span class="input-group-addon">.00</span>
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-addon">$</span>
+          <input type="text" class="form-control">
+          <span class="input-group-addon">.00</span>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

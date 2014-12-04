@@ -148,7 +148,7 @@
           <li id="help"><a onclick="javascript:startIntro();" href="javascript:void(0);"><i class="fa fa-support"></i>&nbsp;Help</a></li>
           <li id="api"><a target="_blank" href="/api/v1/docs"><i class="fa fa-code"></i>&nbsp;Developers</a></li>
           % if (defined $self->session->{username} and $self->session->{username} ne '') {
-            <li><a target="_blank" href="/api/private"><i class="fa fa-code"></i>&nbsp;Private APIs</a></li>
+            <li><a target="_blank" href="/api/docs"><i class="fa fa-code"></i>&nbsp;Private APIs</a></li>
           % }
         </ul>
       </div><!--/.nav-collapse -->
