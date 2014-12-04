@@ -15,8 +15,11 @@ function initPage() {
     setSessionData();
   });
 
-  $(".dropdown-menu li a").click(function () {
-    // console.log("Selected Option:"+$(this).text());
+  $('#addEMOC').click(function() {
+    $('#addEMOCmodal').modal('show');
+  });
+
+  $('#theme').click(function() {
     mySessionData['theme']=$(this).text();
     setSessionData();
   });
