@@ -54,16 +54,16 @@ sub startup {
   ###################################################################################################
 
   ###################################################################################################
-  # Public APIs
-    $r->get('/api/v1/docs')                                           ->to('Public_APIs#docs');
-    $r->route('/api/v1/getemocaccounts/:emoc', format => [qw(json)])    ->to('Public_APIs#getEMOCAccounts');
+  # Public API
+    $r->get('/api/v1/docs')                                           ->to('Public_API#docs');
+    $r->route('/api/v1/getemocaccounts/:emoc', format => [qw(json)])    ->to('Public_API#getEMOCAccounts');
   ###################################################################################################
 
   ###################################################################################################
-  # Private APIs
-    $r->get('/api/docs')                                  ->to('Private_APIs#docs');
-    $r->route('/api/getsession', format => [qw(json)])    ->to('Private_APIs#getSession');
-    $r->route('/api/setsession')                          ->to('Private_APIs#setSession');
+  # Private API
+    $r->get('/api/docs')                                  ->to('Private_API#docs');
+    $r->route('/api/getsession', format => [qw(json)])    ->to('Private_API#getSession');
+    $r->route('/api/setsession')                          ->to('Private_API#setSession');
   ###################################################################################################
 
   ###################################################################################################
