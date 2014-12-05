@@ -1,31 +1,44 @@
 % layout 'default';
 % title 'KPI - Exasteel';
 
+% my %accounts=( # sample hash to mock up the page
+%   TEMPLATES => 'Public templates',
+%   DEV => '',
+%   MANAGEMENT => 'Management account',
+%   PERFORMANCETEST => 'For performance testing vm',
+%   TEST => '',
+% );
+
 <%# Javascript  %>
   %= javascript '/d3-3.4.13/d3.min.js'
   %= javascript '/js/kpi.js'
 
-  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            KPI
-          </h4>
-        </div>
-        <div class="panel-body">
-          % if (1) {
-            <div class="row text-center">
-            There are no EMOC configured.
-            </div>
-          % } else {
-            <div id="kpi"></div>
-          % }
-        </div>
+  %= stylesheet begin
+    .panel-body {
+      padding: 0;
+    }
+    .kpi {
+      width: 100%;
+      height: 100px;
+    }
+  % end
+
+% foreach my $account (keys %accounts) {
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <%== $account %>
+        </h4>
+      </div>
+      <div class="panel-body">
+        <div id="<%== $account %>_kpi" class="kpi"></div>
       </div>
     </div>
   </div>
 </div>
+% }
 
 <script>
   function startIntro(){
