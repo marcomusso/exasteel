@@ -48,6 +48,10 @@ body {
   margin-top:30%;
 }
 
+.red_msg {
+  color: darkred;
+}
+
 /* Open dropdown-menu on hover */
 ul.nav li.dropdown:hover > ul.dropdown-menu {
     display: block;

@@ -1,7 +1,7 @@
 
 function validateConfigAndSave() {
   console.log('check params and save emoc');
-  $('#addEMOCmodal').modal('hide');
+  $('#addvDCmodal').modal('hide');
 }
 
 function checkEndpoint() {
@@ -29,13 +29,13 @@ function initPage() {
     setSessionData();
   });
 
-  $('#addEMOC').click(function() {
-    $('#addEMOCmodal').modal('show');
+  $('#addvDC').click(function() {
+    $('#addvDCmodal').modal('show');
   });
 
   $('#password').on('click', checkEndpoint);
 
-  $('#saveEMOC').on('click', validateConfigAndSave);
+  $('#savevDC').on('click', validateConfigAndSave);
 
   $('#theme').click(function() {
     mySessionData['theme']=$(this).text();

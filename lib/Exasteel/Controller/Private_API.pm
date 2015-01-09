@@ -1,5 +1,6 @@
 package Exasteel::Controller::Private_API;
 
+use 5.018;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Mojo::Log;
@@ -57,7 +58,7 @@ sub getSession {
   my $rua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
   if ($debug>0) {
-    $log->debug("Exasteel::Controller::API_private::getSession | Request by $rua @ $ip");
+    $log->debug("Exasteel::Controller::Private_API::getSession | Request by $rua @ $ip");
   }
 
   # initialize from %defaults
@@ -67,7 +68,7 @@ sub getSession {
       }
     }
 
-  if ($debug>1) { $log->debug("Exasteel::Controller::API_private::getSession | Session: ". Dumper($self->session)); }
+  if ($debug>1) { $log->debug("Exasteel::Controller::Private_API::getSession | Session: ". Dumper($self->session)); }
 
   $self->respond_to(
     json => { json => $self->session },
@@ -80,7 +81,7 @@ sub setSession {
   my $rua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
   if ($debug>0) {
-    $log->debug("Exasteel::Controller::API_private::setSession | Request by $rua @ $ip");
+    $log->debug("Exasteel::Controller::Private_API::setSession | Request by $rua @ $ip");
   }
 
   my $params = $self->req->json;
@@ -102,11 +103,34 @@ sub setSession {
   $self->session->{startlocale} = $startlocale;
   $self->session->{endlocale}   = $endlocale;
 
-  if ($debug>1) { $log->debug("Exasteel::Controller::API_private::setSession | Session: ". Dumper($self->session)); }
+  if ($debug>1) { $log->debug("Exasteel::Controller::Private_API::setSession | Session: ". Dumper($self->session)); }
 
   $self->respond_to(
     json => { json => { status => 'OK'} },
     txt  => { text => 'OK' }
+  );
+}
+
+sub getvDCs {
+  my $self     = shift;
+  my $db       = $self->db;
+
+  if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs"); }
+
+  my $vdcs_collection=$self->db->get_collection('vdcs');
+  my $find_result=$vdcs->find({});
+  my @vcds=$find_result->all;
+
+  if ( @vdcs and (0+@vdcs)>0) {
+      if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs found "+(0+@vdcs)+" vDCs"); }
+  } else {
+    # no vDCs found
+  }
+
+  if ($debug>1) { $log->debug("Exasteel::Controller::Private_API::getvDCs | vDCs: ". Dumper(@vdcs)); }
+
+  $self->respond_to(
+    json => { json => \@vdcs }
   );
 }
 

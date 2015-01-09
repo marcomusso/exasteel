@@ -1,7 +1,7 @@
 package Exasteel::Controller::Pages;
 
+use strict;
 use Mojo::Base 'Mojolicious::Controller';
-#use Switch;
 use DateTime;
 use Data::Dumper;
 use Mojo::Log;
@@ -14,11 +14,7 @@ my $debug=2;
 # landing page
 sub home {
   my $self = shift;
-  if (defined $self->session->{username} and $self->session->{username} ne '') {
-    $self->render('home');
-  } else {
-    $self->redirect_to('/login');
-  }
+  $self->render('home')
 }
 
 # landing page

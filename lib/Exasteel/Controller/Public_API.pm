@@ -101,11 +101,6 @@ sub getEMOCAccounts {
 
   my $emoc_ua = Mojo::UserAgent->new;
 
-  # TODO: get EMOC parameters from config db...
-    my $username='';
-    my $password='';
-    my $emoc_endpoint='';
-
   my $now=time()*1000;      # I need millisecs
   my $expires=$now+600000;  # let's double the minimum according to http://docs.oracle.com/cd/E27363_01/doc.121/e25150/appendix.htm#OPCAC936
 

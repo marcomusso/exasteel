@@ -1,8 +1,12 @@
 package Exasteel;
+
+use 5.018;
 use Mojo::Base 'Mojolicious';
-use Data::Dumper;
 use Mojo::Log;
-use Mojo::Headers;
+use POSIX qw(strftime);
+use MongoDB;
+use MongoDB::OID;
+use Exasteel::Model;
 
 # Customize log file location and minimum log level
 my $log = Mojo::Log->new(path => 'log/exasteel.log', level => 'debug');
@@ -30,6 +34,16 @@ sub startup {
     # $self->plugin('TagHelpers');
   #################################################################################
 
+  #################################################################################
+  # Helpers
+    $self->helper(
+          db => sub {
+            # Init Model
+            Exasteel::Model->init( $config->{db} );
+          }
+    );
+  #################################################################################
+
   # Default layout
   $self->defaults(layout => 'default');
 
@@ -46,7 +60,7 @@ sub startup {
 
   ###################################################################################################
   # UI (no login required)
-    $r->get('/')                  ->to('pages#home')        ->name('home');
+    $r->get('/')                     ->to('pages#home')     ->name('home');
     # login
       $r->route('/login')            ->to('auth#login')     ->name('auth_login');
       $r->route('/auth')             ->to('auth#create')    ->name('auth_create');
@@ -64,6 +78,7 @@ sub startup {
     $r->get('/api/docs')                                  ->to('Private_API#docs');
     $r->route('/api/getsession', format => [qw(json)])    ->to('Private_API#getSession');
     $r->route('/api/setsession')                          ->to('Private_API#setSession');
+    $r->route('/api/getvDCs', format => [qw(json)])       ->to('Private_API#getvDCs');
   ###################################################################################################
 
   ###################################################################################################
