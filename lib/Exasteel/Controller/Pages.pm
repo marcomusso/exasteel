@@ -22,3 +22,9 @@ sub settings {
   my $self = shift;
   $self->render('pages/settings');
 }
+
+# vDC details
+sub vdcdetails {
+  my $self = shift;
+  $self->render('pages/vdcdetails');
+}

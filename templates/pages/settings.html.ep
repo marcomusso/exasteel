@@ -7,33 +7,22 @@
 <div id="settings_container">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <div class="panel panel-default">
+      <div class="panel panel-primary">
         <div class="panel-heading">
           <h4 class="panel-title">
-            vDCs<span class="pull-right"><button id="addvDC" class="btn btn-xs" data-toggle="tooltip" title="Add vDC"><i class="fa fa-plus"></i></button></span>
+            Virtual Data Centers (vDCs)<span class="pull-right"><button id="addvDC" class="btn btn-xs btn-default" data-toggle="tooltip" title="Add vDC"><i class="fa fa-plus"></i></button></span>
           </h4>
         </div>
         <div class="panel-body">
-          % if (1) {
-            <div class="row text-center">
-            There are no vDCs configured.
-            </div>
-          % } else {
-            <table id="emoctable" class="display cell-border dt-responsive no-wrap" style="font-size:12px;">
+            <table id="vdcstable" class="table table-striped cell-border" style="font-size:12px;">
                 <thead>
                     <tr>
-                      <th style="text-align:center;">Pacchetto</th>
-                      <th style="text-align:center;">Attivo su</th>
-                      <th style="text-align:center;">Ambiente</th>
-                      <th style="text-align:center;">SID</th>
-                      <th style="text-align:center;">NOME_DB</th>
-                      <th style="text-align:center;">SERVICE_ORACLE</th>
-                      <th style="text-align:center;">Versione</th>
-                      <th style="text-align:center;">Dim. totale (GB)</th>
-                      <th style="text-align:center;">SGA (MB)</th>
-                      <th style="text-align:center;">Indici (GB)</th>
-                      <th style="text-align:center;">Dati (GB)</th>
-                      <th style="text-align:center;">Gruppo</th>
+                      <th style="text-align:center;">Name</th>
+                      <th style="text-align:center;">Description</th>
+                      <th style="text-align:center;">EMOC API endpoint</th>
+                      <th style="text-align:center;">Tags</th>
+                      <th style="text-align:center;"></th>
+                      <th style="text-align:center;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,15 +30,15 @@
                 <tfoot>
                 </tfoot>
             </table>
-          % }
         </div>
+        <div class="panel-footer text-center">Found <span id="vdcscount">0</span> vDCs.</div>
       </div>
     </div>
   </div>
 
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <div class="panel panel-default">
+      <div class="panel panel-primary">
         <div class="panel-heading">
           <h4 class="panel-title">
             Other settings
@@ -132,7 +121,7 @@
         <br>
         <div class="input-group">
           <span class="input-group-addon">Tags</span>
-          <input id="tags" name="tags" type="text" class="form-control" placeholder="main-site, dr-site, vaulting-location, production, dev">
+          <input id="tags" name="tags" type="text" class="form-control" placeholder="example: main-site, dr-site, vaulting-location, production, dev">
         </div>
         <br>
         <div class="input-group">

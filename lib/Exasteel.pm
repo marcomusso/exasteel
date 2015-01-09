@@ -60,17 +60,18 @@ sub startup {
 
   ###################################################################################################
   # UI (no login required)
-    $r->get('/')                     ->to('pages#home')     ->name('home');
+    $r->get('/')                     ->to('pages#home')       ->name('home');
+    $r->get('/credits')              ->to('pages#credits')    ->name('credits');
     # login
-      $r->route('/login')            ->to('auth#login')     ->name('auth_login');
-      $r->route('/auth')             ->to('auth#create')    ->name('auth_create');
-      $r->route('/logout')           ->to('auth#delete')    ->name('auth_delete');
+      $r->route('/login')            ->to('auth#login')       ->name('auth_login');
+      $r->route('/auth')             ->to('auth#create')      ->name('auth_create');
+      $r->route('/logout')           ->to('auth#logout')      ->name('auth_logout');
   ###################################################################################################
 
   ###################################################################################################
   # Public API
     $r->get('/api/v1/docs')                                           ->to('Public_API#docs');
-    $r->route('/api/v1/getemocaccounts/:emoc', format => [qw(json)])    ->to('Public_API#getEMOCAccounts');
+    $r->route('/api/v1/getemocaccounts/:emoc', format => [qw(json)])  ->to('Public_API#getEMOCAccounts');
   ###################################################################################################
 
   ###################################################################################################
@@ -78,7 +79,7 @@ sub startup {
     $r->get('/api/docs')                                  ->to('Private_API#docs');
     $r->route('/api/getsession', format => [qw(json)])    ->to('Private_API#getSession');
     $r->route('/api/setsession')                          ->to('Private_API#setSession');
-    $r->route('/api/getvDCs', format => [qw(json)])       ->to('Private_API#getvDCs');
+    $r->route('/api/getvdcs', format => [qw(json)])       ->to('Private_API#getvDCs');
   ###################################################################################################
 
   ###################################################################################################
@@ -88,6 +89,7 @@ sub startup {
     $auth->get('/settings')          ->to('pages#settings')    ->name('settings');
     $auth->get('/kpi')               ->to('pages#kpi')         ->name('kpi');
     $auth->get('/map')               ->to('pages#map')         ->name('map');
+    $auth->get('/vdc/:vdc_name')     ->to('pages#vdcdetails')  ->name('vdcdetails');
   ###################################################################################################
 
   ###################################################################################################

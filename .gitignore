@@ -2,4 +2,5 @@ db/*
 log/*
 .project
 script/hypnotoad.*
+templates/api/v1/docs.html.ep
 templates/api/docs.html.ep

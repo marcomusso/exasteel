@@ -118,11 +118,11 @@ sub getvDCs {
   if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs"); }
 
   my $vdcs_collection=$self->db->get_collection('vdcs');
-  my $find_result=$vdcs->find({});
-  my @vcds=$find_result->all;
+  my $find_result=$vdcs_collection->find({});
+  my @vdcs=$find_result->all;
 
   if ( @vdcs and (0+@vdcs)>0) {
-      if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs found "+(0+@vdcs)+" vDCs"); }
+      if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs found $#vdcs vDCs"); }
   } else {
     # no vDCs found
   }

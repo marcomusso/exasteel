@@ -1,10 +1,12 @@
+# Exasteel
+
 This started as a Mojolicious boilerplate, then turned into a Mojolicious demo app then as a utility to visualize some KPI of an Exalogic infrastructure using D3.
 
-**This is currently work in progress.**
+**This is currently work in progess**
 
 ## Prerequisites
 
-- [Mojolicious](http://mojolicio.us/) latest, tested with 5.71
+- [Mojolicious](http://mojolicio.us/) developed on lastet... (5.71 right now)
     - Mojolicious::Plugin::Config
 - [Bootstrap](http://getbootstrap.com/) (3.3.1)
 - [Font Awesome](http://fortawesome.github.io/Font-Awesome/) (4.2.0)

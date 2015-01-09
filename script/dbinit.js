@@ -13,12 +13,12 @@ sample_vdc = {
   emoc_endpoint: 'https://hostname:port/uri/',
   emoc_username: 'username',
   emoc_password: 'password',
-  description: 'My first vDC in site 1 (autofilled if possible)',
+  asset_description: 'My first vDC in site 1 (autofilled if possible)',
   tags: '',
   ignored_accounts: '',
 };
 // let's insert those sample records and create the collections!
 db.vdcs.insert(sample_vdc);
-// addtional collections for:
+// additional collections for:
 // - accounts?
 // - perf data as a cache?
