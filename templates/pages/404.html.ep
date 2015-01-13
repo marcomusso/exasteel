@@ -7,7 +7,7 @@
 <div class="alert alert-danger text-center" role="alert">
   <h1>Holy Cow!</h1>
   <hr>
-  <p>You were looking for <strong><%= $self->param('whatever') %></strong> ... but it doesn't seem to exist!!!</p>
+  <p>You were looking for <strong>/<%= $self->param('whatever') %></strong> ... but it doesn't seem to exist!!!</p>
   <p>Maybe we are working on it right now!</p>
   <p>Light a candle or pray your god or tip the developer to speed up his work!</p>
   <hr>

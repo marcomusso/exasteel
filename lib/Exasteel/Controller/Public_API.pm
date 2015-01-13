@@ -1,15 +1,10 @@
 package Exasteel::Controller::Public_API;
 
 use Mojo::Base 'Mojolicious::Controller';
-use DBI;
-use Data::Dumper;
 use Mojo::Log;
+use Data::Dumper;
 use DateTime;
 use POSIX qw(strftime);
-
-# Customize log file location and minimum log level
-my $log = Mojo::Log->new(path => 'log/public_API.log', level => 'debug');
-my $debug=2; # global log level, override in each sub if needed
 
 # render static docs
 sub docs {
@@ -37,15 +32,20 @@ TBD
 
 =cut
 sub VDCKPI {
-	my $self = shift;
+	my $self=shift;
+  my $log_level=$self->log_level;
 
   my %hash = ();
   my $csv_data='';
 
 	my $ua=$self->req->headers->user_agent;
 	my $ip=$self->tx->remote_address;
-	if ($debug>0) {
-		$log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $ua @ $ip");
+	if ($log_level>0) {
+    my $user='';
+    if ($self->session->{login} and $self->session->{login} ne '') {
+      $user=' (logged user: '.$self->session->{login}.')';
+    }
+    $self->public_api_log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $rua @ $ip".$user);
 	}
 
   # get config from db
@@ -92,14 +92,14 @@ Example:
 
 =cut
 sub VDCAccounts {
-  my $self = shift;
-  my $db  = $self->db;
-  my $vdc = $self->param('vdc');
-  my %accounts=();
+  my $self=shift;
+  my $log_level=$self->log_level;
+  my $db   = $self->db;
+  my $vdc  = $self->param('vdc');
 
   my $ua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
-  $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Request by $ua @ $ip") if $debug>0;
+  $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Request by $ua @ $ip") if $log_level>0;
 
   my $emoc_ua = Mojo::UserAgent->new;
 
@@ -112,12 +112,13 @@ sub VDCAccounts {
   my @vdcs=$find_result->all;
 
   if (@vdcs) {
-    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC:".Dumper(@vdcs)) if $debug>0;
+    $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC:".dumper(@vdcs)) if $log_level>0;
   }
 
   my $username=$vdcs[0]{emoc_username};
   my $password=$vdcs[0]{emoc_password};
   my $emoc_endpoint=$vdcs[0]{emoc_endpoint};
+  my %accounts=();
 
   my $data=$emoc_ua->get('https://'.$username.':'.$password.'@'.$emoc_endpoint.'/akm/?Action=DescribeAccounts&Version=1&Timestamp='.$now.'&Expires='.$expires);
   if (my $res = $data->success) {
@@ -140,12 +141,14 @@ sub VDCAccounts {
       }
     );
   } else {
-    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Error in request to EMOC");
+    $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Error in request to EMOC");
   }
 
-  if ($debug>0) {
-    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".Dumper(\%accounts));
+  if ($log_level>0) {
+    $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".dumper(\%accounts));
   }
+
+  # TODO check for errors
 
   $self->respond_to(
     json => { json => \%accounts }

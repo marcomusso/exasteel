@@ -1,6 +1,5 @@
 package Exasteel;
 
-use 5.018;
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use POSIX qw(strftime);
@@ -47,6 +46,19 @@ sub startup {
         MongoDB::OID->new($value);
       }
     );
+    # Log handling
+    my $private_api_log = Mojo::Log->new(path => 'log/private_API.log', level => 'debug');
+    my $public_api_log  = Mojo::Log->new(path => 'log/public_API.log',  level => 'debug');
+    $self->helper(
+      private_api_log => sub { return $private_api_log }
+    );
+    $self->helper(
+      public_api_log  => sub { return $public_api_log }
+    );
+    $self->helper(
+      log_level  => sub { return 2 }
+    );
+
   #################################################################################
 
   # Default layout
@@ -65,8 +77,8 @@ sub startup {
 
   ###################################################################################################
   # UI (no login required)
-    $r->get('/')                     ->to('pages#home')       ->name('home');
-    $r->get('/credits')              ->to('pages#credits')    ->name('credits');
+    $r->get('/')                     ->to('Pages#home')       ->name('home');
+    $r->get('/credits')              ->to('Pages#credits')    ->name('credits');
     # login
       $r->route('/login')            ->to('auth#login')       ->name('auth_login');
       $r->route('/auth')             ->to('auth#create')      ->name('auth_create');
@@ -75,27 +87,28 @@ sub startup {
 
   ###################################################################################################
   # Public API
-    $r->get('/api/v1/docs')                                     ->to('Public_API#docs');
-    $r->route('/api/v1/vdcaccounts/:vdc', format => [qw(json)]) ->to('Public_API#VDCAccounts');
-    $r->get('/api/v1/vdckpi/:vdc_name')                         ->to('Public_API#VDCKPI');
+    $r->route('/api/v1/docs')                                   ->via('get') ->to('Public_API#docs');
+    $r->route('/api/v1/vdcaccounts/:vdc', format => [qw(json)]) ->via('get') ->to('Public_API#VDCAccounts');
+    $r->route('/api/v1/vdckpi/:vdc_name')                       ->via('get') ->to('Public_API#VDCKPI');
   ###################################################################################################
 
   ###################################################################################################
   # Private API
-    $r->route('/api/getsession', format => [qw(json)])     ->via('get')    ->to('Private_API#getSession');
-    $r->route('/api/setsession')                           ->via('post')   ->to('Private_API#setSession');
-    $r->route('/api/v1/vdc/:vdcid', format => [qw(json)])  ->via('delete') ->to('Private_API#removeVDC');
-    $r->route('/api/v1/getvdcs', format => [qw(json)])     ->via('get')    ->to('Private_API#getVDCs');
+    $r->route('/api/getsession', format => [qw(json)])      ->via('get')    ->to('Private_API#getSession');
+    $r->route('/api/setsession')                            ->via('post')   ->to('Private_API#setSession');
+    $r->route('/api/v1/vdc/:vdcid', format => [qw(json)])   ->via('delete') ->to('Private_API#removeVDC');
+    $r->route('/api/v1/vdc/:vdcname', format => [qw(json)]) ->via('post')   ->to('Private_API#addVDC'); # TODO use _id and not name
+    $r->route('/api/v1/getvdcs', format => [qw(json)])      ->via('get')    ->to('Private_API#getVDCs');
   ###################################################################################################
 
   ###################################################################################################
   # protected pages (login required)
     my $auth = $r->under->to('auth#check');
-    $auth->get('/settings')          ->to('pages#settings')    ->name('settings');
-    $auth->get('/kpi')               ->to('pages#kpi')         ->name('kpi');
-    $auth->get('/map')               ->to('pages#map')         ->name('map');
-    $auth->get('/vdc/:vdc_name')     ->to('pages#vdcdetails')  ->name('vdcdetails');
-    $auth->get('/api/docs')          ->to('Private_API#docs');
+    $auth->get('/settings')          ->to('Pages#settings')    ->name('settings');
+    $auth->get('/kpi')               ->to('Pages#kpi')         ->name('kpi');
+    $auth->get('/map')               ->to('Pages#map')         ->name('map');
+    $auth->get('/vdc/:vdcname')      ->to('Pages#vdcdetails')  ->name('vdcdetails');
+    $auth->get('/api/docs')          ->to('Private_API#docs')  ->name('private_docs');
   ###################################################################################################
 
   ###################################################################################################
