@@ -7,19 +7,18 @@ use MongoDB;
 use MongoDB::OID;
 use Exasteel::Model;
 
-# Customize log file location and minimum log level
-my $log = Mojo::Log->new(path => 'log/exasteel.log', level => 'debug');
-my $debug=0; # global log level, override in each sub if needed
-
 # utils
   sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
 
 # This method will run once at server start
 sub startup {
-  my $self = shift;
+  my $self=shift;
   my $version;
 
-  if ($debug>0) { $log->debug("Exasteel starting..."); }
+  my $log_level=2; # mail log level, not the helper!
+  my $main_log=Mojo::Log->new(path => 'log/exasteel.log', level => 'debug');
+
+  if ($debug>0) { $main_log->debug("Exasteel starting..."); }
 
   $self->secrets(['2a595521e0a038f473c85d7360a10ec8','This secret is used _only_ for validation']);
   $self->sessions->default_expiration(60*60*72); #3gg
@@ -27,7 +26,7 @@ sub startup {
 
   #################################################################################
   # Plugins
-    if ($debug>0) { $log->debug("Exasteel reading config"); }
+    if ($debug>0) { $main_log->debug("Exasteel reading config"); }
     my $config=$self->plugin('Config');
     $self->plugin(charset => {charset => 'utf8'});
     # $self->plugin('TagHelpers');
@@ -58,7 +57,6 @@ sub startup {
     $self->helper(
       log_level  => sub { return 2 }
     );
-
   #################################################################################
 
   # Default layout
