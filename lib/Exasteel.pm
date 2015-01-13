@@ -37,10 +37,15 @@ sub startup {
   #################################################################################
   # Helpers
     $self->helper(
-          db => sub {
-            # Init Model
-            Exasteel::Model->init( $config->{db} );
-          }
+      db => sub {
+        Exasteel::Model->init( $config->{db} );
+      }
+    );
+    $self->helper(
+      value2oid => sub {
+        my ($self, $value) = @_;
+        MongoDB::OID->new($value);
+      }
     );
   #################################################################################
 
@@ -70,26 +75,27 @@ sub startup {
 
   ###################################################################################################
   # Public API
-    $r->get('/api/v1/docs')                                           ->to('Public_API#docs');
-    $r->route('/api/v1/getemocaccounts/:emoc', format => [qw(json)])  ->to('Public_API#getEMOCAccounts');
+    $r->get('/api/v1/docs')                                     ->to('Public_API#docs');
+    $r->route('/api/v1/vdcaccounts/:vdc', format => [qw(json)]) ->to('Public_API#VDCAccounts');
+    $r->get('/api/v1/vdckpi/:vdc_name')                         ->to('Public_API#VDCKPI');
   ###################################################################################################
 
   ###################################################################################################
   # Private API
-    $r->get('/api/docs')                                  ->to('Private_API#docs');
-    $r->route('/api/getsession', format => [qw(json)])    ->to('Private_API#getSession');
-    $r->route('/api/setsession')                          ->to('Private_API#setSession');
-    $r->route('/api/getvdcs', format => [qw(json)])       ->to('Private_API#getvDCs');
+    $r->route('/api/getsession', format => [qw(json)])     ->via('get')    ->to('Private_API#getSession');
+    $r->route('/api/setsession')                           ->via('post')   ->to('Private_API#setSession');
+    $r->route('/api/v1/vdc/:vdcid', format => [qw(json)])  ->via('delete') ->to('Private_API#removeVDC');
+    $r->route('/api/v1/getvdcs', format => [qw(json)])     ->via('get')    ->to('Private_API#getVDCs');
   ###################################################################################################
 
   ###################################################################################################
   # protected pages (login required)
     my $auth = $r->under->to('auth#check');
-
     $auth->get('/settings')          ->to('pages#settings')    ->name('settings');
     $auth->get('/kpi')               ->to('pages#kpi')         ->name('kpi');
     $auth->get('/map')               ->to('pages#map')         ->name('map');
     $auth->get('/vdc/:vdc_name')     ->to('pages#vdcdetails')  ->name('vdcdetails');
+    $auth->get('/api/docs')          ->to('Private_API#docs');
   ###################################################################################################
 
   ###################################################################################################

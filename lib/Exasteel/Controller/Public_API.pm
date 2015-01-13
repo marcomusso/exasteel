@@ -25,27 +25,30 @@ This are the public API for Exasteel. You can call every method via an HTTP GET:
 
 Example:
 
-	http://<EXASTEEL_URL>/api/v1/getVCDKPI/<KPI>.csv
+	http://<EXASTEEL_URL>/api/v1/vdckpi/<KPI>.csv
 
 The HTTP response will be according to the extension requested (mostly supported: CSV and JSON).
 
 Method list:
 
-=head2 getVCDKPI
+=head2 vdckpi
 
 TBD
 
 =cut
-sub getVCDKPI {
+sub VDCKPI {
 	my $self = shift;
+
   my %hash = ();
   my $csv_data='';
 
 	my $ua=$self->req->headers->user_agent;
 	my $ip=$self->tx->remote_address;
 	if ($debug>0) {
-		$log->debug("Exasteel::Controller::Public_API::getVCDKPI | Request by $ua @ $ip");
+		$log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $ua @ $ip");
 	}
+
+  # get config from db
 
 	$self->respond_to(
 	  json =>	{ json => \%hash },
@@ -53,17 +56,17 @@ sub getVCDKPI {
 	);
 }
 
-=head2 getEMOCAccounts
+=head2 VDCAccounts
 
 Returns the accounts defined in the VDC (basically a conversion from XML to JSON :).
 
 You call this method like:
 
-  /api/v1/getemocaccounts/<emocname>.json
+  /api/v1/vdcaccounts/<vdc>.json
 
 Example:
 
-  # curl "http://<EXASTEEL_URL>/api/v1/getemocaccounts/myemoc.json"
+  # curl "http://<EXASTEEL_URL>/api/v1/vdcaccounts/myvdc.json"
   {
     "TEMPLATES": {
       "id": "ACC-00000000-0000-0000-0000-000000000000",
@@ -88,21 +91,33 @@ Example:
   }
 
 =cut
-sub getEMOCAccounts {
+sub VDCAccounts {
   my $self = shift;
-  my $emoc = $self->param('emoc');
+  my $db  = $self->db;
+  my $vdc = $self->param('vdc');
   my %accounts=();
 
   my $ua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
-  if ($debug>0) {
-    $log->debug("Exasteel::Controller::Public_API::getEMOCAccounts | Request by $ua @ $ip");
-  }
+  $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Request by $ua @ $ip") if $debug>0;
 
   my $emoc_ua = Mojo::UserAgent->new;
 
   my $now=time()*1000;      # I need millisecs
   my $expires=$now+600000;  # let's double the minimum according to http://docs.oracle.com/cd/E27363_01/doc.121/e25150/appendix.htm#OPCAC936
+
+  # lookup vdc config ($username, $password, $emoc_endpoint) in mongodb
+  my $vdcs_collection=$self->db->get_collection('vdcs');
+  my $find_result=$vdcs_collection->find({"display_name" => $vdc});
+  my @vdcs=$find_result->all;
+
+  if (@vdcs) {
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC:".Dumper(@vdcs)) if $debug>0;
+  }
+
+  my $username=$vdcs[0]{emoc_username};
+  my $password=$vdcs[0]{emoc_password};
+  my $emoc_endpoint=$vdcs[0]{emoc_endpoint};
 
   my $data=$emoc_ua->get('https://'.$username.':'.$password.'@'.$emoc_endpoint.'/akm/?Action=DescribeAccounts&Version=1&Timestamp='.$now.'&Expires='.$expires);
   if (my $res = $data->success) {
@@ -125,11 +140,11 @@ sub getEMOCAccounts {
       }
     );
   } else {
-    $log->debug("Exasteel::Controller::Public_API::getEMOCAccounts | Error in request to EMOC");
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Error in request to EMOC");
   }
 
   if ($debug>0) {
-    $log->debug("Exasteel::Controller::Public_API::getEMOCAccounts | Result: ".Dumper(\%accounts));
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".Dumper(\%accounts));
   }
 
   $self->respond_to(

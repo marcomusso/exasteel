@@ -10,8 +10,19 @@ function checkEndpoint() {
   console.log('password entered, check endpoint access and get description');
 }
 
-function removevDCs() {
-  console.log('remove vDCs from list AND db (via API of course)');
+function removevDCs(id) {
+  console.log('removevDCs '+id+' from list AND db (via DELETE API)');
+  $.ajax({
+      url: '/api/v1/vdc/'+id+'.json',
+      type: 'DELETE',
+      success: function(result) {
+        alertThis('Delete successfully','success');
+      },
+      error: function(jqXHR, textStatus, errorThrown ) {
+        alertThis('Error deleting: '+errorThrown,'danger');
+      }
+  });
+  updatevDCList();
 }
 
 function editvDCs() {
@@ -20,7 +31,7 @@ function editvDCs() {
 
 function updatevDCList() {
   spinThatWheel(true);
-  $.getJSON('/api/getvdcs.json', function( vdcs ) {
+  $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
       // updatevdcsTable();
       $("#vdcstable > tbody").html("");
@@ -37,7 +48,7 @@ function updatevDCList() {
         } else { tags='No tags defined'; }
         if (!vdcs[i].asset_description) { vdcs[i].asset_description='N/A'; }
         if (vdcs[i].display_name) { vdc_name=vdcs[i].display_name.replace(/ /g,'_'); }
-        $('#vdcstable tbody').append('<tr><td><strong><a href="/vdc/'+vdc_name+'">'+vdcs[i].display_name+'</a></strong></td><td width=15%>'+vdcs[i].asset_description+'</td><td>'+vdcs[i].emoc_endpoint+'</td><td>'+tags+'</span></td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editvDCs(\''+vdcs[i]+'\');"><i class="fa fa-pencil"></i></a></td><td width=5%><a class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove" onclick="removevDCs(\''+vdcs[i]+'\');"><i class="fa fa-trash"></i></a></td></tr>');
+        $('#vdcstable tbody').append('<tr><td><strong><a href="/vdc/'+vdc_name+'">'+vdcs[i].display_name+'</a></strong></td><td width=15%>'+vdcs[i].asset_description+'</td><td>'+vdcs[i].emoc_endpoint+'</td><td>'+tags+'</span></td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editvDCs(\''+vdcs[i]+'\');"><i class="fa fa-pencil"></i></a></td><td width=5%><a class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove" onclick="removevDCs(\''+vdcs[i]._id.$oid+'\');"><i class="fa fa-trash"></i></a></td></tr>');
       }
       $('#vdcscount').text(vdcs.length);
     } else {

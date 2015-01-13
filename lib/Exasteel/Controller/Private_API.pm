@@ -111,26 +111,44 @@ sub setSession {
   );
 }
 
-sub getvDCs {
+sub getVDCs {
   my $self     = shift;
   my $db       = $self->db;
 
-  if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs"); }
+  if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs"); }
 
   my $vdcs_collection=$self->db->get_collection('vdcs');
   my $find_result=$vdcs_collection->find({});
   my @vdcs=$find_result->all;
 
   if ( @vdcs and (0+@vdcs)>0) {
-      if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getvDCs found $#vdcs vDCs"); }
+      if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs found $#vdcs VDCs"); }
   } else {
-    # no vDCs found
+    # no VDCs found
   }
 
-  if ($debug>1) { $log->debug("Exasteel::Controller::Private_API::getvDCs | vDCs: ". Dumper(@vdcs)); }
+  if ($debug>1) { $log->debug("Exasteel::Controller::Private_API::getVDCs | vDCs: ". Dumper(@vdcs)); }
 
   $self->respond_to(
     json => { json => \@vdcs }
+  );
+}
+
+sub removeVDC {
+  my $self  = shift;
+  my $db    = $self->db;
+  my $vdcid = $self->param('vdcid');
+
+  my $status='OK';
+
+  if ($debug>0) { $log->debug("Exasteel::Controller::Private_API::removeVDC"); }
+
+  my $vdcs_collection=$db->get_collection('vdcs');
+  my $result=$vdcs_collection->remove({ _id => $self->value2oid($vdcid) });
+  # TODO some checks...
+
+  $self->respond_to(
+    json => { json => { "description" => $status } }
   );
 }
 
