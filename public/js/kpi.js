@@ -135,7 +135,7 @@ function initPage() {
 
   var accounts = {
       "TEST": "",
-      "PERFORMACETEST": "",
+      "PERFORMANCETEST": "",
       "DEV": "",
       "TEMPLATES": "",
       "MANAGEMENT": ""
