@@ -42,6 +42,10 @@
     <%# d3 %>
       %= javascript "/d3-3.4.13/d3.min.js"
 
+    <%# User notifications %>
+      %= javascript '/bootstrap-growl-2.0.1/bootstrap-growl.min.js'
+      %= stylesheet '/css/animate.css'
+
     <%# common js %>
       %= javascript '/js/default.js'
 
