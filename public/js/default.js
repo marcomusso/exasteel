@@ -121,6 +121,49 @@ var mySessionData={};
     });
   }
 
+// talk to the user!
+  function alertThis(message,severity,icon) {
+    if (icon === undefined) {
+      icon='fa fa-warning';
+    }
+    if (severity === undefined) {
+      icon='info';
+    }
+    if (message === undefined) {
+      console.log('alertThis called without message!');
+      return false;
+    }
+    $.growl({
+      message: message,
+      icon: icon
+    },{
+      element: 'body',
+      allow_dismiss: true,
+      placement: {
+        from: "top",
+        align: "center"
+      },
+      offset: 20,
+      spacing: 10,
+      animate: {
+        enter: 'animated fadeInLeftBig',
+        exit: 'animated fadeOutRightBig'
+      },
+      type: severity,
+      delay: 3000,
+      template: '<div data-growl="container" class="alert" role="alert">' +
+                    '<button type="button" class="close" data-growl="dismiss">' +
+                      '<span aria-hidden="true">×</span>' +
+                      '<span class="sr-only">Close</span>' +
+                    '</button>' +
+                    '<span data-growl="icon"></span>&nbsp;' +
+                    '<span data-growl="title"></span>' +
+                    '<span data-growl="message"></span>' +
+                    '<a href="#" data-growl="url"></a>' +
+                 '</div>'
+    });
+  }
+
 $("document").ready(function() {
   spinThatWheel(false);
   refreshIndicator(false);
