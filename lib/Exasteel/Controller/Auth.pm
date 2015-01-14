@@ -1,21 +1,18 @@
 package Exasteel::Controller::Auth;
 
 use base 'Mojolicious::Controller';
-use strict;
-use warnings;
-use Data::Dumper;
 use Mojo::Log;
-
-# Customize log file location and minimum log level
-my $log = Mojo::Log->new(path => 'log/auth.log', level => 'debug');
-my $debug=1;
+use Data::Dumper;
 
 sub create {
-  my $self     = shift;
+  my $self=shift;
+  my $log=$self->main_log;
+  my $log_level=$self->log_level;
+
   my $username = $self->param('username');
   my $password = $self->param('password');
 
-  if ($debug>0) { $log->debug("Exasteel::Controller::Auth::create"); }
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::create"); }
 
   if ($username eq "admin" && $password eq "admin") {
     $self->session(
@@ -23,20 +20,23 @@ sub create {
       email    => ''
       )->redirect_to('/');
   } else {
-    if ($debug>0) { $log->debug("Exasteel::Controller::Auth::create login failed for $username"); }
+    if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::create login failed for $username"); }
     $self->flash( error => 'Unknown username or wrong password' )->redirect_to('auth_login');
   }
 }
 
 sub logout {
-  my $self = shift;
+  my $self=shift;
+  my $log=$self->main_log;
+  my $log_level=$self->log_level;
 
-  if ($debug>0) { $log->debug("Exasteel::Controller::Auth::logout logout for ".$self->session('username')); }
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::logout logout for ".$self->session('username')); }
+
   $self->session( username => '' )->redirect_to('auth_login');
 }
 
 sub check {
-  my $self = shift;
+  my $self=shift;
 
   if ($self->session('username')) {
     return 1;

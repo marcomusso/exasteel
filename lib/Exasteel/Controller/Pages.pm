@@ -1,15 +1,8 @@
 package Exasteel::Controller::Pages;
 
-use strict;
 use Mojo::Base 'Mojolicious::Controller';
 use DateTime;
 use Data::Dumper;
-use Mojo::Log;
-use Mojo::Headers;
-
-# Customize log file location and minimum log level
-my $log = Mojo::Log->new(path => 'log/exasteel.log', level => 'debug');
-my $debug=2;
 
 # landing page
 sub home {
@@ -28,3 +21,5 @@ sub vdcdetails {
   my $self = shift;
   $self->render('pages/vdcdetails');
 }
+
+"You know, it occurs to me that the best way you hurt rich people is by turning them into poor people. (Trading places, 1983)";

@@ -2,10 +2,10 @@ package Exasteel;
 
 use Mojo::Base 'Mojolicious';
 use Mojo::Log;
-use POSIX qw(strftime);
 use MongoDB;
 use MongoDB::OID;
 use Exasteel::Model;
+use POSIX qw(strftime);
 
 # utils
   sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
@@ -18,15 +18,13 @@ sub startup {
   my $log_level=2; # mail log level, not the helper!
   my $main_log=Mojo::Log->new(path => 'log/exasteel.log', level => 'debug');
 
-  if ($debug>0) { $main_log->debug("Exasteel starting..."); }
-
   $self->secrets(['2a595521e0a038f473c85d7360a10ec8','This secret is used _only_ for validation']);
   $self->sessions->default_expiration(60*60*72); #3gg
   $version = $self->defaults({version => '0.1&alpha;'});
 
   #################################################################################
   # Plugins
-    if ($debug>0) { $main_log->debug("Exasteel reading config"); }
+    $main_log->debug("Exasteel reading config") if ($log_level>0);
     my $config=$self->plugin('Config');
     $self->plugin(charset => {charset => 'utf8'});
     # $self->plugin('TagHelpers');
@@ -48,6 +46,9 @@ sub startup {
     # Log handling
     my $private_api_log = Mojo::Log->new(path => 'log/private_API.log', level => 'debug');
     my $public_api_log  = Mojo::Log->new(path => 'log/public_API.log',  level => 'debug');
+    $self->helper(
+      main_log => sub { return $main_log }
+    );
     $self->helper(
       private_api_log => sub { return $private_api_log }
     );
@@ -119,6 +120,5 @@ sub startup {
     });
 }
 
-"Raging bull (1979)";
-
 # http://stackoverflow.com/questions/1860869/what-are-valid-perl-module-return-values
+"Raging bull (1979)";

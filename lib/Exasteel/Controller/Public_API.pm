@@ -32,10 +32,12 @@ TBD
 
 =cut
 sub VDCKPI {
-	my $self=shift;
-  my $log_level=$self->log_level;
+  my $self=shift;
+  my $db=$self->db;
+  my $log=$self->public_api_log;
+  my $log_level=2;
 
-  my %hash = ();
+  my %hash=();
   my $csv_data='';
 
 	my $ua=$self->req->headers->user_agent;
@@ -45,7 +47,7 @@ sub VDCKPI {
     if ($self->session->{login} and $self->session->{login} ne '') {
       $user=' (logged user: '.$self->session->{login}.')';
     }
-    $self->public_api_log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $rua @ $ip".$user);
+    $log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $rua @ $ip".$user);
 	}
 
   # get config from db
@@ -93,13 +95,14 @@ Example:
 =cut
 sub VDCAccounts {
   my $self=shift;
-  my $log_level=$self->log_level;
-  my $db   = $self->db;
-  my $vdc  = $self->param('vdc');
+  my $db=$self->db;
+  my $log=$self->public_api_log;
+  my $log_level=2;
+  my $vdc=$self->param('vdc');
 
   my $ua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
-  $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Request by $ua @ $ip") if $log_level>0;
+  $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Request by $ua @ $ip") if $log_level>0;
 
   my $emoc_ua = Mojo::UserAgent->new;
 
@@ -112,7 +115,7 @@ sub VDCAccounts {
   my @vdcs=$find_result->all;
 
   if (@vdcs) {
-    $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC:".dumper(@vdcs)) if $log_level>0;
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC:".dumper(@vdcs)) if $log_level>0;
   }
 
   my $username=$vdcs[0]{emoc_username};
@@ -141,11 +144,11 @@ sub VDCAccounts {
       }
     );
   } else {
-    $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Error in request to EMOC");
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Error in request to EMOC");
   }
 
   if ($log_level>0) {
-    $self->public_api_log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".dumper(\%accounts));
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".dumper(\%accounts));
   }
 
   # TODO check for errors

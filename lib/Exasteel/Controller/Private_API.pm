@@ -1,13 +1,12 @@
 package Exasteel::Controller::Private_API;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Data::Dumper;
 use Mojo::Log;
 use Mojo::UserAgent;
 use Mojo::IOLoop;
+use Data::Dumper;
 use DateTime;
 use POSIX qw(strftime locale_h);
-use locale;
 
 # render static docs
 sub docs {
@@ -35,8 +34,9 @@ Method list:
 #########################################################################
 
 sub getSession {
-  my $self = shift;
-  my $log_level=$self->log_level;
+  my $self=shift;
+  my $log=$self->private_api_log;
+  my $log_level=2;
 
   my ($sec,$min,$hour,$day,$month,$year) = (localtime(time-60*60*24))[0,1,2,3,4,5];
   my $startlocale="$day/".($month+1)."/".($year+1900)." ".sprintf("%2d",$hour).":".sprintf("%2d",$min);
@@ -54,7 +54,7 @@ sub getSession {
   my $rua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
   if ($log_level>0) {
-    $self->private_api_log->debug("Exasteel::Controller::Private_API::getSession | Request by $rua @ $ip");
+    $log->debug("Exasteel::Controller::Private_API::getSession | Request by $rua @ $ip");
   }
 
   # initialize from %defaults
@@ -64,7 +64,7 @@ sub getSession {
       }
     }
 
-  if ($log_level>1) { $self->private_api_log->debug("Exasteel::Controller::Private_API::getSession | Session: ". Dumper($self->session)); }
+  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::getSession | Session: ". Dumper($self->session)); }
 
   $self->respond_to(
     json => { json => $self->session },
@@ -72,13 +72,14 @@ sub getSession {
 }
 
 sub setSession {
-  my $self  = shift;
-  my $log_level=$self->log_level;
+  my $self=shift;
+  my $log=$self->private_api_log;
+  my $log_level=2;
 
   my $rua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
   if ($log_level>0) {
-    $self->private_api_log->debug("Exasteel::Controller::Private_API::setSession | Request by $rua @ $ip");
+    $log->debug("Exasteel::Controller::Private_API::setSession | Request by $rua @ $ip");
   }
 
   my $params = $self->req->json;
@@ -100,7 +101,7 @@ sub setSession {
   $self->session->{startlocale} = $startlocale;
   $self->session->{endlocale}   = $endlocale;
 
-  if ($log_level>1) { $self->private_api_log->debug("Exasteel::Controller::Private_API::setSession | Session: ".Dumper($self->session)); }
+  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::setSession | Session: ".Dumper($self->session)); }
 
   $self->respond_to(
     json => { json => { status => 'OK'} },
@@ -109,23 +110,24 @@ sub setSession {
 }
 
 sub getVDCs {
-  my $self     = shift;
-  my $log_level=$self->log_level;
-  my $db       = $self->db;
+  my $self=shift;
+  my $log=$self->private_api_log;
+  my $log_level=2;
+  my $db=$self->db;
 
-  if ($log_level>0) { $self->private_api_log->debug("Exasteel::Controller::Private_API::getVDCs"); }
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs"); }
 
   my $vdcs_collection=$self->db->get_collection('vdcs');
   my $find_result=$vdcs_collection->find({});
   my @vdcs=$find_result->all;
 
   if ( @vdcs and (0+@vdcs)>0) {
-      if ($log_level>0) { $self->private_api_log->debug("Exasteel::Controller::Private_API::getVDCs found $#vdcs VDCs"); }
+      if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs found $#vdcs VDCs"); }
   } else {
     # no VDCs found
   }
 
-  if ($log_level>1) { $self->private_api_log->debug("Exasteel::Controller::Private_API::getVDCs | vDCs: ".Dumper(@vdcs)); }
+  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::getVDCs | vDCs: ".Dumper(@vdcs)); }
 
   $self->respond_to(
     json => { json => \@vdcs }
@@ -133,14 +135,16 @@ sub getVDCs {
 }
 
 sub removeVDC {
-  my $self  = shift;
-  my $log_level=$self->log_level;
-  my $db    = $self->db;
-  my $vdcid = $self->param('vdcid');
+  my $self=shift;
+  my $db=$self->db;
+  my $log=$self->private_api_log;
+  my $log_level=2;
+
+  my $vdcid=$self->param('vdcid');
 
   my $status='OK';
 
-  if ($log_level>0) { $self->private_api_log->debug("Exasteel::Controller::Private_API::removeVDC"); }
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::removeVDC"); }
 
   my $vdcs_collection=$db->get_collection('vdcs');
   my $result=$vdcs_collection->remove({ _id => $self->value2oid($vdcid) });
@@ -152,15 +156,18 @@ sub removeVDC {
 }
 
 sub addVDCs {
-  my $self     = shift;
-  my $log_level=$self->log_level;
-  my $db       = $self->db;
-  my $vdcid    = $self->param('vdcid'); # this is the previous VDC display_name (the one in the db) or a new one
-  my $status   = 'OK';
+  my $self=shift;
+  my $db=$self->db;
+  my $log=$self->private_api_log;
+  my $log_level=2;
 
-  my $params = $self->req->json;
+  my $vdcid=$self->param('vdcid'); # this is the previous VDC display_name (the one in the db) or a new one
 
-  if ($log_level>0) { $self->private_api_log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
+  my $status='OK';
+
+  my $params=$self->req->json;
+
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
 
   # TODO verify existing keys and update only those
 
@@ -182,7 +189,7 @@ sub addVDCs {
 
   # TODO check for success
 
-  if ($log_level>1) { $self->private_api_log->debug("Exasteel::Controller::Private_API::addVDCs | vDCs: ". Dumper(@vdcs)); }
+  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::addVDCs | vDCs: ". Dumper(@vdcs)); }
 
   $self->respond_to(
     json => { json => { "status" => $status } }
