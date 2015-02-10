@@ -4,10 +4,15 @@ function validateConfigAndSave() {
   console.log('check params and save emoc');
   $('#addvDCmodal').modal('hide');
   var editedVDC={};
-  editedVDC[display_name]=$('#display_name').val();
-  editedVDC[asset_description]=$('#asset_description').val();
-  editedVDC[tags]=$('#tags').val();
-  var sanitizedName=$('#display_name').val().replace(/ /g,'_'); // TODO use proper encoding
+  editedVDC['display_name']=$('#display_name').val();
+  editedVDC['asset_description']=$('#asset_description').val();
+  editedVDC['emoc_endpoint']=$('#endpoint').val();
+  editedVDC['emoc_username']=$('#username').val();
+  editedVDC['emoc_password']=$('#password').val();
+  editedVDC['tags']=$('#tags').val();
+  editedVDC['ignored_accounts']=$('#ignored_accounts').val();
+  var sanitizedName=$('#display_name').val().replace(/ /g,'_'); // TODO use proper url encoding
+  console.log(editedVDC);
   $.post( '/api/v1/vdc/'+sanitizedName+'.json',
       JSON.stringify(editedVDC)
     ).fail(function() {
@@ -15,6 +20,8 @@ function validateConfigAndSave() {
   });
   // on save:
   // get relevant data (accounts/static KPI) via API and cache it in mongo...
+  // refresh table
+  updatevDCList();
 }
 
 function checkEndpoint() {
@@ -23,11 +30,12 @@ function checkEndpoint() {
 
 function removevDCs(id) {
   console.log('removevDCs '+id+' from list AND db (via DELETE API)');
+  // TODO are you sure????
   $.ajax({
       url: '/api/v1/vdc/'+id+'.json',
       type: 'DELETE',
       success: function(result) {
-        alertThis('Delete successfully','success');
+        alertThis('Deleted successfully','success');
       },
       error: function(jqXHR, textStatus, errorThrown ) {
         alertThis('Error deleting: '+errorThrown,'danger');
@@ -42,7 +50,8 @@ function editvDCs(index) {
     $('#display_name').val(MyVDCS[index].display_name);
     $('#endpoint').val(MyVDCS[index].emoc_endpoint);
     $('#username').val(MyVDCS[index].emoc_username);
-    $('#password').val('');$('#password').attr('placeholder','re-enter password to confirm or to change');
+    $('#password').val(MyVDCS[index].emoc_password);
+    // $('#password').attr('placeholder','re-enter password to confirm or to change');
     $('#asset_description').val(MyVDCS[index].asset_description);
     $('#tags').val(MyVDCS[index].tags);
     $('#ignored_accounts').val(MyVDCS[index].ignored_accounts);

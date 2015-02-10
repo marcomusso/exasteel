@@ -36,7 +36,7 @@ Method list:
 sub getSession {
   my $self=shift;
   my $log=$self->private_api_log;
-  my $log_level=2;
+  my $log_level=$self->log_level;
 
   my ($sec,$min,$hour,$day,$month,$year) = (localtime(time-60*60*24))[0,1,2,3,4,5];
   my $startlocale="$day/".($month+1)."/".($year+1900)." ".sprintf("%2d",$hour).":".sprintf("%2d",$min);
@@ -74,7 +74,7 @@ sub getSession {
 sub setSession {
   my $self=shift;
   my $log=$self->private_api_log;
-  my $log_level=2;
+  my $log_level=$self->log_level;
 
   my $rua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
@@ -111,9 +111,10 @@ sub setSession {
 
 sub getVDCs {
   my $self=shift;
-  my $log=$self->private_api_log;
-  my $log_level=2;
   my $db=$self->db;
+  my $log=$self->private_api_log;
+  my $log_level=$self->log_level;
+
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs"); }
 
@@ -138,7 +139,7 @@ sub removeVDC {
   my $self=shift;
   my $db=$self->db;
   my $log=$self->private_api_log;
-  my $log_level=2;
+  my $log_level=$self->log_level;
 
   my $vdcid=$self->param('vdcid');
 
@@ -148,20 +149,21 @@ sub removeVDC {
 
   my $vdcs_collection=$db->get_collection('vdcs');
   my $result=$vdcs_collection->remove({ _id => $self->value2oid($vdcid) });
+
   # TODO some checks...
 
   $self->respond_to(
-    json => { json => { "description" => $status } }
+    json => { json => { "status" => $status } }
   );
 }
 
-sub addVDCs {
+sub addVDC {
   my $self=shift;
   my $db=$self->db;
   my $log=$self->private_api_log;
-  my $log_level=2;
+  my $log_level=$self->log_level;
 
-  my $vdcid=$self->param('vdcid'); # this is the previous VDC display_name (the one in the db) or a new one
+  my $vdc_display_name=$self->param('vdcname'); # this is the previous VDC display_name (the one in the db) or a new one
 
   my $status='OK';
 
@@ -169,27 +171,24 @@ sub addVDCs {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
 
-  # TODO verify existing keys and update only those
-
   my $vdcs_collection=$self->db->get_collection('vdcs');
-  $vdcs_collection->update(
-      { "display_name" => $vdcs},      # where clause
-      { '$set' => {                    # set new values received via post
+  my $id = $vdcs_collection->update(
+      { "display_name" => $vdc_display_name}, # where clause
+      { '$set' => {                           # set new values received via post
           "display_name"      => $params->{'display_name'},
           "emoc_endpoint"     => $params->{'emoc_endpoint'},
           "emoc_username"     => $params->{'emoc_username'},
-          "emoc_password"     => crypt($params->{'emoc_password'},$params->{'emoc_password'}),
+          "emoc_password"     => $params->{'emoc_password'},
           "asset_description" => $params->{'asset_description'},
           "tags"              => $params->{'tags'},
           "ignored_accounts"  => $params->{'ignored_accounts'},
         }
       },
-      { 'upsert' => 1 }                 # update or insert
+      { 'upsert' => 1 }                       # update or insert
   );
 
   # TODO check for success
-
-  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::addVDCs | vDCs: ". Dumper(@vdcs)); }
+  $log->debug("Exasteel::Controller::Private_API::addVDCs | insert result: ".Dumper($id)) if ($log_level>0);
 
   $self->respond_to(
     json => { json => { "status" => $status } }

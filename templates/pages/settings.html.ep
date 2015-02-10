@@ -138,45 +138,27 @@
   </div>
 </div>
 
-<script>
-  function startIntro(){
-    var intro = introJs();
-    intro.setOptions({
-          steps: [
-            {
-              intro: "Settings"
-            },
-            {
-              element: '#a',
-              intro: "TBD",
-            },
-            {
-              element: '#b',
-              intro: "TBD",
-              position: 'bottom'
-            },
-            {
-              element: '#c',
-              intro: "TBD",
-              position: 'left'
-            },
-            {
-              element: '#d',
-              intro: "TBD",
-              position: 'top'
-            },
-            {
-              element: '#e',
-              intro: "TBD",
-              position: 'top'
-            },
-            {
-              element: '#theme',
-              intro: "TBD",
-              position: 'top'
-            }
-          ]
-    });
-    intro.start();
-  }
-</script>
+<%# ################################################### %>
+<%# Definizioni help da usare con intro.js %>
+<%# ################################################### %>
+  <script>
+    function startIntro(){
+      var intro = introJs();
+      intro.setOptions({
+            steps: [
+              {
+                intro: "Aiuto non disponibile."
+              },
+            ],
+            nextLabel: 'avanti',
+            prevLabel: 'indietro',
+            skipLabel: 'esci',
+            doneLabel: 'fine',
+            exitOnEsc: true,
+            exitOnOverlayClick: true,
+            showStepNumbers: false,
+            overlayOpacity: 0.5
+      });
+      intro.start();
+    }
+  </script>

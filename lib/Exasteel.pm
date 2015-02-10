@@ -19,7 +19,7 @@ sub startup {
   my $main_log=Mojo::Log->new(path => 'log/exasteel.log', level => 'debug');
 
   $self->secrets(['2a595521e0a038f473c85d7360a10ec8','This secret is used _only_ for validation']);
-  $self->sessions->default_expiration(60*60*72); #3gg
+  $self->sessions->default_expiration(60*60*24*7); #7gg
   $version = $self->defaults({version => '0.1&alpha;'});
 
   #################################################################################
@@ -27,7 +27,6 @@ sub startup {
     $main_log->debug("Exasteel reading config") if ($log_level>0);
     my $config=$self->plugin('Config');
     $self->plugin(charset => {charset => 'utf8'});
-    # $self->plugin('TagHelpers');
   #################################################################################
 
   #################################################################################
@@ -64,7 +63,7 @@ sub startup {
   $self->defaults(layout => 'default');
 
   my $sessions = $self->sessions;
-  $self        = $self->sessions(Mojolicious::Sessions->new);
+  # $self        = $self->sessions(Mojolicious::Sessions->new);
   # Change name of cookie used for all sessions
   $self->sessions->cookie_name('exasteel');
 
@@ -82,6 +81,7 @@ sub startup {
       $r->route('/login')            ->to('auth#login')       ->name('auth_login');
       $r->route('/auth')             ->to('auth#create')      ->name('auth_create');
       $r->route('/logout')           ->to('auth#logout')      ->name('auth_logout');
+      $r->route('/no-local-storage') ->to('Pages#nolocalstorage')      ->name('nolocalstorage');
   ###################################################################################################
 
   ###################################################################################################
@@ -116,7 +116,7 @@ sub startup {
     $r->any('/*whatever' => {whatever => ''} => sub {
       my $c        = shift;
       my $whatever = $c->param('whatever');
-      $c->render(template => 'pages/404', status => 404);
+      $c->render(template => 'errors/404', status => 404);
     });
 }
 

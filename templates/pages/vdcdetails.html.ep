@@ -12,3 +12,28 @@
     </div>
   </div>
 </div>
+
+<%# ################################################### %>
+<%# Definizioni help da usare con intro.js %>
+<%# ################################################### %>
+  <script>
+    function startIntro(){
+      var intro = introJs();
+      intro.setOptions({
+            steps: [
+              {
+                intro: "Aiuto non disponibile."
+              },
+            ],
+            nextLabel: 'avanti',
+            prevLabel: 'indietro',
+            skipLabel: 'esci',
+            doneLabel: 'fine',
+            exitOnEsc: true,
+            exitOnOverlayClick: true,
+            showStepNumbers: false,
+            overlayOpacity: 0.5
+      });
+      intro.start();
+    }
+  </script>

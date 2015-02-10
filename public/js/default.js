@@ -184,6 +184,16 @@ $("document").ready(function() {
         }
      });
     }).done(function() {
+      if (Modernizr.localstorage) {
+        // window.localStorage is available!
+        localStorage["exasteel"] = "lives";
+      } else {
+        // no native support for HTML5 storage :(
+        // maybe try dojox.storage or a third-party solution
+        if (document.URL.indexOf("/no-local-storage") === -1) {
+          window.location.replace("/no-local-storage");
+        }
+      }
       initPage();
     });
 });

@@ -5,8 +5,19 @@ function initPage() {
     $('[data-toggle="tooltip"]').tooltip();
   });
 
+ $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
+    if (vdcs) {
+      MyVDCS=vdcs;
+      var select = document.getElementById("vdc");
+      for (i=0; i<MyVDCS.length; i++) {
+        console.log(MyVDCS[i].display_name);
+        select.options[select.options.length] = new Option(MyVDCS[i].display_name+' - '+MyVDCS[i].asset_description, MyVDCS[i].display_name);
+      }
+    }
+  });
+
   var w = $('#map').width();
-  var h = 400;
+  var h = $('#map').height();
 
   var dataset = [
           {

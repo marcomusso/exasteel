@@ -22,4 +22,9 @@ sub vdcdetails {
   $self->render('pages/vdcdetails');
 }
 
+sub nolocalstorage {
+  my $self = shift;
+  $self->render('errors/no-local-storage');
+}
+
 "You know, it occurs to me that the best way you hurt rich people is by turning them into poor people. (Trading places, 1983)";

@@ -17,7 +17,8 @@ sub create {
   if ($username eq "admin" && $password eq "admin") {
     $self->session(
       username => $username,
-      email    => ''
+      email    => '',
+      expiration => time + 60*60*24*7
       )->redirect_to('/');
   } else {
     if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::create login failed for $username"); }
@@ -32,7 +33,7 @@ sub logout {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::logout logout for ".$self->session('username')); }
 
-  $self->session( username => '' )->redirect_to('auth_login');
+  $self->session( username => '', expires => 1 )->redirect_to('auth_login');
 }
 
 sub check {

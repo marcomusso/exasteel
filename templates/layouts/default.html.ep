@@ -31,8 +31,9 @@
       %= javascript "/html5-boilerplate-4.3.0/js/main.js"
 
     <%# bootstrap %>
-      %= javascript "/bootstrap-3.3.1/js/bootstrap.min.js"
-      %= stylesheet "/bootstrap-3.3.1/css/bootstrap.css"
+      %= javascript "/bootstrap-3.3.2/js/bootstrap.min.js"
+      %= stylesheet "/bootstrap-3.3.2/css/bootstrap.css"
+      %= stylesheet "/bootstrap-3.3.2/css/bootstrap-theme.css"
 
     <%# datetimepicker %>
       <%# %= javascript '/bootstrap-datetimepicker/bootstrap-datetimepicker.js'
@@ -60,7 +61,7 @@
     <%# Font Awesome!   %>
       <%# CC-BY-3.0, so we also include a mention of Font Awesome and its URL in the source code. %>
       <%# http://fortawesome.github.io/Font-Awesome/ %>
-      %= stylesheet '/font-awesome-4.2.0/css/font-awesome.min.css'
+      %= stylesheet '/font-awesome-4.3.0/css/font-awesome.min.css'
 </head>
 
 <body>

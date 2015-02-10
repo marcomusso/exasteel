@@ -1,3 +1,5 @@
+var MyVDCS={};
+
 function fillKPI(element) {
   console.log('fillKPI called on '+element);
   var w = $(element).width();
@@ -131,6 +133,17 @@ function initPage() {
   // Enable tooltips
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
+  });
+
+ $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
+    if (vdcs) {
+      MyVDCS=vdcs;
+      var select = document.getElementById("vdc");
+      for (i=0; i<MyVDCS.length; i++) {
+        console.log(MyVDCS[i].display_name);
+        select.options[select.options.length] = new Option(MyVDCS[i].display_name+' - '+MyVDCS[i].asset_description, MyVDCS[i].display_name);
+      }
+    }
   });
 
   var accounts = {
