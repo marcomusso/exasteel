@@ -100,8 +100,8 @@
         </div>
         <br>
         <div class="input-group">
-          <span class="input-group-addon">EMOC API endpoint</span>
-          <input id="endpoint" name="endpoint" type="url" class="form-control" placeholder="http[s]://<hostname>[:port]/...">
+          <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
+          <input id="endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname>[:port]">
         </div>
         <br>
         <div class="input-group">

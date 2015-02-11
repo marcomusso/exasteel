@@ -51,7 +51,6 @@ function editvDCs(index) {
     $('#endpoint').val(MyVDCS[index].emoc_endpoint);
     $('#username').val(MyVDCS[index].emoc_username);
     $('#password').val(MyVDCS[index].emoc_password);
-    // $('#password').attr('placeholder','re-enter password to confirm or to change');
     $('#asset_description').val(MyVDCS[index].asset_description);
     $('#tags').val(MyVDCS[index].tags);
     $('#ignored_accounts').val(MyVDCS[index].ignored_accounts);
@@ -93,7 +92,7 @@ function updatevDCList() {
 function initPage() {
   console.log( "initPage called" );
   // Enable tooltips
-  $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+  $("body").tooltip({ selector: '[title]' });
   $( "#settings_container .form-control" ).change(function() {
     console.log("form changed: "+$(this).attr('id')+" = "+ $(this).val());
     switch($(this).attr('id')) {

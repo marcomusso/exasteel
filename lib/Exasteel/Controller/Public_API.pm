@@ -47,7 +47,7 @@ sub VDCKPI {
     if ($self->session->{login} and $self->session->{login} ne '') {
       $user=' (logged user: '.$self->session->{login}.')';
     }
-    $log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $rua @ $ip".$user);
+    $log->debug("Exasteel::Controller::Public_API::vdckpi | Request by $ua @ $ip".$user);
 	}
 
   # get config from db
@@ -68,7 +68,7 @@ You call this method like:
 
 Example:
 
-  # curl "http://<EXASTEEL_URL>/api/v1/vdcaccounts/myvdc.json"
+  # curl "http://<EXASTEEL_URL>/api/v1/vdcaccounts/EL01.json"
   {
     "TEMPLATES": {
       "id": "ACC-00000000-0000-0000-0000-000000000000",
@@ -97,7 +97,7 @@ sub VDCAccounts {
   my $self=shift;
   my $db=$self->db;
   my $log=$self->public_api_log;
-  my $log_level=2;
+  my $log_level=$self->log_level;
   my $vdc=$self->param('vdc');
 
   my $ua=$self->req->headers->user_agent;
@@ -115,15 +115,21 @@ sub VDCAccounts {
   my @vdcs=$find_result->all;
 
   if (@vdcs) {
-    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC:".dumper(@vdcs)) if $log_level>0;
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Found vDC: ".Dumper(@vdcs)) if $log_level>1;
   }
 
   my $username=$vdcs[0]{emoc_username};
   my $password=$vdcs[0]{emoc_password};
   my $emoc_endpoint=$vdcs[0]{emoc_endpoint};
+  # TODo further sanitize endpoint, ie no http, no URI part, only hostname:port
+  $emoc_endpoint=~s/http[s]:\/\///g;
   my %accounts=();
 
-  my $data=$emoc_ua->get('https://'.$username.':'.$password.'@'.$emoc_endpoint.'/akm/?Action=DescribeAccounts&Version=1&Timestamp='.$now.'&Expires='.$expires);
+  my $url='https://'.$username.':'.$password.'@'.$emoc_endpoint.'/akm/?Action=DescribeAccounts&Version=1&Timestamp='.$now.'&Expires='.$expires;
+
+  $log->debug("Exasteel::Controller::Public_API::VDCAccounts | URL: ".$url) if $log_level>1;
+
+  my $data=$emoc_ua->get($url);
   if (my $res = $data->success) {
     # force XML semantics
     $res->dom->xml(1);
@@ -145,10 +151,12 @@ sub VDCAccounts {
     );
   } else {
     $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Error in request to EMOC");
+    $accounts{'status'}="ERROR";
+    $accounts{'description'}="Error in request to EMOC";
   }
 
   if ($log_level>0) {
-    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".dumper(\%accounts));
+    $log->debug("Exasteel::Controller::Public_API::VDCAccounts | Result: ".Dumper(\%accounts));
   }
 
   # TODO check for errors

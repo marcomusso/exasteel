@@ -27,17 +27,11 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
-            Map
+            Guest map
           </h4>
         </div>
         <div class="panel-body">
-          % if (0) {
-            <div class="row text-center">
-            There are no EMOC configured.
-            </div>
-          % } else {
-            <div id="map"></div>
-          % }
+          <div id="map"></div>
         </div>
       </div>
     </div>

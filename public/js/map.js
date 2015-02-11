@@ -146,8 +146,17 @@ function initPage() {
     .attr("cy", function(d) {
      return yScale(d.y);
     });
+
+  // if another vdc get selected...
+  $('#vdc').change(function() {
+    refreshPage();
+  });
 }
 
 function refreshPage() {
   console.log( "refreshPage called" );
+
+  // update D3 bounded data
+  $('#map').html('');
+
 }

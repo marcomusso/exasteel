@@ -131,33 +131,92 @@ function fillKPI(element) {
 function initPage() {
   console.log( "initPage called" );
   // Enable tooltips
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-  });
+  $("body").tooltip({ selector: '[title]' });
 
- $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
+  $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
       MyVDCS=vdcs;
       var select = document.getElementById("vdc");
       for (i=0; i<MyVDCS.length; i++) {
-        console.log(MyVDCS[i].display_name);
         select.options[select.options.length] = new Option(MyVDCS[i].display_name+' - '+MyVDCS[i].asset_description, MyVDCS[i].display_name);
       }
     }
-  });
+    // render tags
+    var tags=MyVDCS[0].tags.split(',');
+    for (t = 0; t < tags.length; t++) {
+      $('#tags').append('<span class="label label-info">'+tags[t]+'</span>&nbsp;');
+    }
+    // display KPI for first VDC found
+    // TODO sanitize display_name
+    $.getJSON('/api/v1/vdcaccounts/'+MyVDCS[0].display_name+'.json', function( accounts ) {
+      if (accounts['status']==="ERROR") {
+        alertThis('Something went wrong when asking for accounts for VDC '+MyVDCS[0].display_name,'danger');
+      } else {
+        // draw panels from template
+        var template=$(".panel-template");
+        for (var account in accounts ) {
+          // add panel for account only for NOT ignored accounts
+          if (!MyVDCS[0].ignored_accounts.match(account)) {
+            // clone template
+            var newPanel=template.clone();
+            newPanel.find(".panel-title").attr("id", account).text(account+' ('+accounts[account].description+')');
+            newPanel.find(".kpi").attr("id", account+'_kpi');
+            newPanel.removeClass('hidden');
+            $('#accountsContainer').append(newPanel.fadeIn());
+            fillKPI('#'+account+'_kpi');
+          }
+        }
+      }
+    });
+   });
 
-  var accounts = {
-      "TEST": "",
-      "PERFORMANCETEST": "",
-      "DEV": "",
-      "TEMPLATES": "",
-      "MANAGEMENT": ""
-  };
-  for (var account in accounts)  {
-    fillKPI('#'+account+'_kpi');
-  }
+  // if another vdc get selected...
+  $('#vdc').change(function() {
+    refreshPage();
+  });
 }
 
 function refreshPage() {
   console.log( "refreshPage called" );
+
+  $('#accountsContainer').html('');
+  $('#tags').html('');
+
+  var selectedVDC=$('#vdc').val();
+
+  for (v=0; v<MyVDCS.length; v++) {
+    if (MyVDCS[v].display_name===selectedVDC) {
+      var tags=MyVDCS[v].tags.split(',');
+      for (t = 0; t < tags.length; t++) {
+        $('#tags').append('<span class="label label-info">'+tags[t]+'</span>&nbsp;');
+      }
+    }
+  }
+
+  $.getJSON('/api/v1/vdcaccounts/'+selectedVDC+'.json', function( accounts ) {
+    if (accounts['status']==="ERROR") {
+      alertThis('Something went wrong when asking for accounts for VDC '+selectedVDC,'danger');
+    } else {
+      // draw panels from template
+      var template=$(".panel-template");
+      for (var account in accounts ) {
+        // add panel for account only for NOT ignored accounts
+        if (true) {
+          // clone template
+          var newPanel=template.clone();
+          var title;
+          if (accounts[account].description) {
+            title=account+' ('+accounts[account].description+')';
+          } else {
+            title=account;
+          }
+          newPanel.find(".panel-title").attr("id", account).text(title);
+          newPanel.find(".kpi").attr("id", account+'_kpi');
+          newPanel.removeClass('hidden');
+          $('#accountsContainer').append(newPanel.fadeIn());
+          fillKPI('#'+account+'_kpi');
+        }
+      }
+    }
+  });
 }
