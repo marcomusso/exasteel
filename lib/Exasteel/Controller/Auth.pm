@@ -3,9 +3,11 @@ package Exasteel::Controller::Auth;
 use base 'Mojolicious::Controller';
 use Mojo::Log;
 use Data::Dumper;
+use DateTime;
 
 sub create {
   my $self=shift;
+  my $db=$self->db;
   my $log=$self->main_log;
   my $log_level=$self->log_level;
 
@@ -14,10 +16,19 @@ sub create {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::create"); }
 
-  if ($username eq "admin" && $password eq "admin") {
+  my $users=$db->get_collection('users');  
+  my $user=$users->find({"username" => "$username", "password" => crypt($password,$password)});  
+  # let's retrieve all users that match the previous find (should be one of course)
+  my @logged_user=$user->all;
+
+  if ( @logged_user and (0+@logged_user)==1) {
+    if ($log_level>0) { $log->debug("Exasteel::Controller::Auth::create Auth ok for $username"); }
+    # set last login time
+    $users->update({"_id" => $logged_user[0]->{'_id'}}, {'$set' => {'last_login' => DateTime->now}});
     $self->session(
       username => $username,
       email    => '',
+      role     => $logged_user[0]->{'role'},
       expiration => time + 60*60*24*7
       )->redirect_to('/');
   } else {

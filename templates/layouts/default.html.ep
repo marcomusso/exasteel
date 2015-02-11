@@ -103,16 +103,24 @@
                   <li><a href="/map">Guests Map</a></li>
                 </ul>
               </li>
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#">Exadata</a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">TBD</a></li>
+                </ul>
+              </li>
               <li class="divider"></li>
               <li><a tabindex="-1" onclick="javascript:alertThis('Don\'t use Internet Explorer','success');" href="javascript:void(0);">Heal the world</a></li>
             </ul>
           </li>
+            % if (defined $self->session->{role} and $self->session->{role} eq 'admin') {
             <li class="dropdown">
               <a href="#" data-toggle="dropdown" class="dropdown-toggle">Admin&nbsp;<b class="caret"></b></a>
               <ul class="dropdown-menu multi-level">
                 <li><a tabindex="-1" href="/settings">Settings</a></li>
               </ul>
             </li>
+            % }
           % }
           <span class="navbar-text"><i id="loading" class="fa fa-spinner fa-inverse"></i></span>
           <span class="navbar-text"><i id="saved"   class="fa fa-check-square fa-inverse"></i></span>

@@ -11,9 +11,9 @@
     <div class="row">
       <div class="col-lg-10 col-md-10 col-md-offset-1 col-lg-offset-1">
         <div class="panel panel-primary">
-          <div class="panel-heading text-center">Exasteel summary</div>
+          <div class="panel-heading text-center">Welcome to Exasteel</div>
           <div class="panel-body">
-            Panel body
+            Be sure to add some VDCs in <a class="btn btn-sm btn-default" href="/settings">Settings</a>, then you can explore their <a class="btn btn-sm btn-default" href="/kpi">KPIs</a>&nbsp;or the&nbsp;<a class="btn btn-sm btn-default" href="/map">Guest Map</a>.
           </div>
         </div>
       </div>
@@ -52,8 +52,8 @@
 
 </div>
 
-%# ################################################### %>
-<%# help using intro.js %>
+<%# ################################################### %>
+<%# Definizioni help da usare con intro.js %>
 <%# ################################################### %>
   <script>
     function startIntro(){
@@ -61,17 +61,17 @@
       intro.setOptions({
             steps: [
               {
-                intro: "Start help"
+                intro: "Aiuto non disponibile."
               },
-              {
-                element: '#0',
-                intro: "TBD",
-              },
-              {
-                element: '#1',
-                intro: "TBD",
-              }
-            ]
+            ],
+            nextLabel: 'avanti',
+            prevLabel: 'indietro',
+            skipLabel: 'esci',
+            doneLabel: 'fine',
+            exitOnEsc: true,
+            exitOnOverlayClick: true,
+            showStepNumbers: false,
+            overlayOpacity: 0.5
       });
       intro.start();
     }
