@@ -140,22 +140,25 @@ function fillKPI(element) {
 
   // GAUGES
   $('#'+element).append('<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>');
-  $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vServersRunning"></canvas></div>');
+  // $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vServersRunning"></canvas></div>');
+  $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div id="'+element+'_vServersRunning"></div></div>');
   // $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vCPUAllocated"></canvas></div>');
   $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div id="'+element+'_vCPUAllocated"></div></div>');
-  $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vStorageAllocated"></canvas></div>');
-  $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vMemoryAllocated"></canvas></div>');
+  // $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vStorageAllocated"></canvas></div>');
+  $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div id="'+element+'_vStorageAllocated"></div></div>');
+  // $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_vMemoryAllocated"></canvas></div>');
+  $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div id="'+element+'_vMemoryAllocated"></div></div>');
   // $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><canvas id="'+element+'_Networks"></canvas></div>');
   $('#'+element).append('<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div id="'+element+'_Networks"></div></div>');
   $('#'+element).append('<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>');
 
   // vServersRunning
-    gaugeOptions.renderTo=element+'_vServersRunning';
-    gaugeOptions.title='vServersRunning';
-    var vServersRunning_gauge = new Gauge(gaugeOptions);
-    vServersRunning_gauge.onready = function() {
-        vServersRunning_gauge.setValue(4);
-    }; vServersRunning_gauge.draw();
+    // gaugeOptions.renderTo=element+'_vServersRunning';
+    // gaugeOptions.title='vServersRunning';
+    // var vServersRunning_gauge = new Gauge(gaugeOptions);
+    // vServersRunning_gauge.onready = function() {
+    //     vServersRunning_gauge.setValue(4);
+    // }; vServersRunning_gauge.draw();
   // vCPUAllocated
     // gaugeOptions.renderTo=element+'_vCPUAllocated';
     // gaugeOptions.title='vCPUAllocated';
@@ -164,19 +167,19 @@ function fillKPI(element) {
     //     vCPUAllocated_gauge.setValue(31);
     // }; vCPUAllocated_gauge.draw();
   // vStorageAllocated
-    gaugeOptions.renderTo=element+'_vStorageAllocated';
-    gaugeOptions.title='vStorageAllocated';
-    var vStorageAllocated_gauge = new Gauge(gaugeOptions);
-    vStorageAllocated_gauge.onready = function() {
-        vStorageAllocated_gauge.setValue(31);
-    }; vStorageAllocated_gauge.draw();
+    // gaugeOptions.renderTo=element+'_vStorageAllocated';
+    // gaugeOptions.title='vStorageAllocated';
+    // var vStorageAllocated_gauge = new Gauge(gaugeOptions);
+    // vStorageAllocated_gauge.onready = function() {
+    //     vStorageAllocated_gauge.setValue(31);
+    // }; vStorageAllocated_gauge.draw();
   // vMemoryAllocated
-    gaugeOptions.renderTo=element+'_vMemoryAllocated';
-    gaugeOptions.title='vMemoryAllocated';
-    var vMemoryAllocated_gauge = new Gauge(gaugeOptions);
-    vMemoryAllocated_gauge.onready = function() {
-        vMemoryAllocated_gauge.setValue(31);
-    }; vMemoryAllocated_gauge.draw();
+    // gaugeOptions.renderTo=element+'_vMemoryAllocated';
+    // gaugeOptions.title='vMemoryAllocated';
+    // var vMemoryAllocated_gauge = new Gauge(gaugeOptions);
+    // vMemoryAllocated_gauge.onready = function() {
+    //     vMemoryAllocated_gauge.setValue(31);
+    // }; vMemoryAllocated_gauge.draw();
   // Networks
     // gaugeOptions.renderTo=element+'_Networks';
     // gaugeOptions.title='Networks';
@@ -185,40 +188,91 @@ function fillKPI(element) {
     //     Networks_gauge.setValue(4);
     // }; Networks_gauge.draw();
 
-    var vCPUAllocated = new JustGage({
-                                id: element+'_vCPUAllocated',
-                                value: Math.floor(Math.random() * 32) + 1,
-                                min: 0,
-                                max: 32,
-                                title: "# vCPU allocate",
-                                showMinMax: true,
-                                levelColorsGradient: true,
-                                gaugeWidthScale: 0.5,
-                                showInnerShadow: true,
-                                startAnimationType: "bounce",
-                                  levelColors: [
-                                    "#770000",
-                                    "#aa0000",
-                                    "#ff0000"
-                                  ]
-                                });
-    var Networks = new JustGage({
-                                id: element+'_Networks',
-                                value: Math.floor(Math.random() * 32) + 1,
-                                min: 0,
-                                max: 32,
-                                title: "# Network",
-                                showMinMax: true,
-                                levelColorsGradient: true,
-                                gaugeWidthScale: 0.5,
-                                showInnerShadow: true,
-                                startAnimationType: "bounce",
-                                  levelColors: [
-                                    "#770000",
-                                    "#aa0000",
-                                    "#ff0000"
-                                  ]
-                                });
+  var vServersRunning = new JustGage({
+                              id: element+'_vServersRunning',
+                              value: Math.floor(Math.random() * 128) + 1,
+                              min: 0,
+                              max: 128,
+                              title: "Storage allocato",
+                              showMinMax: true,
+                              levelColorsGradient: true,
+                              gaugeWidthScale: 0.5,
+                              showInnerShadow: true,
+                              startAnimationType: "bounce",
+                                levelColors: [
+                                  "#770000",
+                                  "#aa0000",
+                                  "#ff0000"
+                                ]
+                              });
+  var vStorageAllocated = new JustGage({
+                              id: element+'_vStorageAllocated',
+                              value: Math.floor(Math.random() * 1024) + 1,
+                              min: 0,
+                              max: 1024,
+                              title: "Storage allocato",
+                              showMinMax: true,
+                              levelColorsGradient: true,
+                              gaugeWidthScale: 0.5,
+                              showInnerShadow: true,
+                              startAnimationType: "bounce",
+                                levelColors: [
+                                  "#770000",
+                                  "#aa0000",
+                                  "#ff0000"
+                                ]
+                              });
+  var vMemoryAllocated = new JustGage({
+                              id: element+'_vMemoryAllocated',
+                              value: Math.floor(Math.random() * 1024) + 1,
+                              min: 0,
+                              max: 1024,
+                              title: "Memoria allocata",
+                              showMinMax: true,
+                              levelColorsGradient: true,
+                              gaugeWidthScale: 0.5,
+                              showInnerShadow: true,
+                              startAnimationType: "bounce",
+                                levelColors: [
+                                  "#770000",
+                                  "#aa0000",
+                                  "#ff0000"
+                                ]
+                              });
+  var vCPUAllocated = new JustGage({
+                              id: element+'_vCPUAllocated',
+                              value: Math.floor(Math.random() * 32) + 1,
+                              min: 0,
+                              max: 32,
+                              title: "# vCPU allocate",
+                              showMinMax: true,
+                              levelColorsGradient: true,
+                              gaugeWidthScale: 0.5,
+                              showInnerShadow: true,
+                              startAnimationType: "bounce",
+                                levelColors: [
+                                  "#770000",
+                                  "#aa0000",
+                                  "#ff0000"
+                                ]
+                              });
+  var Networks = new JustGage({
+                              id: element+'_Networks',
+                              value: Math.floor(Math.random() * 32) + 1,
+                              min: 0,
+                              max: 32,
+                              title: "# Network",
+                              showMinMax: true,
+                              levelColorsGradient: true,
+                              gaugeWidthScale: 0.5,
+                              showInnerShadow: true,
+                              startAnimationType: "bounce",
+                                levelColors: [
+                                  "#770000",
+                                  "#aa0000",
+                                  "#ff0000"
+                                ]
+                              });
 
   // <VDC_display_name>_EL01_vServersRunning gauge vServersRunning / vServersTotal
   // <VDC_display_name>_vCPUAllocated        gauge vCPUAllocated/vCPUQuota
