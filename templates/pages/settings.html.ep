@@ -14,16 +14,17 @@
           </h4>
         </div>
         <div class="panel-body">
-            <table id="vdcstable" class="table table-striped cell-border" style="font-size:12px;">
+            <table id="vdcstable" class="table table-striped cell-border text-center" style="font-size:12px;">
                 <thead>
-                    <tr>
-                      <th style="text-align:center;">Name</th>
-                      <th style="text-align:center;">Description</th>
-                      <th style="text-align:center;">EMOC API endpoint</th>
-                      <th style="text-align:center;">Tags</th>
-                      <th style="text-align:center;">Edit</th>
-                      <th style="text-align:center;">Remove</th>
-                    </tr>
+                  <tr>
+                    <th style="text-align:center;">Name</th>
+                    <th style="text-align:center;">Description</th>
+                    <th style="text-align:center;">EMOC API endpoint</th>
+                    <th style="text-align:center;">OVMM API endpoint</th>
+                    <th style="text-align:center;">Tags</th>
+                    <th style="text-align:center;">Edit</th>
+                    <th style="text-align:center;">Remove</th>
+                  </tr>
                 </thead>
                 <tbody>
                 </tbody>
@@ -99,20 +100,44 @@
           <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My vDC">
         </div>
         <br>
-        <div class="input-group">
-          <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
-          <input id="endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname>[:port]">
-        </div>
-        <br>
-        <div class="input-group">
-          <span class="input-group-addon">EMOC username</span>
-          <input id="username" name="username" type="text" class="form-control" placeholder="cloudadmin">
-        </div>
-        <br>
-        <div class="input-group">
-          <span class="input-group-addon">EMOC password</span>
-          <input id="password" name="password" type="password" class="form-control" placeholder="password">
-        </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Endpoints</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div class="input-group">
+            <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
+            <input id="emoc_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+          </div><br>
+          <div class="input-group">
+            <span class="input-group-addon">EMOC username</span>
+            <input id="emoc_username" name="username" type="text" class="form-control" placeholder="cloudadmin">
+          </div><br>
+          <div class="input-group">
+            <span class="input-group-addon">EMOC password</span>
+            <input id="emoc_password" name="password" type="password" class="form-control" placeholder="password">
+          </div>    
+        </div>      
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div class="input-group">
+            <span title="HTTPS by default" class="input-group-addon">OVM API endpoint</span>
+            <input id="ovmm_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+          </div><br>
+          <div class="input-group">
+            <span class="input-group-addon">OVM username</span>
+            <input id="ovmm_username" name="username" type="text" class="form-control" placeholder="admin">
+          </div><br>
+          <div class="input-group">
+            <span class="input-group-addon">OVM password</span>
+            <input id="ovmm_password" name="password" type="password" class="form-control" placeholder="password">
+          </div>    
+        </div>     
+      </div>
+    </div>
+</div>
         <br>
         <div class="input-group">
           <span class="input-group-addon">Description</span>

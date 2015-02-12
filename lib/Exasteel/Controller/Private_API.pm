@@ -36,7 +36,7 @@ Method list:
 sub getSession {
   my $self=shift;
   my $log=$self->private_api_log;
-  my $log_level=$self->log_level;
+  my $log_level=0;
 
   my ($sec,$min,$hour,$day,$month,$year) = (localtime(time-60*60*24))[0,1,2,3,4,5];
   my $startlocale="$day/".($month+1)."/".($year+1900)." ".sprintf("%2d",$hour).":".sprintf("%2d",$min);
@@ -74,7 +74,7 @@ sub getSession {
 sub setSession {
   my $self=shift;
   my $log=$self->private_api_log;
-  my $log_level=$self->log_level;
+  my $log_level=0;
 
   my $rua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
@@ -166,10 +166,22 @@ sub addVDC {
   my $vdc_display_name=$self->param('vdcname'); # this is the previous VDC display_name (the one in the db) or a new one
 
   my $status='OK';
+  my $description='';
 
   my $params=$self->req->json;
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
+
+  # TODO validation
+  if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
+    $description='Invalid OVMM endpoint (should be hostname:port).';
+    $params->{'ovmm_endpoint'}='';
+  }
+  if ($params->{'ovmm_username'} eq '' or $params->{'ovmm_password'} eq '') {
+    $description='Invalid OVMM username/password (please fill both).';
+    $params->{'ovmm_username'}='';
+    $params->{'ovmm_password'}='';
+  }
 
   my $vdcs_collection=$self->db->get_collection('vdcs');
   my $id = $vdcs_collection->update(
@@ -179,6 +191,9 @@ sub addVDC {
           "emoc_endpoint"     => $params->{'emoc_endpoint'},
           "emoc_username"     => $params->{'emoc_username'},
           "emoc_password"     => $params->{'emoc_password'},
+          "ovmm_endpoint"     => $params->{'ovmm_endpoint'},
+          "ovmm_username"     => $params->{'ovmm_username'},
+          "ovmm_password"     => $params->{'ovmm_password'},
           "asset_description" => $params->{'asset_description'},
           "tags"              => $params->{'tags'},
           "ignored_accounts"  => $params->{'ignored_accounts'},
@@ -187,11 +202,12 @@ sub addVDC {
       { 'upsert' => 1 }                       # update or insert
   );
 
-  # TODO check for success
   $log->debug("Exasteel::Controller::Private_API::addVDCs | insert result: ".Dumper($id)) if ($log_level>0);
 
+  if ($id->{'err'}) { $status = 'ERROR'; $description=$id->{'err'}; }
+
   $self->respond_to(
-    json => { json => { "status" => $status } }
+    json => { json => { "status" => $status, "description" => $description } }
   );
 }
 
