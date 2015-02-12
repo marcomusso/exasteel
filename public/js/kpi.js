@@ -301,7 +301,7 @@ function initPage() {
         var retrievedObject = localStorage.getItem('MyVDCS');
         console.log('retrievedObject: ', JSON.parse(retrievedObject));
     // update server pool FOR FIRST VDC
-      // TBD - mocked
+      // TODO - mocked
       $('#vdc_server_pools tbody').append('<tr><td>el01Pool1</td><td>128</td><td>2</td><td>256</td><td>1024</td><td>4</td></tr>');
     // display tags FOR FIRST VDC
       var tags=MyVDCS[0].tags.split(',');
@@ -350,7 +350,8 @@ function refreshPage() {
   var selectedVDC=$('#vdc').val();
 
   // update server pool
-    // TBD
+    // TODO - mocked
+    $('#vdc_server_pools tbody').append('<tr><td>el01Pool1</td><td>128</td><td>2</td><td>256</td><td>1024</td><td>4</td></tr>');
   // display tags
     for (v=0; v<MyVDCS.length; v++) {
       if (MyVDCS[v].display_name===selectedVDC) {
