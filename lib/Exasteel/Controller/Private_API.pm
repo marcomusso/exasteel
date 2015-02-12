@@ -162,8 +162,7 @@ sub addVDC {
   my $db=$self->db;
   my $log=$self->private_api_log;
   my $log_level=$self->log_level;
-
-  my $vdc_display_name=$self->param('vdcname'); # this is the previous VDC display_name (the one in the db) or a new one
+  my $vdc_display_name=$self->param('vdc_name'); # this is the previous VDC display_name (the one in the db) or a new one
 
   my $status='OK';
   my $description='';
@@ -172,7 +171,6 @@ sub addVDC {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
 
-  # TODO validation
   if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
     $description='Invalid OVMM endpoint (should be hostname:port).';
     $params->{'ovmm_endpoint'}='';
@@ -181,6 +179,15 @@ sub addVDC {
     $description='Invalid OVMM username/password (please fill both).';
     $params->{'ovmm_username'}='';
     $params->{'ovmm_password'}='';
+  }
+  if ($params->{'emoc_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
+    $description='Invalid EMOC endpoint (should be hostname:port).';
+    $params->{'emoc_endpoint'}='';
+  }
+  if ($params->{'emoc_username'} eq '' or $params->{'emoc_password'} eq '') {
+    $description='Invalid OVMM username/password (please fill both).';
+    $params->{'emoc_username'}='';
+    $params->{'emoc_password'}='';
   }
 
   my $vdcs_collection=$self->db->get_collection('vdcs');
