@@ -89,15 +89,16 @@ sub startup {
     $r->route('/api/v1/docs')                                   ->via('get') ->to('Public_API#docs');
     $r->route('/api/v1/vdcaccounts/:vdc', format => [qw(json)]) ->via('get') ->to('Public_API#VDCAccounts');
     $r->route('/api/v1/vdckpi/:vdc_name')                       ->via('get') ->to('Public_API#VDCKPI');
+    $r->route('/api/v1/getallinfo/:vdc_name')                   ->via('get') ->to('Public_API#getAllInfo');
   ###################################################################################################
 
   ###################################################################################################
   # Private API
-    $r->route('/api/getsession', format => [qw(json)])      ->via('get')    ->to('Private_API#getSession');
-    $r->route('/api/setsession')                            ->via('post')   ->to('Private_API#setSession');
-    $r->route('/api/v1/vdc/:vdcid', format => [qw(json)])   ->via('delete') ->to('Private_API#removeVDC');
-    $r->route('/api/v1/vdc/:vdcname', format => [qw(json)]) ->via('post')   ->to('Private_API#addVDC'); # TODO use _id and not name
-    $r->route('/api/v1/getvdcs', format => [qw(json)])      ->via('get')    ->to('Private_API#getVDCs');
+    $r->route('/api/getsession', format => [qw(json)])       ->via('get')    ->to('Private_API#getSession');
+    $r->route('/api/setsession')                             ->via('post')   ->to('Private_API#setSession');
+    $r->route('/api/v1/vdc/:vdcid', format => [qw(json)])    ->via('delete') ->to('Private_API#removeVDC');
+    $r->route('/api/v1/vdc/:vdc_name', format => [qw(json)]) ->via('post')   ->to('Private_API#addVDC'); # TODO use _id and not name
+    $r->route('/api/v1/getvdcs', format => [qw(json)])       ->via('get')    ->to('Private_API#getVDCs');
   ###################################################################################################
 
   ###################################################################################################

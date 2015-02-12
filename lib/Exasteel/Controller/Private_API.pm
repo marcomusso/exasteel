@@ -162,8 +162,7 @@ sub addVDC {
   my $db=$self->db;
   my $log=$self->private_api_log;
   my $log_level=$self->log_level;
-
-  my $vdc_display_name=$self->param('vdcname'); # this is the previous VDC display_name (the one in the db) or a new one
+  my $vdc_display_name=$self->param('vdc_name'); # this is the previous VDC display_name (the one in the db) or a new one
 
   my $status='OK';
   my $description='';
