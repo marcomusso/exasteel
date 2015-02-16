@@ -122,7 +122,7 @@
             </li>
             % }
           % }
-          <span class="navbar-text"><i id="loading" class="fa fa-spinner fa-inverse"></i></span>
+          <span class="navbar-text"><i id="loading" class="fa fa-refresh fa-inverse"></i></span>
           <span class="navbar-text"><i id="saved"   class="fa fa-check-square fa-inverse"></i></span>
         </ul>
         <ul class="nav navbar-nav navbar-right">
