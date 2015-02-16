@@ -46,7 +46,7 @@ function initPage() {
 function drawCircles() {
 
   $('#map').html('');
-  
+
   width=$('#map').width();    // before margins
   height=$('#map').height();  // before margins
   w=width - margin.right - margin.left;   // after margins
@@ -106,7 +106,7 @@ function drawCircles() {
         .attr("dy", ".31em")
         .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
         .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-        .text(function(d) { return d.name; });
+        .text(function(d) { return d.name.split(".",1)[0]; });
   });
   spinThatWheel(false);
 }
