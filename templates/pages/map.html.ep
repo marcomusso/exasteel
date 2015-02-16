@@ -15,34 +15,25 @@
       height: 800px;
     }
 
-    text {
-      font-size: 11px;
-      pointer-events: none;
+    path.arc {
+      cursor: move;
+      fill: #fff;
     }
 
-    text.parent {
-      fill: #1f77b4;
-    }
-
-    circle {
-      fill: #ccc;
-      stroke: #999;
-      pointer-events: all;
-    }
-
-    circle.parent {
-      fill: #1f77b4;
-      fill-opacity: .1;
+    .node circle {
       stroke: steelblue;
+      stroke-width: 1.5px;
     }
 
-    circle.parent:hover {
-      stroke: #ff7f0e;
-      stroke-width: .5px;
-    }
-
-    circle.child {
+    .node {
+      font-size: 12px;
       pointer-events: none;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1.5px;
     }
   % end
 
@@ -57,19 +48,9 @@
   </div>
 </div>
 
-  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            Guest map
-          </h4>
-        </div>
-        <div class="panel-body">
-          <div id="map"></div>
-        </div>
-      </div>
-    </div>
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="well" id="map"></div>
   </div>
 </div>
 
