@@ -221,6 +221,7 @@ sub getVDCGuestsByCN {
     # estrazione CN, per ogni <server> esamino il contenuto
     $res->dom->find('server')->each(
       sub {
+        $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | TOTAL SERVER: ".$_);
         # nome del CN
           my $cn=$_->at('name')->text if ($_->at('name')->text);
           $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Examining CN: ".$cn);
@@ -228,6 +229,8 @@ sub getVDCGuestsByCN {
           # ...
           # riempire la sezione abilityMap dell'oggetto compute-node
           my $memory=$_->at('memory')->text if ($_->at('memory')->text);
+          my $threadsPerCore=$_->at('threadsPerCore')->text if ($_->at('threadsPerCore')->text);
+          my $totalProcessorCores=$_->at('totalProcessorCores')->text if ($_->at('totalProcessorCores')->text);
           $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn memory: ".$memory);
           # ...
         # conto le CPU
@@ -251,6 +254,8 @@ sub getVDCGuestsByCN {
                                    abilityMap => 'TBD',
                                    cpus => $cpus,
                                    memory => $memory,
+                                   threadsPerCore => $threadsPerCore,
+                                   totalProcessorCores => $totalProcessorCores,
                                    children => \@guests
                                   };
       }

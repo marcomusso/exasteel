@@ -121,8 +121,8 @@ function update(source) {
       .attr("dx", 5.5)
       .text(function(d) {
         var hostname=d.name.split(".",1)[0];
-        if (d.cpus && d.memory) {
-          return hostname+' ('+d.cpus+' CPUs, RAM '+byte2human(d.memory*1024*1024,mySessionData['unit'])+')';
+        if (d.type === 'compute-node') {
+          return hostname+' ('+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['unit'])+')';
         } else {
           return hostname;
         }
