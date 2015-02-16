@@ -75,7 +75,7 @@ function drawCircles() {
 
   vis.append("svg:path")
       .attr("class", "arc")
-      .attr("d", d3.svg.arc().innerRadius(ry - 120).outerRadius(ry).startAngle(0).endAngle(2 * Math.PI))
+      .attr("d", d3.svg.arc().innerRadius(ry - 115).outerRadius(ry).startAngle(0).endAngle(2 * Math.PI))
       .on("mousedown", mousedown);
 
   d3.json('/api/v1/getvdcguestsbycn/'+$('#vdc').val()+'.json', function(error, json) {
