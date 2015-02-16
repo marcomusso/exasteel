@@ -15,24 +15,20 @@
       height: 800px;
     }
 
-    path.arc {
-      cursor: move;
+    .node rect {
+      cursor: pointer;
       fill: #fff;
-    }
-
-    .node circle {
-      stroke: steelblue;
+      fill-opacity: .5;
+      stroke: #3182bd;
       stroke-width: 1.5px;
     }
-
-    .node {
-      font-size: 12px;
+    .node text {
+      font: 12px sans-serif;
       pointer-events: none;
     }
-
-    .link {
+    path.link {
       fill: none;
-      stroke: #ccc;
+      stroke: #9ecae1;
       stroke-width: 1.5px;
     }
   % end

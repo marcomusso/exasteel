@@ -227,6 +227,8 @@ sub getVDCGuestsByCN {
         # caratteristiche del CN
           # ...
           # riempire la sezione abilityMap dell'oggetto compute-node
+          my $memory=$_->at('memory')->text if ($_->at('memory')->text);
+          $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn memory: ".$memory);
           # ...
         # conto le CPU
           my $cpus=0;
@@ -248,6 +250,7 @@ sub getVDCGuestsByCN {
                                    type => 'compute-node',
                                    abilityMap => 'TBD',
                                    cpus => $cpus,
+                                   memory => $memory,
                                    children => \@guests
                                   };
       }
