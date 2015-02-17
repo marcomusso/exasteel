@@ -3,6 +3,7 @@
 
 <%# Javascript  %>
   %= javascript '/d3-3.4.13/d3.min.js'
+  %= javascript 'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js'
   %= javascript '/js/map.js'
 
   <%# let's consider the panel body as an entire canvas, without any padding %>
@@ -15,18 +16,24 @@
       height: 800px;
     }
 
-    .node rect {
-      cursor: pointer;
-      fill: #fff;
-      fill-opacity: .5;
-      stroke: #3182bd;
-      stroke-width: 1.5px;
+    d3-tip {
+        line-height: 1;
+        color: black;
     }
     .node text {
-      font: 12px sans-serif;
+      font-size: 11px;
       pointer-events: none;
     }
-    path.link {
+    text.parent {
+      fill: #1f77b4;
+    }
+    circle.node {
+      cursor: pointer;
+      stroke: #000;
+      stroke-width: .5px;
+    }
+
+    line.link {
       fill: none;
       stroke: #9ecae1;
       stroke-width: 1.5px;
@@ -38,6 +45,7 @@
     <select id="vdc" class="form-control" name="vdc"></select>
   </div>
   <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+    <div id="tags"></div>
   </div>
   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
     <a class="btn btn-sm btn-primary" href="#" onclick=refreshPage();>Refresh</a>
