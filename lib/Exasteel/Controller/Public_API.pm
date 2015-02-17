@@ -225,27 +225,7 @@ sub getVDCGuestsByCN {
   }
 
   # convert local hash into desired result hash
-    # old style
-      # $res->dom->find('server')->each(
-      #   sub {
-      #       my $threadsPerCore=$_->at('threadsPerCore')->text if ($_->at('threadsPerCore')->text);
-      #       my $totalProcessorCores=$_->at('totalProcessorCores')->text if ($_->at('totalProcessorCores')->text);
-      #     # conto le CPU
-      #       my $cpus=0;
-      #       $_->find('cpus')->each( sub { $cpus++ } );
-      #       $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn CPUs: ".$cpus);
-      #     # trovo i guest
-      #       my @guests;
-      #       $_->find('vmIds')->each(
-      #         sub {
-      #         }
-      #       );
-
-      #   }
-      # );
-
   $result{cnCount}=@{$temp_hash_ref->{'server'}};
-  # $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | ARRAY: ".@{$temp_hash_ref->{'server'}});
   foreach my $server (@{$temp_hash_ref->{'server'}}) {
     my @guests;
     foreach my $guest (@{$server->{'vmIds'}}) {
