@@ -106,7 +106,7 @@ function initPage() {
   $( "#settings_container .form-control" ).change(function() {
     console.log("form changed: "+$(this).attr('id')+" = "+ $(this).val());
     switch($(this).attr('id')) {
-      case 'unita': mySessionData['units']=$(this).val();
+      case 'units': mySessionData['units']=$(this).val();
                     break;
       case 'theme': mySessionData['theme']=$(this).val();
                     break;

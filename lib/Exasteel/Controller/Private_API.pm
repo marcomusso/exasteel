@@ -49,6 +49,7 @@ sub getSession {
                 'endepoch'    => time,
                 'startlocale' => $startlocale,
                 'endlocale'   => $endlocale,
+                'units'       => 'IEC'
                );
 
   my $rua=$self->req->headers->user_agent;

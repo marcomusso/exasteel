@@ -175,7 +175,7 @@ $("document").ready(function() {
         // console.log("getSessionData: "+key+' = '+val);
         for (key in mySessionData) {
           switch(key) {
-            case 'units': if ($('#unis').length) { $("#units").val(mySessionData[key]); }
+            case 'units': if ($('#units').length) { $("#units").val(mySessionData[key]); }
                           break;
             case 'theme': if ($('#theme').length) { $("#theme").val(mySessionData[key]); }
                          break;
