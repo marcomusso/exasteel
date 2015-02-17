@@ -137,18 +137,23 @@ function update() {
 
   // Enter any new nodes.
   node.enter()
-      .append("g")
+        // .append("g")
+      .append("svg:circle")
       .attr("class", "node")
-      .on("click", click)
-      .call(force.drag)
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide);
-
-  node.append("svg:circle")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
       .attr("r", function(d) { return d.children ? 5 : 10; })
-      .style("fill", color);
+      .style("fill", color)
+      .on("click", click)
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+      .call(force.drag);
+
+  // node.append("svg:circle")
+  //     .attr("cx", function(d) { return d.x; })
+  //     .attr("cy", function(d) { return d.y; })
+  //     .attr("r", function(d) { return d.children ? 5 : 10; })
+  //     .style("fill", color);
 
   // label
   // node.append("text")
@@ -169,19 +174,19 @@ function tick() {
   node.attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; });
 
-  d3.selectAll("circle").attr("cx", function (d) {
-       return d.x;
-   })
-       .attr("cy", function (d) {
-       return d.y;
-   });
+  // d3.selectAll("circle").attr("cx", function (d) {
+  //      return d.x;
+  //  })
+  //      .attr("cy", function (d) {
+  //      return d.y;
+  //  });
 
-  d3.selectAll("text").attr("x", function (d) {
-        return d.x;
-    })
-    .attr("y", function (d) {
-        return d.y;
-    });
+  // d3.selectAll("text").attr("x", function (d) {
+  //       return d.x;
+  //   })
+  //   .attr("y", function (d) {
+  //       return d.y;
+  //   });
 }
 
 // Toggle children on click.
@@ -216,14 +221,27 @@ function color(d) {
     return "#3182bd";     // collapsed node
   } else {
     if (d.children) {
-        return "#c6dbef"; // node background
+        return "#FFFFFF"; // compute node background
     } else {
       var hostname=d.name.split(".",1)[0];
       if (hostname.match("ExalogicControl")) {
-        return "#333333"; // PC/control background
+        return "#FFFF00"; // PC/control background
       } else {
-        return "#fd8d3c"; // leaf background
+        // return "#fd8d3c"; // leaf background
+        return get_random_color();
       }
     }
   }
+}
+
+function rand(min, max) {
+    return min + Math.random() * (max - min);
+}
+
+function get_random_color() {
+    // var h = rand(1, 120);
+    var h=120;
+    var s = rand(10, 90);
+    var l = rand(10, 90);
+    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
 }
