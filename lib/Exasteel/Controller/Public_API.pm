@@ -2,10 +2,11 @@ package Exasteel::Controller::Public_API;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Log;
+use Mojo::JSON qw(decode_json encode_json);
+use Mojo::Util qw(url_unescape);
 use Data::Dumper;
 use DateTime;
 use POSIX qw(strftime);
-use Mojo::JSON qw(decode_json encode_json);
 
 # render static docs
 sub docs {
@@ -99,7 +100,7 @@ sub VDCAccounts {
   my $db=$self->db;
   my $log=$self->public_api_log;
   my $log_level=$self->log_level;
-  my $vdc=$self->param('vdc');
+  my $vdc=url_unescape($self->param('vdc'));
 
   my $ua=$self->req->headers->user_agent;
   my $ip=$self->tx->remote_address;
@@ -185,7 +186,7 @@ sub getVDCGuestsByCN {
   my $log=$self->public_api_log;
   # my $log_level=$self->log_level;
   my $log_level=1;
-  my $vdc=$self->param('vdc_name');
+  my $vdc=url_unescape($self->param('vdc_name'));
   my %status=(status => 'OK', description => '' );
 
   my $ua=$self->req->headers->user_agent;

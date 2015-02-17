@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Log;
 use Mojo::UserAgent;
 use Mojo::IOLoop;
+use Mojo::Util qw(url_unescape);
 use Data::Dumper;
 use DateTime;
 use POSIX qw(strftime locale_h);
@@ -142,7 +143,7 @@ sub removeVDC {
   my $log=$self->private_api_log;
   my $log_level=$self->log_level;
 
-  my $vdcid=$self->param('vdcid');
+  my $vdcid=url_unescape($self->param('vdcid'));
 
   my $status='OK';
 
@@ -163,7 +164,7 @@ sub addVDC {
   my $db=$self->db;
   my $log=$self->private_api_log;
   my $log_level=$self->log_level;
-  my $vdc_display_name=$self->param('vdc_name'); # this is the previous VDC display_name (the one in the db) or a new one
+  my $vdc_display_name=url_unescape($self->param('vdc_name')); # this is the previous VDC display_name (the one in the db) or a new one
 
   my $status='OK';
   my $description='';
