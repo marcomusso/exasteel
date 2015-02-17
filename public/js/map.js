@@ -1,5 +1,5 @@
 var MyVDCS;
-var margin = {
+var margins = {
   top: 10,
   bottom: 10,
   left: 10,
@@ -45,8 +45,8 @@ function drawGraph() {
 
   width=$('#map').width();    // before margins
   height=$('#map').height();  // before margins
-  w=width - margin.right - margin.left;   // after margins
-  h=height - margin.top - margin.bottom;  // after margins
+  w=width - margins.right - margins.left;   // after margins
+  h=height - margins.top - margins.bottom;  // after margins
 
   force = d3.layout.force()
       .on("tick", tick)
@@ -61,13 +61,16 @@ function drawGraph() {
 
   vis = d3.select("#map").append("svg:svg")
       .attr("width", w)
-      .attr("height", h);
+      .attr("height", h)
+      .attr("transform", "translate(" + margins.left + ",200)");
 
   //Set up tooltip
   tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([-10, 0])
       .html(function(d) {
+        if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
+        if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPU, '+byte2human(d.memory*1024*1024,mySessionData['units']);
         return d.name.split(".",1)[0];
       });
   vis.call(tip);
@@ -132,7 +135,11 @@ function update() {
       .style("fill", color);
 
   node.transition()
-      .attr("r", function(d) { return d.children ? 5 : 10; });
+      .attr("r", function(d) {
+        if (d.type === 'vdc') return 10;
+        if (d.type === 'compute-node') return d.cpus*1.5;
+        return d.children ? 5 : 10;
+      });
 
   // Enter any new nodes.
   node.enter()
@@ -140,9 +147,13 @@ function update() {
       .attr("class", "node")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
-      .attr("r", function(d) { return d.children ? 5 : 10; })
+      .attr("r", function(d) {
+        if (d.type === 'vdc') return 10;
+        if (d.type === 'compute-node') return d.cpus/2;
+        return d.children ? 5 : 10;
+      })
       .style("fill", color)
-      .on("click", click)
+        // .on("click", click)
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
       .call(force.drag);
@@ -162,16 +173,16 @@ function tick() {
 }
 
 // Toggle children on click.
-function click(d) {
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  update();
-}
+// function click(d) {
+//   if (d.children) {
+//     d._children = d.children;
+//     d.children = null;
+//   } else {
+//     d.children = d._children;
+//     d._children = null;
+//   }
+//   update();
+// }
 
 // Returns a list of all nodes under the root.
 function flatten(root) {
