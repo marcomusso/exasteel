@@ -37,6 +37,10 @@ function initPage() {
   $('#vdc').change(function() {
     refreshPage();
   });
+  // if the user wants to change the visualization
+  $('#visualization').change(function() {
+    console.log($('#visualization').val());
+  });
 }
 
 function drawGraph() {
@@ -137,7 +141,7 @@ function update() {
   node.transition()
       .attr("r", function(d) {
         if (d.type === 'vdc') return 10;
-        if (d.type === 'compute-node') return d.cpus*1.5;
+        if (d.type === 'compute-node') return d.cpus ? d.cpus*1.5 : 10;
         return d.children ? 5 : 10;
       });
 
