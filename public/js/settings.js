@@ -14,9 +14,8 @@ function validateConfigAndSave() {
   editedVDC['ovmm_password']=$('#ovmm_password').val();
   editedVDC['tags']=$('#tags').val();
   editedVDC['ignored_accounts']=$('#ignored_accounts').val();
-  var sanitizedName=$('#display_name').val().replace(/ /g,'_'); // TODO use proper url encoding
   // console.log(editedVDC);
-  $.post('/api/v1/vdc/'+sanitizedName+'.json', JSON.stringify(editedVDC))
+  $.post('/api/v1/vdc/'+encodeURIComponent($('#display_name').val())+'.json', JSON.stringify(editedVDC))
   .fail(function() {
     alertThis('Error saving VDC.','danger');
   })
@@ -39,7 +38,7 @@ function removevDCs(id) {
   console.log('removevDCs '+id+' from list AND db (via DELETE API)');
   // TODO are you sure????
   $.ajax({
-    url: '/api/v1/vdc/'+id+'.json',
+    url: '/api/v1/vdc/'+encodeURIComponent(id)+'.json',
     type: 'DELETE',
     success: function(result) {
       alertThis('Deleted successfully','success');

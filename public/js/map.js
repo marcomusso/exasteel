@@ -72,7 +72,7 @@ function drawGraph() {
       });
   vis.call(tip);
 
-  d3.json('/api/v1/getvdcguestsbycn/'+$('#vdc').val()+'.json', function(error, json) {
+  d3.json('/api/v1/getvdcguestsbycn/'+encodeURIComponent($('#vdc').val())+'.json', function(error, json) {
     root = json;
     root.fixed = true;
     root.x = w / 2;
@@ -136,7 +136,6 @@ function update() {
 
   // Enter any new nodes.
   node.enter()
-        // .append("g")
       .append("svg:circle")
       .attr("class", "node")
       .attr("cx", function(d) { return d.x; })
@@ -147,18 +146,6 @@ function update() {
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
       .call(force.drag);
-
-  // node.append("svg:circle")
-  //     .attr("cx", function(d) { return d.x; })
-  //     .attr("cy", function(d) { return d.y; })
-  //     .attr("r", function(d) { return d.children ? 5 : 10; })
-  //     .style("fill", color);
-
-  // label
-  // node.append("text")
-  //     .attr("dx", 10)
-  //     .attr("dy", ".35em")
-  //     .text(function(d) { return d.name; });
 
   // Exit any old nodes.
   node.exit().remove();
@@ -172,20 +159,6 @@ function tick() {
 
   node.attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; });
-
-  // d3.selectAll("circle").attr("cx", function (d) {
-  //      return d.x;
-  //  })
-  //      .attr("cy", function (d) {
-  //      return d.y;
-  //  });
-
-  // d3.selectAll("text").attr("x", function (d) {
-  //       return d.x;
-  //   })
-  //   .attr("y", function (d) {
-  //       return d.y;
-  //   });
 }
 
 // Toggle children on click.
