@@ -122,9 +122,14 @@ function update(source) {
       .text(function(d) {
         var hostname=d.name.split(".",1)[0];
         if (d.type === 'compute-node') {
-          return hostname+' ('+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['unit'])+')';
+          console.log(mySessionData);
+          return hostname+' ('+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['units'])+', '+d.guestsCount+' guests) - '+d.serverRunState;
         } else {
-          return hostname;
+          if (d.type === 'vdc') {
+            return hostname+' (vDC with '+d.cnCount+' compute nodes)';
+          } else {
+           return hostname;
+          }
         }
       });
 

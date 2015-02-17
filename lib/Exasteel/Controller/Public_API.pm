@@ -5,6 +5,7 @@ use Mojo::Log;
 use Data::Dumper;
 use DateTime;
 use POSIX qw(strftime);
+use Mojo::JSON qw(decode_json encode_json);
 
 # render static docs
 sub docs {
@@ -206,64 +207,65 @@ sub getVDCGuestsByCN {
   my $password=$vdcs[0]{ovmm_password};
   my $ovmm_endpoint=$vdcs[0]{ovmm_endpoint};
   # prepare il risultato in un modo consono per D3 ma comunque leggibile umanamente
-  my %result=( name => $vdc, children => []);
+    my $temp_hash_ref;
+    my %result=( name => $vdc, type=> 'vdc', children => []);
 
   my $url='https://'.$username.':'.$password.'@'.$ovmm_endpoint.'/ovm/core/wsapi/rest/Server';
 
   $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | URL: ".$url) if $log_level>1;
 
-  my $data=$ovmm_ua->get($url);
-  # $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Result: ".Dumper($data)) if ($log_level>1);
+  my $data=$ovmm_ua->get($url => {Accept => 'application/json'});
   if (my $res = $data->success) {
-    # force XML semantics
-    $res->dom->xml(1);
-    # $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | DOM: ".Dumper($res->dom->all_text));
-    # estrazione CN, per ogni <server> esamino il contenuto
-    $res->dom->find('server')->each(
-      sub {
-        $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | TOTAL SERVER: ".$_);
-        # nome del CN
-          my $cn=$_->at('name')->text if ($_->at('name')->text);
-          $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Examining CN: ".$cn);
-        # caratteristiche del CN
-          # ...
-          # riempire la sezione abilityMap dell'oggetto compute-node
-          my $memory=$_->at('memory')->text if ($_->at('memory')->text);
-          my $threadsPerCore=$_->at('threadsPerCore')->text if ($_->at('threadsPerCore')->text);
-          my $totalProcessorCores=$_->at('totalProcessorCores')->text if ($_->at('totalProcessorCores')->text);
-          $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn memory: ".$memory);
-          # ...
-        # conto le CPU
-          my $cpus=0;
-          $_->find('cpus')->each( sub { $cpus++ } );
-          $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn CPUs: ".$cpus);
-        # trovo i guest
-          my @guests;
-          $_->find('vmIds')->each(
-            sub {
-              push @guests, {
-                              name => $_->at('name')->text,
-                              type => 'guest'
-                            };
-            }
-          );
-          # $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn Guests: ".Dumper(%result));
-        push $result{'children'}, {
-                                   name => $cn,
-                                   type => 'compute-node',
-                                   abilityMap => 'TBD',
-                                   cpus => $cpus,
-                                   memory => $memory,
-                                   threadsPerCore => $threadsPerCore,
-                                   totalProcessorCores => $totalProcessorCores,
-                                   children => \@guests
-                                  };
-      }
-    );
+    # copy returned JSON into local hash
+    $temp_hash_ref=decode_json($res->body);
   } else {
     $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Error in request to OVMM") if ($log_level>0);
     $status{'status'}="ERROR";
     $status{'description'}="Error in request to OVMM";
+  }
+
+  # convert local hash into desired result hash
+    # old style
+      # $res->dom->find('server')->each(
+      #   sub {
+      #       my $threadsPerCore=$_->at('threadsPerCore')->text if ($_->at('threadsPerCore')->text);
+      #       my $totalProcessorCores=$_->at('totalProcessorCores')->text if ($_->at('totalProcessorCores')->text);
+      #     # conto le CPU
+      #       my $cpus=0;
+      #       $_->find('cpus')->each( sub { $cpus++ } );
+      #       $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | $cn CPUs: ".$cpus);
+      #     # trovo i guest
+      #       my @guests;
+      #       $_->find('vmIds')->each(
+      #         sub {
+      #         }
+      #       );
+
+      #   }
+      # );
+
+  $result{cnCount}=@{$temp_hash_ref->{'server'}};
+  # $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | ARRAY: ".@{$temp_hash_ref->{'server'}});
+  foreach my $server (@{$temp_hash_ref->{'server'}}) {
+    my @guests;
+    foreach my $guest (@{$server->{'vmIds'}}) {
+      push @guests, {
+                      name => $guest->{'name'},
+                      type => 'guest'
+                    };
+    }
+    push $result{'children'}, {
+                               name => $server->{'hostname'},
+                               type => 'compute-node',
+                               cpus => $server->{'totalProcessorCores'}*$server->{'threadsPerCore'},
+                               memory => $server->{'memory'},
+                               threadsPerCore => $server->{'threadsPerCore'},
+                               totalProcessorCores => $server->{'totalProcessorCores'},
+                               serverRunState => $server->{'serverRunState'},
+                               abilityMap => $server->{'abilityMap'},
+                               guestsCount => scalar @guests,
+                               children => \@guests
+                              };
   }
 
   $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Result: ".Dumper(\%result)) if ($log_level>1);
