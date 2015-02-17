@@ -6,7 +6,6 @@ var margin = {
   right: 10
 };
 var i=0;
-var rx, ry, m0, rotate = 0;
 var width, height, w, h;
 var link, node, root, force, vis, tip;
 
@@ -51,8 +50,8 @@ function drawGraph() {
 
   force = d3.layout.force()
       .on("tick", tick)
-      .charge(function(d) { return d._children ? 200 : -30; })
-      .linkDistance(function(d) { return d.target._children ? 160 : 30; })
+      .charge(function(d) { return d._children ? 100 : -30; })
+      .linkDistance(function(d) { return d.target._children ? 80 : 30; })
       .linkStrength(function(link) {
         if (link.source.type === 'vdc') return 0.1;
         if (link.source.type === 'compute-node') return 0.5;
@@ -68,8 +67,8 @@ function drawGraph() {
   tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([-10, 0])
-      .html(function (d) {
-        return  d.name.split(".",1)[0];
+      .html(function(d) {
+        return d.name.split(".",1)[0];
       });
   vis.call(tip);
 
@@ -218,16 +217,20 @@ function flatten(root) {
 
 function color(d) {
   if (d._children) {
-    return "#3182bd";     // collapsed node
+    // collapsed node
+    return "#3182bd";
   } else {
     if (d.children) {
-        return "#FFFFFF"; // compute node background
+      // compute node background
+      return "#FFFFFF";
     } else {
       var hostname=d.name.split(".",1)[0];
       if (hostname.match("ExalogicControl")) {
-        return "#FFFF00"; // PC/control background
+        // PC/control background
+        return "#FFFF00";
       } else {
-        // return "#fd8d3c"; // leaf background
+        // leaf background
+        // return "#fd8d3c";
         return get_random_color();
       }
     }
@@ -235,13 +238,13 @@ function color(d) {
 }
 
 function rand(min, max) {
-    return min + Math.random() * (max - min);
+  return min + Math.random() * (max - min);
 }
 
 function get_random_color() {
-    // var h = rand(1, 120);
-    var h=120;
-    var s = rand(10, 90);
-    var l = rand(10, 90);
-    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+  // var h = rand(1, 120);
+  var h=120;
+  var s = rand(10, 90);
+  var l = rand(10, 90);
+  return 'hsl(' + h + ',' + s + '%,' + l + '%)';
 }
