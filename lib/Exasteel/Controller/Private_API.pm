@@ -88,13 +88,14 @@ sub setSession {
   my $params = $self->req->json;
 
   # store known parameters in session!
-  $self->session->{env_display}= $params->{'env_display'};
-  $self->session->{env_code}   = $params->{'env_code'};
-  $self->session->{startepoch} = $params->{'startepoch'};
-  $self->session->{endepoch}   = $params->{'endepoch'};
-  $self->session->{username}   = $params->{'username'};;
-  $self->session->{theme}      = $params->{'theme'};
-  $self->session->{units}      = $params->{'units'};
+  $self->session->{env_display}      = $params->{'env_display'};
+  $self->session->{env_code}         = $params->{'env_code'};
+  $self->session->{startepoch}       = $params->{'startepoch'};
+  $self->session->{endepoch}         = $params->{'endepoch'};
+  $self->session->{username}         = $params->{'username'};;
+  $self->session->{theme}            = $params->{'theme'};
+  $self->session->{units}            = $params->{'units'};
+  $self->session->{mapvisualization} = $params->{'mapvisualization'};
 
   my ($sec,$min,$hour,$day,$month,$year) = (localtime($params->{'startepoch'}))[0,1,2,3,4,5];
   my $startlocale="$day/".($month+1)."/".($year+1900)." ".sprintf("%d",$hour).":".sprintf("%02d",$min);
