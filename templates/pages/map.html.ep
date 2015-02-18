@@ -54,8 +54,9 @@
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
     <select id="visualization" class="form-control" name="visualization">
-      <option value="force">force layout</option>
-      <option value="tree">tree</option>
+      <option value="bars">Bars</option>
+      <option value="force" selected>Force</option>
+      <option value="tree">Tree</option>
     </select>
   </div>
   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">

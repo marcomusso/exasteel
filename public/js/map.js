@@ -39,52 +39,64 @@ function initPage() {
   });
   // if the user wants to change the visualization
   $('#visualization').change(function() {
-    console.log($('#visualization').val());
+    // console.log($('#visualization').val());
+    refreshPage();
   });
 }
 
 function drawGraph() {
-
   $('#map').html('');
-
   width=$('#map').width();    // before margins
   height=$('#map').height();  // before margins
   w=width - margins.right - margins.left;   // after margins
   h=height - margins.top - margins.bottom;  // after margins
 
-  force = d3.layout.force()
-      .on("tick", tick)
-      .charge(function(d) { return d._children ? 100 : -30; })
-      .linkDistance(function(d) { return d.target._children ? 80 : 30; })
-      .linkStrength(function(link) {
-        if (link.source.type === 'vdc') return 0.1;
-        if (link.source.type === 'compute-node') return 0.5;
-        return 1;
-      })
-      .size([w, h - 160]);
-
   vis = d3.select("#map").append("svg:svg")
       .attr("width", w)
-      .attr("height", h)
-      .attr("transform", "translate(" + margins.left + ",200)");
+      .attr("height", h);
 
-  //Set up tooltip
-  tip = d3.tip()
-      .attr('class', 'd3-tip')
-      .offset([-10, 0])
-      .html(function(d) {
-        if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
-        if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPU, '+byte2human(d.memory*1024*1024,mySessionData['units']);
-        return d.name.split(".",1)[0];
-      });
-  vis.call(tip);
+ switch($('#visualization').val()) {
+  case 'bars': //bars
+                break;
+  case 'tree': // tree
+               break;
+  case 'force': force = d3.layout.force()
+                  .on("tick", tick)
+                  .charge(function(d) { return d._children ? 100 : -30; })
+                  .linkDistance(function(d) { return d.target._children ? 80 : 30; })
+                  .linkStrength(function(link) {
+                    if (link.source.type === 'vdc') return 0.1;
+                    if (link.source.type === 'compute-node') return 0.5;
+                    return 1;
+                  })
+                  .size([w, h - 160]);
+                //Set up tooltip
+                  tip = d3.tip()
+                    .attr('class', 'd3-tip')
+                    .offset([-10, 0])
+                    .html(function(d) {
+                      if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
+                      if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPU, '+byte2human(d.memory*1024*1024,mySessionData['units']);
+                      return d.name.split(".",1)[0];
+                  });
+                  vis.call(tip);
+                break;
+  default: break;
+  }
 
   d3.json('/api/v1/getvdcguestsbycn/'+encodeURIComponent($('#vdc').val())+'.json', function(error, json) {
-    root = json;
-    root.fixed = true;
-    root.x = w / 2;
-    root.y = h / 2 - 80;
-    update();
+    switch($('#visualization').val()) {
+      case 'bars': //bars
+                    break;
+      case 'tree': // tree
+                   break;
+      case 'force': root = json;
+                    root.fixed = true;
+                    root.x = w / 2;
+                    root.y = h / 2 - 80;
+                    updateForce();
+                    break;
+    }
   });
   spinThatWheel(false);
 }
@@ -108,7 +120,7 @@ function refreshPage() {
   drawGraph();
 }
 
-function update() {
+function updateForce() {
   var nodes = flatten(root),
       links = d3.layout.tree().links(nodes);
 
