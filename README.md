@@ -14,6 +14,7 @@ This started as a Mojolicious boilerplate, then turned into a Mojolicious demo a
 - Librerie javascript:
     - [jquery (>=2.0.3)](http://jquery.com) (2.1.1)
     - [D3](http://d3js.org/) (3.4.13)
+      - [d3-tip](http://labratrevenge.com/d3-tip) (0.6.6)
     - [DateTime Picker](http://www.malot.fr/bootstrap-datetimepicker/) (2.3.1)
     - [intro.js](http://usablica.github.io/intro.js/) v0.9.0
 
