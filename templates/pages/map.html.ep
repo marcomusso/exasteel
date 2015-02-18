@@ -1,9 +1,12 @@
 % layout 'default';
 % title 'Map - Exasteel';
+% my @services=qw(OZPR0 MWFM0 LPDF0 PDCR0 MBPF0 MAUP0 SWP20 BSMA0 HDCS0);
 
 <%# Javascript  %>
   %= javascript '/d3-3.4.13/d3.min.js'
-  %= javascript 'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js'
+  %= javascript '/d3-tip-0.6.6/index.js'
+  %= javascript '/bootstrap-toggle-2.2.0/js/bootstrap-toggle.min.js'
+  %= stylesheet '/bootstrap-toggle-2.2.0/css/bootstrap-toggle.min.css'
   %= javascript '/js/map.js'
 
   <%# let's consider the panel body as an entire canvas, without any padding %>
@@ -14,59 +17,120 @@
     #map {
       width: 100%;
       height: 750px;
+      overflow: auto;
     }
 
-    .d3-tip {
-      line-height: 1;
-      color: white;
-      background-color: #333333;
-      text-decoration:none;
-      padding: 2px;
-      border-width: 4px 4px 4px 4px;
-      border-radius: 4px 4px 4px 4px;
-      -webkit-border-radius: 4px 4px 4px 4px;
-    }
-    .node text {
-      font-size: 11px;
-      pointer-events: none;
-    }
-    text.parent {
-      fill: #1f77b4;
-    }
-    circle.node {
-      cursor: pointer;
-      stroke: #000000;
-      stroke-width: .5px;
-    }
-    line.link {
-      fill: none;
-      stroke: #9ecae1;
-      stroke-width: 1.5px;
-    }
+    /* FORCE START */
+      .d3-tip {
+        line-height: 1;
+        color: white;
+        background-color: #333333;
+        text-decoration:none;
+        padding: 2px;
+        border-width: 4px 4px 4px 4px;
+        border-radius: 4px 4px 4px 4px;
+        -webkit-border-radius: 4px 4px 4px 4px;
+      }
+      .node text {
+        font-size: 11px sans-serif;
+        pointer-events: none;
+      }
+      text.parent {
+        fill: #1f77b4;
+      }
+      circle.node {
+        cursor: pointer;
+        stroke: #000000;
+        stroke-width: .5px;
+      }
+      line.link {
+        fill: none;
+        stroke: #9ecae1;
+        stroke-width: 1.5px;
+      }
+    /* FORCE END */
+
+    /* TREE START */
+      path.arc {
+        cursor: move;
+        fill: #fff;
+        opacity: 0.5;
+      }
+      service {
+        fill: red;
+      }
+      .node circle {
+        stroke: steelblue;
+        stroke-width: 1.5px;
+      }
+      .node {
+        font-size: 12px;
+        pointer-events: none;
+      }
+      .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+      }
+    /* TREE END */
+
+    /* BARS START */
+      .node rect {
+        cursor: pointer;
+<%#         fill: #fff;
+        fill-opacity: .5;
+        stroke: #3182bd;
+        stroke-width: 1.5px; %>
+      }
+      path.link {
+        fill: none;
+        stroke: #9ecae1;
+        stroke-width: 1.5px;
+      }
+    /* BARS END */
   % end
 
 <div class="row">
   <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
     <select id="vdc" class="form-control" name="vdc"></select>
   </div>
-  <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
     <div id="tags"></div>
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
     <select id="visualization" class="form-control" name="visualization">
       <option value="bars">Bars</option>
-      <option value="force" selected>Force</option>
-      <option value="tree">Tree</option>
+      <option value="force">Force</option>
+      <option value="tree">Radial Tree</option>
     </select>
   </div>
-  <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-    <a class="btn btn-sm btn-primary" href="#" onclick=refreshPage();>Refresh</a>
+  <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+    <input type="checkbox" data-toggle="toggle" id="autorefresh-switch" data-width="140" data-onstyle="success" data-on="Autorefresh ON" data-off="Autorefresh OFF">
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
     <div id="map" class="well"></div>
+  </div>
+  <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+    <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h5 class="panel-title">Service highlight</h5>
+        </div>
+        <div class="panel-body text-center">
+          <table id="switches" class="table table-striped table-hover">
+            <tbody>
+              % foreach my $service (@services) {
+                %== '<tr><td><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'.$service.'" data-size="small" data-on="'.$service.' ON" data-off="'.$service.' OFF"></td></tr>'
+              % }
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-footer">
+          Select:&nbsp;<a class="btn btn-xs btn-default" href="#" onclick=switchAll('on');>All</a>&nbsp;<a class="btn btn-xs btn-default" onclick=switchAll('off');>None</a>
+        </div>
+    </div>
   </div>
 </div>
 

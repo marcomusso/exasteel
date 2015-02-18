@@ -17,6 +17,7 @@ This started as a Mojolicious boilerplate, then turned into a Mojolicious demo a
       - [d3-tip](http://labratrevenge.com/d3-tip) (0.6.6)
     - [DateTime Picker](http://www.malot.fr/bootstrap-datetimepicker/) (2.3.1)
     - [intro.js](http://usablica.github.io/intro.js/) v0.9.0
+    - [Bootstrap Toggle](http://www.bootstraptoggle.com/) v2.2.0
 
 - Additional Perl modules
     - IO:Socket (1.36)

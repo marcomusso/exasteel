@@ -20,7 +20,7 @@ sub startup {
 
   $self->secrets(['2a595521e0a038f473c85d7360a10ec8','This secret is used _only_ for validation']);
   $self->sessions->default_expiration(60*60*24*7); #7gg
-  $version = $self->defaults({version => '0.1&alpha;'});
+  $version = $self->defaults({version => '0.5&alpha;'});
 
   #################################################################################
   # Plugins
