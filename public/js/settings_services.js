@@ -1,8 +1,8 @@
-var MyVDCS;
+var MyServices;
 
 function validateConfigAndSave() {
   console.log('check params and save emoc');
-  $('#addvDCmodal').modal('hide');
+  $('#addServicemodal').modal('hide');
   var editedVDC={};
   editedVDC['display_name']=$('#display_name').val();
   editedVDC['asset_description']=$('#asset_description').val();
@@ -27,15 +27,15 @@ function validateConfigAndSave() {
   // on save:
   // get relevant data (accounts/static KPI) via API and cache it in mongo...
   // refresh table
-  updatevDCList();
+  updateServiceList();
 }
 
 function checkEndpoint() {
   console.log('password entered, check endpoint access and get description');
 }
 
-function removevDCs(id) {
-  console.log('removevDCs '+id+' from list AND db (via DELETE API)');
+function removeServices(id) {
+  console.log('removeServices '+id+' from list AND db (via DELETE API)');
   // TODO are you sure????
   $.ajax({
     url: '/api/v1/vdc/'+encodeURIComponent(id)+'.json',
@@ -47,11 +47,11 @@ function removevDCs(id) {
       alertThis('Error deleting: '+errorThrown,'danger');
     }
   });
-  updatevDCList();
+  updateServiceList();
 }
 
-function editvDCs(index) {
-  console.log('edit vDCs');
+function editServices(index) {
+  console.log('edit Services');
   // fill fields
     $('#display_name').val(MyVDCS[index].display_name);
     $('#emoc_endpoint').val(MyVDCS[index].emoc_endpoint);
@@ -64,10 +64,10 @@ function editvDCs(index) {
     $('#tags').val(MyVDCS[index].tags);
     $('#ignored_accounts').val(MyVDCS[index].ignored_accounts);
   // show modal
-  $('#addvDCmodal').modal('show');
+  $('#addServicemodal').modal('show');
 }
 
-function updatevDCList() {
+function updateServiceList() {
   spinThatWheel(true);
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
@@ -86,13 +86,13 @@ function updatevDCList() {
         } else { tags='No tags defined'; }
         if (!vdcs[i].asset_description) { vdcs[i].asset_description='N/A'; }
         if (vdcs[i].display_name) { vdc_name=vdcs[i].display_name.replace(/ /g,'_'); }
-        $('#vdcstable tbody').append('<tr><td><strong><a href="/vdc/'+vdc_name+'">'+vdcs[i].display_name+'</a></strong></td><td width=15%>'+vdcs[i].asset_description+'</td><td>'+vdcs[i].emoc_endpoint+'</td><td>'+vdcs[i].ovmm_endpoint+'</td><td>'+tags+'</span></td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editvDCs(\''+i+'\');"><i class="fa fa-pencil"></i></a></td><td width=5%><a class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove" onclick="removevDCs(\''+vdcs[i]._id.$oid+'\');"><i class="fa fa-trash"></i></a></td></tr>');
+        $('#vdcstable tbody').append('<tr><td><strong><a href="/vdc/'+vdc_name+'">'+vdcs[i].display_name+'</a></strong></td><td width=15%>'+vdcs[i].asset_description+'</td><td>'+'#d6sgd78'+'</td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editServices(\''+i+'\');"><i class="fa fa-pencil"></i></a></td><td width=5%><a class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove" onclick="removeServices(\''+vdcs[i]._id.$oid+'\');"><i class="fa fa-trash"></i></a></td></tr>');
       }
       $('#vdcscount').text(vdcs.length);
     } else {
       $("#vdcs > tbody").html("");
       $('#vdcscount').text(0);
-      alertThis('No vDCs found. Try adding one!','danger');
+      alertThis('No Services found. Try adding one!','danger');
     }
     spinThatWheel(false);
   });
@@ -117,7 +117,7 @@ function initPage() {
     setSessionData();
   });
 
-  $('#addvDC').click(function() {
+  $('#addService').click(function() {
     $('#display_name').val('');
     $('#emoc_endpoint').val('');
     $('#emoc_username').val('');
@@ -128,15 +128,15 @@ function initPage() {
     $('#asset_description').val('');
     $('#tags').val('');
     $('#ignored_accounts').val('');
-    $('#addvDCmodal').modal('show');
+    $('#addServicemodal').modal('show');
   });
 
   $('#emoc_password').on('click', checkEndpoint);
 
-  $('#savevDC').on('click', validateConfigAndSave);
+  $('#saveService').on('click', validateConfigAndSave);
 
   // fill vdcstable
-  updatevDCList();
+  updateServiceList();
 }
 
 function refreshPage() {

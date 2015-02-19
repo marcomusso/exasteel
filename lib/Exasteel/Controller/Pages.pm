@@ -10,11 +10,18 @@ sub home {
   $self->render('home')
 }
 
-# landing page
-sub settings {
+# VDC settings
+sub settings_vdc {
   my $self = shift;
-  $self->render('pages/settings');
+  $self->render('pages/settings_vdc');
 }
+
+# Services settings
+sub settings_services {
+  my $self = shift;
+  $self->render('pages/settings_services');
+}
+
 
 # vDC details
 sub vdcdetails {

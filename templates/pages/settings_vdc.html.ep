@@ -2,7 +2,7 @@
 % title 'Settings - Exasteel';
 
 <%# Javascript  %>
-  %= javascript '/js/settings.js'
+  %= javascript '/js/settings_vdc.js'
 
 <div id="settings_container">
   <div class="row">

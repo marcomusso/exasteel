@@ -104,7 +104,8 @@ sub startup {
   ###################################################################################################
   # protected pages (login required)
     my $auth = $r->under->to('auth#check');
-    $auth->get('/settings')          ->to('Pages#settings')    ->name('settings');
+    $auth->get('/settings/vdc')      ->to('Pages#settings_vdc')      ->name('settings_vdc');
+    $auth->get('/settings/services') ->to('Pages#settings_services') ->name('settings_services');
     $auth->get('/kpi')               ->to('Pages#kpi')         ->name('kpi');
     $auth->get('/map')               ->to('Pages#map')         ->name('map');
     $auth->get('/vdc/:vdcname')      ->to('Pages#vdcdetails')  ->name('vdcdetails');

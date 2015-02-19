@@ -21,7 +21,7 @@ var svg;
 function initPage() {
   console.log( "initPage called" );
   // Enable tooltips
-  $('[data-toggle="tooltip"]').tooltip();
+  // $('[data-toggle="tooltip"]').tooltip();
 
   if ($('#visualization').length) { $("#visualization").val(mySessionData['mapvisualization']); }
 
@@ -121,10 +121,10 @@ function drawGraph() {
   w=width - margins.right - margins.left;   // after margins
   h=height - margins.top - margins.bottom;  // after margins
 
-  vis = d3.select("#map").append("svg:svg")
+  svg = d3.select("#map").append("svg:svg")
       .attr("width", w)
       .attr("height", h);
-  svg=vis;
+  // svg=vis;
 
   switch($('#visualization').val()) {
     case 'bars': barHeight = 20;
@@ -167,17 +167,6 @@ function drawGraph() {
                   break;
     default: break;
   }
-
-  //Set up tooltip
-    tip = d3.tip()
-      .attr('class', 'd3-tip')
-      .offset([-10, 0])
-      .html(function(d) {
-        if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
-        if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['units']);
-        return d.name.split(".",1)[0];
-    });
-    vis.call(tip);
 
   d3.json('/api/v1/getvdcguestsbycn/'+encodeURIComponent($('#vdc').val())+'.json', function(error, json) {
     switch($('#visualization').val()) {
@@ -398,11 +387,24 @@ function updateTree() {
       .enter().append("svg:path")
       .attr("class", "link")
       .attr("d", diagonal);
+
+  //Set up tooltip
+  tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
+      if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['units']);
+      return d.name.split(".",1)[0];
+    });
+  vis.call(tip);
+
   node = vis.selectAll("g.node")
       .data(nodes)
       .enter().append("svg:g")
       .attr("class", "node")
       .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; });
+
   node.append("svg:circle")
       .attr("r", function(d){
         return d.name.match("ExalogicControl") ? 6 : 4;
@@ -410,14 +412,8 @@ function updateTree() {
       .attr("fill", function(d){
         return d.name.match("ExalogicControl") ? "red" : "lightblue";
       })
-      .on('mouseover', function(d){
-        console.log('tip.show');
-        tip.show();
-      })
-      .on('mouseout', function(d) {
-        console.log('tip.hide');
-        tip.hide();
-      });
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
 
   node.append("svg:rect")
       .attr("class", function(d) {
