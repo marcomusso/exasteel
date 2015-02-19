@@ -1,21 +1,38 @@
 var mySessionData={};
 
+// if you want to lookup rela hostname from Exalogic name attribute use this variable and
+// the corresponding function 
+  var lookupHostnameFlag=true;
+  function lookupHostname(name,direction) {
+    if (lookupHostnameFlag) {
+      // implement your rule here, example:
+      switch (direction) {
+        case 'name2hostname': return name;
+                              break;
+        case 'hostname2name': return name;
+                              break;
+        default: return name;
+      }
+    } else {
+      // no difference between names and hostnames
+      return name;
+    }
+  }
 // For pages with automatic refresh
+  var countdownfrom = 30; //countdown period in seconds
+  var currentsecond=countdownfrom+1;
   var counterobj = document.getElementById("counter");
-  var countdownfrom = 900; //countdown period in seconds
-  var currentsecond;
   if (counterobj) {counterobj.innerHTML = countdownfrom+1; }
   function countdown() {
       if (currentsecond!=1) {
           currentsecond-=1;
-          counterobj.innerHTML = currentsecond;
+          if (counterobj) { counterobj.innerHTML = currentsecond; }
       } else {
-          self.location.reload();
+          refreshPage();
           return;
       }
-      setTimeout(countdown(),1000);
+      setTimeout(countdown,1000);
   }
-  if (counterobj) { countdown(); }
 // let's round a number
   function round(num,decimals) {
       return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
@@ -78,18 +95,10 @@ var mySessionData={};
       $("#loading").hide();
     }
   }
-  // (dis)abilita indicatore di refresh
-    function refreshIndicator(state) {
-    // state: true/false
-    if (state) {
-      $("#refresh_indicator").removeClass('invisible');
-      $("#nav3").removeClass('invisible');
-      // $("#refresh_indicator").show();
-    } else {
-      $("#refresh_indicator").addClass('invisible');
-      $("#nav3").addClass('invisible');
-      // $("#refresh_indicator").hide();
-    }
+// Enable/Disable refresh indicator
+  function refreshIndicator(state) {
+    $(".refresh_indicator").toggleClass('invisible');
+    if (state) { counterobj = document.getElementById("counter"); }
   }
 // themes
   var themes = {
@@ -120,7 +129,6 @@ var mySessionData={};
       alert( "Error saving session, please contact support." );
     });
   }
-
 // talk to the user!
   function alertThis(message,severity,icon) {
     if (icon === undefined) {
@@ -163,7 +171,6 @@ var mySessionData={};
                  '</div>'
     });
   }
-
 $("document").ready(function() {
   spinThatWheel(false);
   refreshIndicator(false);

@@ -13,6 +13,11 @@ var rx, ry, m0, rotate = 0;
 var cluster, nodes;
 var svg;
 
+// refresh timers
+  var refreshInterval = countdownfrom*1000; // global default page refresh, milliseconds!!! see default.js
+  var refreshTimer;
+  var counterTimer;
+
 function initPage() {
   console.log( "initPage called" );
   // Enable tooltips
@@ -50,29 +55,62 @@ function initPage() {
     refreshPage();
   });
   $('.myswitches').change(function() {
-    console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
-    if ($(this).attr('id')==='BSMA0') {
-      if ($(this).prop('checked')) {
-        $('.service_sapvxp031').attr("fill","green");
-        $('.service_sapvxp031').attr("opacity","0.8");
-        $('.service_sapvxp032').attr("fill","green");
-        $('.service_sapvxp032').attr("opacity","0.8");
-        $('.service_sapvxp033').attr("fill","green");
-        $('.service_sapvxp033').attr("opacity","0.8");
-        $('.service_sapvxp034').attr("fill","green");
-        $('.service_sapvxp034').attr("opacity","0.8");
-      } else {
-        $('.service_sapvxp031').attr("opacity","0");
-        $('.service_sapvxp032').attr("opacity","0");
-        $('.service_sapvxp033').attr("opacity","0");
-        $('.service_sapvxp034').attr("opacity","0");
-      }
+    // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
+    switch ($(this).attr('id')) {
+      case 'BSMA0':
+        if ($(this).prop('checked')) {
+          $('.service_sapvxp008').attr("fill","green");
+          $('.service_sapvxp008').attr("opacity","0.8");
+          $('.service_sapvxp009').attr("fill","green");
+          $('.service_sapvxp009').attr("opacity","0.8");
+          $('.service_sapvxp010').attr("fill","green");
+          $('.service_sapvxp010').attr("opacity","0.8");
+          $('.service_sapvxp011').attr("fill","green");
+          $('.service_sapvxp011').attr("opacity","0.8");
+          $('.service_sapvxp012').attr("fill","green");
+          $('.service_sapvxp012').attr("opacity","0.8");
+        } else {
+          $('.service_sapvxp008').attr("opacity","0");
+          $('.service_sapvxp009').attr("opacity","0");
+          $('.service_sapvxp010').attr("opacity","0");
+          $('.service_sapvxp011').attr("opacity","0");
+          $('.service_sapvxp012').attr("opacity","0");
+        }
+        break;
+      case 'PDCR0':
+        if ($(this).prop('checked')) {
+          $('.service_sapvxp037').attr("fill","yellow");
+          $('.service_sapvxp037').attr("opacity","0.8");
+          $('.service_sapvxp038').attr("fill","yellow");
+          $('.service_sapvxp038').attr("opacity","0.8");
+          $('.service_sapvxp039').attr("fill","yellow");
+          $('.service_sapvxp039').attr("opacity","0.8");
+          $('.service_sapvxp040').attr("fill","yellow");
+          $('.service_sapvxp040').attr("opacity","0.8");
+          $('.service_sapvxp041').attr("fill","yellow");
+          $('.service_sapvxp041').attr("opacity","0.8");
+        } else {
+          $('.service_sapvxp037').attr("opacity","0");
+          $('.service_sapvxp038').attr("opacity","0");
+          $('.service_sapvxp039').attr("opacity","0");
+          $('.service_sapvxp040').attr("opacity","0");
+          $('.service_sapvxp041').attr("opacity","0");
+        }
+        break;
     }
   });
 
   $('#autorefresh-switch').change(function() {
-    console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
-    // setInterval call drawGraph
+    // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
+    if ($(this).prop('checked')) {
+      console.log('Enabled autorefresh every '+refreshInterval/1000+' secs.');
+      refreshIndicator(true);
+      counterTimer=setTimeout(countdown,1000);
+    } else {
+      console.log('Disabled autorefresh.');
+      window.clearTimeout(counterTimer);
+      refreshIndicator(false);
+    }
   });
 }
 
@@ -177,6 +215,11 @@ function refreshPage() {
       }
     }
 
+  // if autorefresh enables start another timer
+  if ($('#autorefresh-switch').prop('checked')) {
+    currentsecond=countdownfrom+1;
+    counterTimer=setTimeout(countdown,1000);
+  }
   // update D3 bounded data
   drawGraph();
 }
@@ -386,8 +429,8 @@ function updateTree() {
       .attr("height", "16")
       .attr("rx", "2")
       .attr("ry", "2")
-      .attr("fill", "red")
-      .attr("stroke", "black")
+      // .attr("fill", "red")
+      // .attr("stroke", "red")
       .attr("opacity", "0")
       .attr("transform", "translate(6,-8)");
 

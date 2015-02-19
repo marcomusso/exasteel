@@ -164,6 +164,9 @@
             <li><a target="_blank" href="/api/docs"><i class="fa fa-code"></i>&nbsp;Private API</a></li>
           % }
         </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><div class="navbar-text">KM Consulting 2014</div></li>
+        </ul>
       </div><!--/.nav-collapse -->
     </div>
   </div>
