@@ -2,6 +2,10 @@
 % title 'Map - Exasteel';
 % my @services=qw(OZPR0 MWFM0 LPDF0 PDCR0 MBPF0 MAUP0 SWP20 BSMA0 HDCS0);
 
+%= javascript begin
+var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
+% end
+
 <%# Javascript  %>
   %= javascript '/d3-3.4.13/d3.min.js'
   %= javascript '/d3-tip-0.6.6/index.js'

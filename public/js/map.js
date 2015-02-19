@@ -19,7 +19,7 @@ var svg;
   var counterTimer;
 
 function initPage() {
-  console.log( "initPage called" );
+  console.log("initPage called");
   // Enable tooltips
   // $('[data-toggle="tooltip"]').tooltip();
 
@@ -126,6 +126,16 @@ function drawGraph() {
       .attr("height", h);
   // svg=vis;
 
+  //Set up tooltip
+  tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
+      if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['units']);
+      return d.name.split(".",1)[0];
+    });
+
   switch($('#visualization').val()) {
     case 'bars': barHeight = 20;
                  barWidth = w * 0.9;
@@ -204,7 +214,7 @@ function refreshPage() {
       }
     }
 
-  // if autorefresh enables start another timer
+  // if autorefresh enabled start another timer
   if ($('#autorefresh-switch').prop('checked')) {
     currentsecond=countdownfrom+1;
     counterTimer=setTimeout(countdown,1000);
@@ -388,17 +398,6 @@ function updateTree() {
       .attr("class", "link")
       .attr("d", diagonal);
 
-  //Set up tooltip
-  tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
-      if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['units']);
-      return d.name.split(".",1)[0];
-    });
-  vis.call(tip);
-
   node = vis.selectAll("g.node")
       .data(nodes)
       .enter().append("svg:g")
@@ -413,7 +412,7 @@ function updateTree() {
         return d.name.match("ExalogicControl") ? "red" : "lightblue";
       })
       .on('mouseover', tip.show)
-      .on('mouseout', tip.hide);
+      .on('mouseout', tip.hide).call(tip);
 
   node.append("svg:rect")
       .attr("class", function(d) {
