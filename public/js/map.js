@@ -7,7 +7,7 @@ var margins = {
 };
 var i=0;
 var width, height, w, h;
-var link, node, root, force, vis, tip;
+var link, node, root, force, vis;
 var barHeight, barWidth, duration;
 var rx, ry, m0, rotate = 0;
 var cluster, nodes;
@@ -125,16 +125,6 @@ function drawGraph() {
       .attr("width", w)
       .attr("height", h);
   // svg=vis;
-
-  //Set up tooltip
-  tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      if (d.type === 'vdc') return d.name.split(".",1)[0]+': '+d.cnCount+' CN';
-      if (d.type === 'compute-node') return d.name.split(".",1)[0]+': '+d.cpus+' LCPUs ('+d.totalProcessorCores+'*'+d.threadsPerCore+'), RAM '+byte2human(d.memory*1024*1024,mySessionData['units']);
-      return d.name.split(".",1)[0];
-    });
 
   switch($('#visualization').val()) {
     case 'bars': barHeight = 20;
@@ -273,14 +263,6 @@ function updateForce() {
       })
       .style("fill", color)
       .on("click", clickTree)
-      .on('mouseover', function(d){
-        console.log('tip.show');
-        tip.show();
-      })
-      .on('mouseout', function(d) {
-        console.log('tip.hide');
-        tip.hide();
-      })
       .call(force.drag);
 
   // Exit any old nodes.
@@ -410,15 +392,12 @@ function updateTree() {
       })
       .attr("fill", function(d){
         return d.name.match("ExalogicControl") ? "red" : "lightblue";
-      })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide).call(tip);
+      });
 
   node.append("svg:rect")
       .attr("class", function(d) {
         var hostname=d.name.split(".",1)[0];
         return "service_"+hostname;
-        // return "service";
       })
       .attr("width", "80")
       .attr("height", "16")
@@ -544,7 +523,7 @@ function mouse(e) {
 }
 
 function mousedown() {
-  console.log('mousedown called');
+  // console.log('mousedown called');
   m0 = mouse(d3.event);
   d3.event.preventDefault();
 }
@@ -562,7 +541,7 @@ function mousemove() {
 }
 
 function mouseup() {
-  console.log('mouseup called');
+  // console.log('mouseup called');
   if (m0) {
     var m1 = mouse(d3.event),
         dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI,

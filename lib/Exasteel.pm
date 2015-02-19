@@ -110,6 +110,7 @@ sub startup {
     $auth->get('/map')               ->to('Pages#map')         ->name('map');
     $auth->get('/vdc/:vdcname')      ->to('Pages#vdcdetails')  ->name('vdcdetails');
     $auth->get('/api/docs')          ->to('Private_API#docs')  ->name('private_docs');
+    $auth->get('/temp')               ->to('Pages#temp');
   ###################################################################################################
 
   ###################################################################################################

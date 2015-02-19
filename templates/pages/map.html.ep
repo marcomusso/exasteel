@@ -8,7 +8,6 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
 
 <%# Javascript  %>
   %= javascript '/d3-3.4.13/d3.min.js'
-  %= javascript '/d3-tip-0.6.6/index.js'
   %= javascript '/bootstrap-toggle-2.2.0/js/bootstrap-toggle.min.js'
   %= stylesheet '/bootstrap-toggle-2.2.0/css/bootstrap-toggle.min.css'
   %= javascript '/js/map.js'
@@ -25,16 +24,6 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
     }
 
     /* FORCE START */
-      .d3-tip {
-        line-height: 1;
-        color: white;
-        background-color: #333333;
-        text-decoration:none;
-        padding: 2px;
-        border-width: 4px 4px 4px 4px;
-        border-radius: 4px 4px 4px 4px;
-        -webkit-border-radius: 4px 4px 4px 4px;
-      }
       .node text {
         font-size: 11px sans-serif;
         pointer-events: none;
@@ -81,7 +70,7 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
     /* BARS START */
       .node rect {
         cursor: pointer;
-<%#         fill: #fff;
+        <%# fill: #fff;
         fill-opacity: .5;
         stroke: #3182bd;
         stroke-width: 1.5px; %>
@@ -103,9 +92,9 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
     <select id="visualization" class="form-control" name="visualization">
+      <option value="tree">Radial Tree</option>
       <option value="bars">Bars</option>
       <option value="force">Force</option>
-      <option value="tree">Radial Tree</option>
     </select>
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">

@@ -34,4 +34,9 @@ sub nolocalstorage {
   $self->render('errors/no-local-storage');
 }
 
+sub temp {
+  my $self = shift;
+  $self->render('pages/temp');
+}
+
 "You know, it occurs to me that the best way you hurt rich people is by turning them into poor people. (Trading places, 1983)";
