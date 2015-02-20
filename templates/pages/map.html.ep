@@ -114,9 +114,6 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
         <div class="panel-body text-center">
           <table id="switches" class="table table-striped table-hover">
             <tbody>
-              % foreach my $service (@services) {
-                %== '<tr><td><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'.$service.'" data-size="small" data-on="'.$service.' ON" data-off="'.$service.' OFF"></td></tr>'
-              % }
             </tbody>
           </table>
         </div>

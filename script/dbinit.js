@@ -22,3 +22,13 @@ db.vdcs.insert(sample_vdc);
 // additional collections for:
 // - accounts?
 // - perf data as a cache?
+sample_cmdb = {
+  display_name: 'CMDB 1',
+  cmdb_endpoint: 'http://hostname:port/uri/',
+  cmdb_username: 'username',
+  cmdb_password: 'password',
+  description: 'HTTP GET for servers associated with a service (Basic Auth)',
+  tags: '',
+  active: false
+};
+db.cmdb.insert(sample_cmdb);

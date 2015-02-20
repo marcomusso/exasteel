@@ -1,4 +1,6 @@
-var MyVDCS;
+var myVDCS;
+var myServices;
+
 var margins = {
   top: 10,
   bottom: 10,
@@ -27,14 +29,14 @@ function initPage() {
 
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
-      MyVDCS=vdcs;
+      myVDCS=vdcs;
       var select = document.getElementById("vdc");
-      for (i=0; i<MyVDCS.length; i++) {
-        // console.log(MyVDCS[i].display_name);
-        select.options[select.options.length] = new Option(MyVDCS[i].display_name+' - '+MyVDCS[i].asset_description, MyVDCS[i].display_name);
+      for (i=0; i<myVDCS.length; i++) {
+        // console.log(myVDCS[i].display_name);
+        select.options[select.options.length] = new Option(myVDCS[i].display_name+' - '+myVDCS[i].asset_description, myVDCS[i].display_name);
       }
       // display tags FOR FIRST VDC
-        var tags=MyVDCS[0].tags.split(',');
+        var tags=myVDCS[0].tags.split(',');
         for (t = 0; t < tags.length; t++) {
           $('#tags').append('<span class="label label-info">'+tags[t]+'</span>&nbsp;');
         }
@@ -54,49 +56,33 @@ function initPage() {
     setSessionData();
     refreshPage();
   });
+
+  // create switches based on locally saved services
+  if (Modernizr.localstorage && localStorage["myServices"]) {
+    // window.localStorage is available!
+    myServices = JSON.parse(localStorage.getItem('myServices'));
+    // console.log(myServices);
+    for (var service in myServices) {
+      $('#switches tbody').append('<tr><td><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'+service+'" data-size="small" data-on="'+service+' ON" data-off="'+service+' OFF"></td></tr>');
+      // enable bootstraptoogle
+      $('.myswitches').bootstrapToggle();
+    }
+  }
+
   $('.myswitches').change(function() {
     // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
-    switch ($(this).attr('id')) {
-      case 'BSMA0':
-        if ($(this).prop('checked')) {
-          $('.service_sapvxp008').attr("fill","green");
-          $('.service_sapvxp008').attr("opacity","0.8");
-          $('.service_sapvxp009').attr("fill","green");
-          $('.service_sapvxp009').attr("opacity","0.8");
-          $('.service_sapvxp010').attr("fill","green");
-          $('.service_sapvxp010').attr("opacity","0.8");
-          $('.service_sapvxp011').attr("fill","green");
-          $('.service_sapvxp011').attr("opacity","0.8");
-          $('.service_sapvxp012').attr("fill","green");
-          $('.service_sapvxp012').attr("opacity","0.8");
-        } else {
-          $('.service_sapvxp008').attr("opacity","0");
-          $('.service_sapvxp009').attr("opacity","0");
-          $('.service_sapvxp010').attr("opacity","0");
-          $('.service_sapvxp011').attr("opacity","0");
-          $('.service_sapvxp012').attr("opacity","0");
-        }
-        break;
-      case 'PDCR0':
-        if ($(this).prop('checked')) {
-          $('.service_sapvxp037').attr("fill","yellow");
-          $('.service_sapvxp037').attr("opacity","0.8");
-          $('.service_sapvxp038').attr("fill","yellow");
-          $('.service_sapvxp038').attr("opacity","0.8");
-          $('.service_sapvxp039').attr("fill","yellow");
-          $('.service_sapvxp039').attr("opacity","0.8");
-          $('.service_sapvxp040').attr("fill","yellow");
-          $('.service_sapvxp040').attr("opacity","0.8");
-          $('.service_sapvxp041').attr("fill","yellow");
-          $('.service_sapvxp041').attr("opacity","0.8");
-        } else {
-          $('.service_sapvxp037').attr("opacity","0");
-          $('.service_sapvxp038').attr("opacity","0");
-          $('.service_sapvxp039').attr("opacity","0");
-          $('.service_sapvxp040').attr("opacity","0");
-          $('.service_sapvxp041').attr("opacity","0");
-        }
-        break;
+    console.log(myServices[$(this).attr('id')].listenHosts);
+    if ($(this).prop('checked')) {
+      for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
+        console.log('Hightlight ON for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("fill",stringToColour($(this).attr('id')));
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0.8");
+      }
+    } else {
+      for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
+        console.log('Hightlight OFF for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0");
+      }
     }
   });
 
@@ -195,9 +181,9 @@ function refreshPage() {
 
   // update tags
     $('#tags').html('');
-    for (v=0; v<MyVDCS.length; v++) {
-      if (MyVDCS[v].display_name===$('#vdc').val()) {
-        var tags=MyVDCS[v].tags.split(',');
+    for (v=0; v<myVDCS.length; v++) {
+      if (myVDCS[v].display_name===$('#vdc').val()) {
+        var tags=myVDCS[v].tags.split(',');
         for (t = 0; t < tags.length; t++) {
           $('#tags').append('<span class="label label-info">'+tags[t]+'</span>&nbsp;');
         }

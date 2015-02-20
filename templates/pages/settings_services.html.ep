@@ -2,6 +2,8 @@
 % title 'Settings - Exasteel';
 
 <%# Javascript  %>
+  %= javascript '/bootstrap-toggle-2.2.0/js/bootstrap-toggle.min.js'
+  %= stylesheet '/bootstrap-toggle-2.2.0/css/bootstrap-toggle.min.css'
   %= javascript '/js/settings_services.js'
 
 <div id="settings_container">
@@ -10,16 +12,17 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h4 class="panel-title">
-            Services<span class="pull-right"><button id="addvDC" class="btn btn-xs btn-default" data-toggle="tooltip" title="Add vDC"><i class="fa fa-plus"></i></button></span>
+            CMDB endpoints<span class="pull-right"><button id="addCMDB" class="btn btn-xs btn-default" data-toggle="tooltip" title="Add CMDB"><i class="fa fa-plus"></i></button></span>
           </h4>
         </div>
         <div class="panel-body">
-            <table id="vdcstable" class="table table-striped cell-border text-center" style="font-size:12px;">
+            <table id="cmdbtable" class="table table-striped cell-border text-center" style="font-size:12px;">
                 <thead>
                   <tr>
-                    <th style="text-align:center;">Acronym</th>
+                    <th style="text-align:center;">In use?</th>
+                    <th style="text-align:center;">Name</th>
                     <th style="text-align:center;">Description</th>
-                    <th style="text-align:center;">Color</th>
+                    <th style="text-align:center;">Tags</th>
                     <th style="text-align:center;">Edit</th>
                     <th style="text-align:center;">Remove</th>
                   </tr>
@@ -30,89 +33,166 @@
                 </tfoot>
             </table>
         </div>
-        <div class="panel-footer text-center">Found <span id="vdcscount">0</span> service(s).</div>
+        <div class="panel-footer text-center">Found <span id="cmdbcount">0</span> CMDB endpoint(s).</div>
       </div>
     </div>
   </div>
-
-</div>
-
-<%# Modal for inserting vDC data %>
-<div class="modal fade" id="addvDCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit vDC</h4>
-      </div>
-      <div class="modal-body">
-        <div class="input-group">
-          <span class="input-group-addon">Display name</span>
-          <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My vDC">
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            Services
+          </h4>
         </div>
-        <br>
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Endpoints</h3>
-    </div>
-    <div class="panel-body">
-      <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-          <div class="input-group">
-            <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
-            <input id="emoc_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
-          </div><br>
-          <div class="input-group">
-            <span class="input-group-addon">EMOC username</span>
-            <input id="emoc_username" name="username" type="text" class="form-control" placeholder="cloudadmin">
-          </div><br>
-          <div class="input-group">
-            <span class="input-group-addon">EMOC password</span>
-            <input id="emoc_password" name="password" type="password" class="form-control" placeholder="password">
-          </div>    
-        </div>      
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-          <div class="input-group">
-            <span title="HTTPS by default" class="input-group-addon">OVM API endpoint</span>
-            <input id="ovmm_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
-          </div><br>
-          <div class="input-group">
-            <span class="input-group-addon">OVM username</span>
-            <input id="ovmm_username" name="username" type="text" class="form-control" placeholder="admin">
-          </div><br>
-          <div class="input-group">
-            <span class="input-group-addon">OVM password</span>
-            <input id="ovmm_password" name="password" type="password" class="form-control" placeholder="password">
-          </div>    
-        </div>     
-      </div>
-    </div>
-</div>
-        <br>
-        <div class="input-group">
-          <span class="input-group-addon">Description</span>
-          <input id="asset_description" name="asset_description" type="text" class="form-control disabled" placeholder="(autofilled if possible)">
+        <div class="panel-body">
+            <table id="servicestable" class="table table-striped cell-border text-center" style="font-size:12px;">
+                <thead>
+                  <tr>
+                    <th style="text-align:center;">Service</th>
+                    <th style="text-align:center;">Description</th>
+                    <th style="text-align:center;">Color</th>
+                    <th style="text-align:center;">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
         </div>
-        <br>
-        <div class="input-group">
-          <span class="input-group-addon">Tags</span>
-          <input id="tags" name="tags" type="text" class="form-control" placeholder="example: main-site, dr-site, vaulting-location, production, dev">
-        </div>
-        <br>
-        <div class="input-group">
-          <span class="input-group-addon">Ignored accounts</span>
-          <input id="ignored_accounts" name="ignored_accounts" type="text" class="form-control" placeholder="space separated account names">
-        </div>
-        <br>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button id="savevDC" type="button" class="btn btn-primary">Save changes</button>
+        <div class="panel-footer text-center">Found <span id="servicescount">0</span> service(s).</div>
       </div>
     </div>
   </div>
 </div>
+
+<%# Modal for CMDB data %>
+  <div class="modal fade" id="addCMDBmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Edit CMDB</h4>
+        </div>
+        <div class="modal-body">
+          <div class="input-group text-center">
+            <span class="input-group-addon">Active
+            <input id="active" class="form-control" type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No"></span>
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon">Display name</span>
+            <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My CMDB">
+          </div>
+          <br>
+          <div class="input-group">
+            <span title="HTTPS by default" class="input-group-addon">CMDB API endpoint</span>
+            <input id="cmdb_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+          </div><br>
+          <div class="input-group">
+            <span class="input-group-addon">CMDB username</span>
+            <input id="cmdb_username" name="username" type="text" class="form-control" placeholder="username">
+          </div><br>
+          <div class="input-group">
+            <span class="input-group-addon">CMDB password</span>
+            <input id="cmdb_password" name="password" type="password" class="form-control" placeholder="password">
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon">Description</span>
+            <input id="description" name="description" type="text" class="form-control disabled" placeholder="(autofilled if possible)">
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon">Tags</span>
+            <input id="tags" name="tags" type="text" class="form-control" placeholder="example: main-site, dr-site, vaulting-location, production, dev">
+          </div>
+          <br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button id="savevDC" type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<%# Modal for Service data %>
+  <div class="modal fade" id="addvDCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Edit vDC</h4>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <span class="input-group-addon">Display name</span>
+            <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My vDC">
+          </div>
+          <br>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Endpoints</h3>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="input-group">
+                      <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
+                      <input id="emoc_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+                    </div><br>
+                    <div class="input-group">
+                      <span class="input-group-addon">EMOC username</span>
+                      <input id="emoc_username" name="username" type="text" class="form-control" placeholder="cloudadmin">
+                    </div><br>
+                    <div class="input-group">
+                      <span class="input-group-addon">EMOC password</span>
+                      <input id="emoc_password" name="password" type="password" class="form-control" placeholder="password">
+                    </div>    
+                  </div>      
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="input-group">
+                      <span title="HTTPS by default" class="input-group-addon">OVM API endpoint</span>
+                      <input id="ovmm_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+                    </div><br>
+                    <div class="input-group">
+                      <span class="input-group-addon">OVM username</span>
+                      <input id="ovmm_username" name="username" type="text" class="form-control" placeholder="admin">
+                    </div><br>
+                    <div class="input-group">
+                      <span class="input-group-addon">OVM password</span>
+                      <input id="ovmm_password" name="password" type="password" class="form-control" placeholder="password">
+                    </div>    
+                  </div>     
+                </div>
+              </div>
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon">Description</span>
+            <input id="description" name="asset_description" type="text" class="form-control disabled" placeholder="(autofilled if possible)">
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon">Tags</span>
+            <input id="tags" name="tags" type="text" class="form-control" placeholder="example: main-site, dr-site, vaulting-location, production, dev">
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon">Ignored accounts</span>
+            <input id="ignored_accounts" name="ignored_accounts" type="text" class="form-control" placeholder="space separated account names">
+          </div>
+          <br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button id="savevDC" type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <%# ################################################### %>
 <%# Definizioni help da usare con intro.js %>

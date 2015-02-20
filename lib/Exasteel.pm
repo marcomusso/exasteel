@@ -89,7 +89,8 @@ sub startup {
     $r->route('/api/v1/docs')                                   ->via('get') ->to('Public_API#docs');
     $r->route('/api/v1/vdcaccounts/:vdc', format => [qw(json)]) ->via('get') ->to('Public_API#VDCAccounts');
     $r->route('/api/v1/vdckpi/:vdc_name')                       ->via('get') ->to('Public_API#VDCKPI');
-    $r->route('/api/v1/getvdcguestsbycn/:vdc_name')                ->via('get') ->to('Public_API#getVDCGuestsByCN');
+    $r->route('/api/v1/getvdcguestsbycn/:vdc_name')             ->via('get') ->to('Public_API#getVDCGuestsByCN');
+    $r->route('/api/v1/gethostsperservice')                     ->via('get') ->to('Public_API#getHostsPerService');
   ###################################################################################################
 
   ###################################################################################################
@@ -99,6 +100,8 @@ sub startup {
     $r->route('/api/v1/vdc/:vdcid', format => [qw(json)])    ->via('delete') ->to('Private_API#removeVDC');
     $r->route('/api/v1/vdc/:vdc_name', format => [qw(json)]) ->via('post')   ->to('Private_API#addVDC'); # TODO use _id and not name
     $r->route('/api/v1/getvdcs', format => [qw(json)])       ->via('get')    ->to('Private_API#getVDCs');
+    $r->route('/api/v1/cmdb', format => [qw(json)])          ->via('get')    ->to('Private_API#getCMDBs');
+    $r->route('/api/v1/cmdb', format => [qw(json)])          ->via('post')   ->to('Private_API#addCMDB');
   ###################################################################################################
 
   ###################################################################################################
@@ -110,7 +113,7 @@ sub startup {
     $auth->get('/map')               ->to('Pages#map')         ->name('map');
     $auth->get('/vdc/:vdcname')      ->to('Pages#vdcdetails')  ->name('vdcdetails');
     $auth->get('/api/docs')          ->to('Private_API#docs')  ->name('private_docs');
-    $auth->get('/temp')               ->to('Pages#temp');
+    # $auth->get('/temp')               ->to('Pages#temp');
   ###################################################################################################
 
   ###################################################################################################

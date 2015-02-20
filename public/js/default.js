@@ -9,7 +9,9 @@ var mySessionData={};
       switch (direction) {
         case 'name2hostname': return name;
                               break;
-        case 'hostname2name': return name;
+        case 'hostname2name': var env='p';
+                              var number=name.match(/(\d+)$/);
+                              return 'sapvx'+env+number[1];
                               break;
         default: return name;
       }
@@ -18,6 +20,19 @@ var mySessionData={};
       return name;
     }
   }
+// string to color (http://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript)
+var stringToColour = function(str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var colour = '#';
+    for (var i = 0; i < 3; i++) {
+        var value = (hash >> (i * 8)) & 0xFF;
+        colour += ('00' + value.toString(16)).substr(-2);
+    }
+    return colour;
+}
 // For pages with automatic refresh
   var countdownfrom = 30; //countdown period in seconds
   var currentsecond=countdownfrom+1;

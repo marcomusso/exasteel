@@ -8,6 +8,7 @@ use Mojo::Util qw(url_unescape);
 use Data::Dumper;
 use DateTime;
 use POSIX qw(strftime locale_h);
+use boolean;
 
 # render static docs
 sub docs {
@@ -219,6 +220,105 @@ sub addVDC {
 
   $self->respond_to(
     json => { json => { "status" => $status, "description" => $description } }
+  );
+}
+
+sub getCMDBs {
+  my $self=shift;
+  my $db=$self->db;
+  my $log=$self->private_api_log;
+  my $log_level=$self->log_level;
+  my %status=(status => 'OK', description => '' );
+
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getCMDBs"); }
+
+  my $cmdb_collection=$self->db->get_collection('cmdb');
+  my $find_result=$cmdb_collection->find({});
+  my @cmdb=$find_result->all;
+
+  if ( @cmdb and (0+@cmdb)>0) {
+      if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getCMDBs found $#cmdb CMDBs"); }
+  } else {
+    $status{'status'}="ERROR";
+    $status{'description'}="No CMDB endpoints";
+  }
+
+  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::getCMDBs | vDCs: ".Dumper(@cmdb)); }
+
+  $self->respond_to(
+    json => sub {
+      if ($status{'status'} eq 'ERROR') {
+        $self->render(json => \%status, status => 404);
+      } else {
+        $self->render(json => \@cmdb);
+      }
+    }
+  );
+}
+
+sub addCMDB {
+  my $self=shift;
+  my $db=$self->db;
+  my $log=$self->private_api_log;
+  my $log_level=$self->log_level;
+
+  my %status=(status => 'OK', description => '' );
+  my $description='';
+
+  my $params=$self->req->json;
+
+  if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addCMDB | params: ".Dumper($params)); }
+
+  if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
+    $description='Invalid OVMM endpoint (should be hostname:port).';
+    $params->{'ovmm_endpoint'}='';
+  }
+  if ($params->{'ovmm_username'} eq '' or $params->{'ovmm_password'} eq '') {
+    $description='Invalid OVMM username/password (please fill both).';
+    $params->{'ovmm_username'}='';
+    $params->{'ovmm_password'}='';
+  }
+  if ($params->{'emoc_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
+    $description='Invalid EMOC endpoint (should be hostname:port).';
+    $params->{'emoc_endpoint'}='';
+  }
+  if ($params->{'emoc_username'} eq '' or $params->{'emoc_password'} eq '') {
+    $description='Invalid OVMM username/password (please fill both).';
+    $params->{'emoc_username'}='';
+    $params->{'emoc_password'}='';
+  }
+
+  my $cmdbs_collection=$self->db->get_collection('cmdbs');
+  my $id = $cmdbs_collection->update(
+      { "display_name" => $params->{'display_name'} }, # where clause
+      { '$set' => {                            # set new values received via post
+          "cmdb_endpoint"     => $params->{'cmdb_endpoint'},
+          "cmdb_username"     => $params->{'cmdb_username'},
+          "cmdb_password"     => $params->{'cmdb_password'},
+          "description"       => $params->{'description'},
+          "tags"              => $params->{'tags'},
+          "active"            => $params->{'active'},
+        }
+      },
+      { 'upsert' => 1 }                       # update or insert
+  );
+
+  $log->debug("Exasteel::Controller::Private_API::addCMDB | insert result: ".Dumper($id)) if ($log_level>0);
+
+  if ($id->{'err'}) {
+    $status{'status'}="ERROR";
+    $status{'description'}=$id->{'err'};
+  }
+
+  $self->respond_to(
+    json => { json => { "status" => $status, "description" => $description } }
+    json => sub {
+      if ($status{'status'} eq 'ERROR') {
+        $self->render(json => \%status, status => 404);
+      } else {
+        $self->render(json => \%status);
+      }
+    }
   );
 }
 
