@@ -125,7 +125,7 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
 </div>
 
 <%# ################################################### %>
-<%# Definizioni help da usare con intro.js %>
+<%# Page-specific help                                  %>
 <%# ################################################### %>
   <script>
     function startIntro(){
@@ -133,13 +133,13 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
       intro.setOptions({
             steps: [
               {
-                intro: "Aiuto non disponibile."
+                intro: "Help not available."
               },
             ],
-            nextLabel: 'avanti',
-            prevLabel: 'indietro',
-            skipLabel: 'esci',
-            doneLabel: 'fine',
+            nextLabel: 'next',
+            prevLabel: 'prev',
+            skipLabel: 'exit',
+            doneLabel: 'end',
             exitOnEsc: true,
             exitOnOverlayClick: true,
             showStepNumbers: false,

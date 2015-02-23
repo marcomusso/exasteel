@@ -41,7 +41,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <h4 class="panel-title">
+          <h4 class="panel-title" data-toggle="tooltip" title="You can edit a service description or color, it will be saved right away!">
             Services
           </h4>
         </div>
@@ -52,7 +52,6 @@
                     <th style="text-align:center;">Service</th>
                     <th style="text-align:center;">Description</th>
                     <th style="text-align:center;">Color</th>
-                    <th style="text-align:center;">Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,84 +117,8 @@
     </div>
   </div>
 
-<%# Modal for Service data %>
-  <div class="modal fade" id="addvDCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title">Edit vDC</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">Display name</span>
-            <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My vDC">
-          </div>
-          <br>
-          <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">Endpoints</h3>
-              </div>
-              <div class="panel-body">
-                <div class="row">
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div class="input-group">
-                      <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
-                      <input id="emoc_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
-                    </div><br>
-                    <div class="input-group">
-                      <span class="input-group-addon">EMOC username</span>
-                      <input id="emoc_username" name="username" type="text" class="form-control" placeholder="cloudadmin">
-                    </div><br>
-                    <div class="input-group">
-                      <span class="input-group-addon">EMOC password</span>
-                      <input id="emoc_password" name="password" type="password" class="form-control" placeholder="password">
-                    </div>    
-                  </div>      
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div class="input-group">
-                      <span title="HTTPS by default" class="input-group-addon">OVM API endpoint</span>
-                      <input id="ovmm_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
-                    </div><br>
-                    <div class="input-group">
-                      <span class="input-group-addon">OVM username</span>
-                      <input id="ovmm_username" name="username" type="text" class="form-control" placeholder="admin">
-                    </div><br>
-                    <div class="input-group">
-                      <span class="input-group-addon">OVM password</span>
-                      <input id="ovmm_password" name="password" type="password" class="form-control" placeholder="password">
-                    </div>    
-                  </div>     
-                </div>
-              </div>
-          </div>
-          <br>
-          <div class="input-group">
-            <span class="input-group-addon">Description</span>
-            <input id="description" name="asset_description" type="text" class="form-control disabled" placeholder="(autofilled if possible)">
-          </div>
-          <br>
-          <div class="input-group">
-            <span class="input-group-addon">Tags</span>
-            <input id="tags" name="tags" type="text" class="form-control" placeholder="example: main-site, dr-site, vaulting-location, production, dev">
-          </div>
-          <br>
-          <div class="input-group">
-            <span class="input-group-addon">Ignored accounts</span>
-            <input id="ignored_accounts" name="ignored_accounts" type="text" class="form-control" placeholder="space separated account names">
-          </div>
-          <br>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button id="savevDC" type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
 <%# ################################################### %>
-<%# Definizioni help da usare con intro.js %>
+<%# Page-specific help                                  %>
 <%# ################################################### %>
   <script>
     function startIntro(){
@@ -203,13 +126,13 @@
       intro.setOptions({
             steps: [
               {
-                intro: "Aiuto non disponibile."
+                intro: "Help not available."
               },
             ],
-            nextLabel: 'avanti',
-            prevLabel: 'indietro',
-            skipLabel: 'esci',
-            doneLabel: 'fine',
+            nextLabel: 'next',
+            prevLabel: 'prev',
+            skipLabel: 'exit',
+            doneLabel: 'end',
             exitOnEsc: true,
             exitOnOverlayClick: true,
             showStepNumbers: false,
