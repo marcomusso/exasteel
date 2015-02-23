@@ -53,8 +53,8 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
         fill: red;
       }
       .node circle {
-        stroke: steelblue;
-        stroke-width: 1.5px;
+        stroke: black;
+        stroke-width: 1px;
       }
       .node {
         font-size: 12px;

@@ -1,25 +1,9 @@
 var mySessionData={};
 
-// if you want to lookup rela hostname from Exalogic name attribute use this variable and
-// the corresponding function 
+// if you want to lookup real hostname from Exalogic name attribute use this variable and
+// the corresponding function lookupHostname(name,direction)
   var lookupHostnameFlag=true;
-  function lookupHostname(name,direction) {
-    if (lookupHostnameFlag) {
-      // implement your rule here, example:
-      switch (direction) {
-        case 'name2hostname': return name;
-                              break;
-        case 'hostname2name': var env='p';
-                              var number=name.match(/(\d+)$/);
-                              return 'sapvx'+env+number[1];
-                              break;
-        default: return name;
-      }
-    } else {
-      // no difference between names and hostnames
-      return name;
-    }
-  }
+
 // string to color (http://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript)
 var stringToColor = function(str) {
     var hash = 0;

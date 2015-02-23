@@ -25,26 +25,79 @@ var svg;
   var refreshTimer;
   var counterTimer;
 
+function lookupHostname(name,direction) {
+  if (lookupHostnameFlag) {
+    // implement your rule here, example:
+    switch (direction) {
+      case 'name2hostname': return name;
+                            break;
+      case 'hostname2name': var env='p';
+                            var number=name.match(/(\d+)$/);
+                            return 'sapvx'+env+number[1];
+                            break;
+      default: return name;
+    }
+  } else {
+    // no difference between names and hostnames
+    return name;
+  }
+}
+
+function getCurrentSite() {
+  // return site of currently selected vdc: $('#vdc').val()
+  var site='';
+  var tags;
+  var vdc;
+  for (i=0; i<myVDCS.length; i++) {
+    // console.log(myVDCS[i].display_name);
+    if (myVDCS[i].display_name===$('#vdc').val()) { tags=myVDCS[i].tags; }
+  }
+  if (tags.indexOf('moncalieri')!=-1) {
+    site='mo';
+  } else {
+    if (tags.indexOf('settimo')!=-1) {
+      site='st';
+    }
+  }
+  return site;
+}
+
 function updateSwitches() {
   $('#switches > tbody').html('');
   for (var service in myServices) {
-    $('#switches > tbody').append('<tr><td><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'+service+'" data-size="small" data-on="'+service+' ON" data-off="'+service+' OFF"></td></tr>');
+    var myservers=myServices[service]['listenHosts'].join('<br>');
+    $('#switches > tbody').append('<tr><td data-toggle="tooltip" data-placement="left" title="'+myservers+'"><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'+service+'" data-size="small" data-on="'+service+' ON" data-off="'+service+' OFF"></td></tr>');
     // enable bootstraptoogle
     $('.myswitches').bootstrapToggle();
   }
   $('.myswitches').change(function() {
-    // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
-    console.log(myServices[$(this).attr('id')].listenHosts);
+    // console.log(myServices[$(this).attr('id')].listenHosts);
+    var hostname,status,arr;
     if ($(this).prop('checked')) {
       for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
-        console.log('Hightlight ON for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("fill",myServicesColorAndDescription[$(this).attr('id')].color);
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0.8");
+        // highlight ONLY the hostnames which are in this site
+        // split hostname from status
+        arr=myServices[$(this).attr('id')].listenHosts[idx].split(':');
+        hostname=arr[0];
+        status=arr[1];
+        if (hostname.indexOf(getCurrentSite())!=-1 || hostname.indexOf('nc')!=-1) {
+          console.log('Hightlight ON for '+lookupHostname(hostname,'hostname2name')+' ['+hostname+','+status+','+((status!=='0') ? 'green' : 'red')+']');
+          $('.service_'+lookupHostname(hostname,'hostname2name')).attr("fill",myServicesColorAndDescription[$(this).attr('id')].color);
+          $('.service_'+lookupHostname(hostname,'hostname2name')).attr("opacity","0.8");
+          // the circle color represents the status of the guest: red==inactive, green==active
+          $('.status_'+lookupHostname(hostname,'hostname2name')).attr("fill", ((status!=='0') ? 'lime' : 'red'));
+        } else {
+          console.log('ignored '+hostname);
+        }
       }
     } else {
       for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
-        console.log('Hightlight OFF for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0");
+        // split hostname from status
+        arr=myServices[$(this).attr('id')].listenHosts[idx].split(':');
+        hostname=arr[0];
+        console.log('Hightlight OFF for '+lookupHostname(hostname,'hostname2name'));
+        $('.service_'+lookupHostname(hostname,'hostname2name')).attr("opacity","0");
+        $('.status_'+lookupHostname(hostname,'hostname2name')).attr("fill","lightblue");
       }
     }
   });
@@ -52,6 +105,8 @@ function updateSwitches() {
 
 function initPage() {
   console.log("initPage called");
+  // Enable tooltips
+  $("body").tooltip({ selector: '[title]', html: true });
   if ($('#visualization').length) { $("#visualization").val(mySessionData['mapvisualization']); }
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
@@ -73,6 +128,7 @@ function initPage() {
   });
   // if another vdc get selected...
   $('#vdc').change(function() {
+    $('.myswitches').bootstrapToggle('off');
     refreshPage();
   });
   // if the user wants to change the visualization
@@ -396,7 +452,19 @@ function updateTree() {
         return d.name.match("ExalogicControl") ? 6 : 4;
       })
       .attr("fill", function(d){
-        return d.name.match("ExalogicControl") ? "red" : "lightblue";
+        var color='lightblue';
+        if (d.type==='compute-node') {
+          color='lime';
+        } else if (d.type==='vdc') {
+          color='blue';
+        } else {
+          color=d.name.match("ExalogicControl") ? "green" : "lightblue";
+        }
+        return color;
+      })
+      .attr("class", function(d) {
+        var hostname=d.name.split(".",1)[0];
+        return "status_"+hostname;
       });
 
   node.append("svg:rect")

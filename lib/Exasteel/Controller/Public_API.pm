@@ -327,7 +327,7 @@ sub getHostsPerService {
           } else {
               @fields = split (';', $line);
               s/^"|"$//g foreach @fields; # elimino i doppi apici se presenti
-              if (!$result{$fields[$index{'project.id'}]}{'servers'}) {
+              if (!$result{$fields[$index{'project.id'}]}) {
                 $result{$fields[$index{'project.id'}]}{'listenHosts'}=[];
                 $result{$fields[$index{'project.id'}]}{'version'}=$fields[$index{'version'}];
                 $result{$fields[$index{'project.id'}]}{'listenPort'}=$fields[$index{'listenPort'}];
