@@ -81,14 +81,15 @@ function updateSwitches() {
         hostname=arr[0];
         status=arr[1];
         if (hostname.indexOf(getCurrentSite())!=-1 || hostname.indexOf('nc')!=-1) {
-          console.log('Hightlight ON for '+lookupHostname(hostname,'hostname2name')+' ['+hostname+','+status+','+((status!=='0') ? 'green' : 'red')+']');
+          // console.log('Hightlight ON for '+lookupHostname(hostname,'hostname2name')+' ['+hostname+','+status+','+((status!=='0') ? 'green' : 'red')+']');
           $('.service_'+lookupHostname(hostname,'hostname2name')).attr("fill",myServicesColorAndDescription[$(this).attr('id')].color);
           $('.service_'+lookupHostname(hostname,'hostname2name')).attr("opacity","0.8");
           // the circle color represents the status of the guest: red==inactive, green==active
           $('.status_'+lookupHostname(hostname,'hostname2name')).attr("fill", ((status!=='0') ? 'lime' : 'red'));
-        } else {
-          console.log('ignored '+hostname);
         }
+        // else {
+          // console.log('ignored '+hostname);
+        // }
       }
     } else {
       for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
@@ -462,6 +463,8 @@ function updateTree() {
         }
         return color;
       })
+      .attr("stroke", "black")
+      .attr("stroke-width", "1px")
       .attr("class", function(d) {
         var hostname=d.name.split(".",1)[0];
         return "status_"+hostname;

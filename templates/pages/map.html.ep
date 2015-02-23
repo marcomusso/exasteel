@@ -49,13 +49,7 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
         fill: #fff;
         opacity: 0.5;
       }
-      service {
-        fill: red;
-      }
-      .node circle {
-        stroke: black;
-        stroke-width: 1px;
-      }
+
       .node {
         font-size: 12px;
         pointer-events: none;
