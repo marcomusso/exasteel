@@ -195,15 +195,13 @@ sub getVDCGuestsByCN {
   $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Request by $ua @ $ip") if $log_level>0;
 
   my $ovmm_ua = Mojo::UserAgent->new;
+  # $ovmm_ua->connect_timeout(3);
+  $ovmm_ua->request_timeout(6);
 
   # lookup vdc config (username, password, endpoint) in mongodb
   my $vdcs_collection=$db->get_collection('vdcs');
   my $find_result=$vdcs_collection->find({"display_name" => $vdc});
   my @vdcs=$find_result->all;
-
-  # if (@vdcs) {
-  #   $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Found VDC: ".Dumper(@vdcs)) if $log_level>1;
-  # }
 
   my $username=$vdcs[0]{ovmm_username};
   my $password=$vdcs[0]{ovmm_password};
@@ -220,37 +218,36 @@ sub getVDCGuestsByCN {
   if (my $res = $data->success) {
     # copy returned JSON into local hash
     $temp_hash_ref=decode_json($res->body);
+    # convert local hash into desired result hash
+    $result{cnCount}=@{$temp_hash_ref->{'server'}};
+    foreach my $server (@{$temp_hash_ref->{'server'}}) {
+      my @guests;
+      foreach my $guest (@{$server->{'vmIds'}}) {
+        push @guests, {
+                        name => $guest->{'name'},
+                        type => 'guest'
+                      };
+      }
+      push $result{'children'}, {
+                                 name => $server->{'hostname'},
+                                 type => 'compute-node',
+                                 cpus => $server->{'totalProcessorCores'}*$server->{'threadsPerCore'},
+                                 memory => $server->{'memory'},
+                                 threadsPerCore => $server->{'threadsPerCore'},
+                                 totalProcessorCores => $server->{'totalProcessorCores'},
+                                 serverRunState => $server->{'serverRunState'},
+                                 abilityMap => $server->{'abilityMap'},
+                                 guestsCount => scalar @guests,
+                                 children => \@guests
+                                };
+    }
+
+    $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Result: ".Dumper(\%result)) if ($log_level>1);
   } else {
     $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Error in request to OVMM") if ($log_level>0);
     $status{'status'}="ERROR";
     $status{'description'}="Error in request to OVMM";
   }
-
-  # convert local hash into desired result hash
-  $result{cnCount}=@{$temp_hash_ref->{'server'}};
-  foreach my $server (@{$temp_hash_ref->{'server'}}) {
-    my @guests;
-    foreach my $guest (@{$server->{'vmIds'}}) {
-      push @guests, {
-                      name => $guest->{'name'},
-                      type => 'guest'
-                    };
-    }
-    push $result{'children'}, {
-                               name => $server->{'hostname'},
-                               type => 'compute-node',
-                               cpus => $server->{'totalProcessorCores'}*$server->{'threadsPerCore'},
-                               memory => $server->{'memory'},
-                               threadsPerCore => $server->{'threadsPerCore'},
-                               totalProcessorCores => $server->{'totalProcessorCores'},
-                               serverRunState => $server->{'serverRunState'},
-                               abilityMap => $server->{'abilityMap'},
-                               guestsCount => scalar @guests,
-                               children => \@guests
-                              };
-  }
-
-  $log->debug("Exasteel::Controller::Public_API::getVDCGuestsByCN | Result: ".Dumper(\%result)) if ($log_level>1);
 
   $self->respond_to(
     json => sub {

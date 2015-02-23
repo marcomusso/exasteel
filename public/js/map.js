@@ -591,7 +591,7 @@ function get_random_color() {
 }
 
 function mouse(e) {
-  console.log('mouse called');
+  // console.log('mouse called');
   return [e.pageX - rx, e.pageY - ry];
 }
 
