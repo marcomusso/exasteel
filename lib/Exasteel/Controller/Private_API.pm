@@ -311,7 +311,6 @@ sub addCMDB {
   }
 
   $self->respond_to(
-    json => { json => { "status" => $status, "description" => $description } }
     json => sub {
       if ($status{'status'} eq 'ERROR') {
         $self->render(json => \%status, status => 404);
