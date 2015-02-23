@@ -57,7 +57,7 @@ function initPage() {
     refreshPage();
   });
 
-  // create switches based on locally saved services
+  // create switches based on locally saved services TODO check date
   if (Modernizr.localstorage && localStorage["myServices"]) {
     // window.localStorage is available!
     myServices = JSON.parse(localStorage.getItem('myServices'));
@@ -75,7 +75,7 @@ function initPage() {
     if ($(this).prop('checked')) {
       for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
         console.log('Hightlight ON for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("fill",stringToColour($(this).attr('id')));
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("fill",myServicesColorAndDescription[$(this).attr('id')].color);
         $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0.8");
       }
     } else {

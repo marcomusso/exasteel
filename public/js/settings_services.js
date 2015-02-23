@@ -1,5 +1,10 @@
 var myServices;
+var myServicesColorAndDescription={};
 var myCMDBs;
+
+var d=new Date();
+var now=Math.floor(d.getTime()/1000);
+var maxHoursDifference=6;
 
 function validateCMDBConfigAndSave() {
   console.log('check params and save cmdb');
@@ -28,28 +33,8 @@ function validateCMDBConfigAndSave() {
   updateCMDBList();
 }
 
-function validateServiceConfigAndSave() {
-  console.log('Validate CMDB config and save');
-}
-
 function checkEndpoint() {
   console.log('password entered, check endpoint access and get description');
-}
-
-function removeServices(id) {
-  console.log('removeServices '+id+' from list AND db (via DELETE API)');
-  // TODO are you sure????
-  $.ajax({
-    url: '/api/v1/vdc/'+encodeURIComponent(id)+'.json',
-    type: 'DELETE',
-    success: function(result) {
-      alertThis('Deleted successfully','success');
-    },
-    error: function(jqXHR, textStatus, errorThrown ) {
-      alertThis('Error deleting: '+errorThrown,'danger');
-    }
-  });
-  updateServiceList();
 }
 
 function editCMDB(index) {
@@ -64,15 +49,6 @@ function editCMDB(index) {
     $('#active').val(myCMDBs[index].active);
   // show modal
   $('#addCMDBmodal').modal('show');
-}
-
-function editServices(srv) {
-  console.log('edit Services');
-  // fill fields
-    $('#display_name').val(myServices[srv].display_name);
-    $('#description').val(myServices[srv].description);
-  // show modal
-  $('#addServicemodal').modal('show');
 }
 
 function updateCMDBList() {
@@ -107,53 +83,23 @@ function updateCMDBList() {
 }
 
 function updateServiceList() {
-  spinThatWheel(true);
-  $.getJSON('/api/v1/gethostsperservice.json', function( services ) {
-    if (services) {
-      // it's an obj/hash with a single service as key
-      myServices=services;
-      $("#servicestable > tbody").html("");
-      for (var service in services) {
-        var service_name;
-        if (!services[service].description) { services[service].description='No description available'; }
-        // if (services[service].display_name) { service_name=services[service].display_name.replace(/ /g,'_'); }
-        $('#servicestable tbody').append('<tr><td><strong>'+service+'</strong></td><td width=15%>'+services[service].description+'</td><td><div style="background-color:'+stringToColour(service)+';width:150px;"></div></td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editServices(\''+service+'\');"><i class="fa fa-pencil"></i></a></td></tr>');
-      }
-      $('#servicescount').text(Object.keys(services).length);
-      // save locally myServices
-        if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
-        // window.localStorage is available!
-        localStorage["myServices"] = JSON.stringify(myServices);
-        var d=new Date();
-        localStorage["myServices.date"] = Math.round(d.getTime()/1000);
-      }
-    } else {
-      $("#services > tbody").html("");
-      $('#servicescount').text(0);
-      alertThis('No Services found. Check CMDB source or try adding one!','danger');
+  $("#servicestable > tbody").html("");
+  for (var service in myServices) {
+    if (typeof myServicesColorAndDescription[service] == 'undefined') {
+      myServicesColorAndDescription[service]={
+        description: 'No description available.',
+        color: stringToColor(service)
+      };
     }
-    spinThatWheel(false);
-  });
+    $('#servicestable > tbody').append('<tr><td><strong>'+service+'</strong></td><td width=55%><input id="'+service+'_description" type="text" class="form-control" value="'+myServicesColorAndDescription[service].description+'"></td><td><input id='+service+'_color" value="'+myServicesColorAndDescription[service].color+'" type="color" /></td></tr>');
+  }
+  $('#servicescount').text(Object.keys(myServices).length);
 }
 
 function initPage() {
   console.log( "initPage called" );
   // Enable tooltips
   $("body").tooltip({ selector: '[title]' });
-  // $( "#settings_container .form-control" ).change(function() {
-  //   console.log("form changed: "+$(this).attr('id')+" = "+ $(this).val());
-  //   switch($(this).attr('id')) {
-  //     case 'units': mySessionData['units']=$(this).val();
-  //                   break;
-  //     case 'theme': mySessionData['theme']=$(this).val();
-  //                   break;
-  //     default: break;
-  //   }
-  //   // quick feedback to the user: settings accepted!
-  //     $("#saved").fadeIn(750);
-  //     $("#saved").fadeOut(1750);
-  //   setSessionData();
-  // });
 
   $('#addCMDB').click(function() {
     $('#display_name').val('');
@@ -166,25 +112,51 @@ function initPage() {
     $('#addCMDBmodal').modal('show');
   });
 
-  $('#addService').click(function() {
-    $('#display_name').val('');
-    $('#emoc_endpoint').val('');
-    $('#emoc_username').val('');
-    $('#emoc_password').val('');
-    $('#ovmm_endpoint').val('');
-    $('#ovmm_username').val('');
-    $('#ovmm_password').val('');
-    $('#description').val('');
-    $('#tags').val('');
-    $('#ignored_accounts').val('');
-    $('#addServicemodal').modal('show');
-  });
-
   $('#cmdb_password').on('click', checkEndpoint);
-
   $('#saveCMDB').on('click', validateCMDBConfigAndSave);
 
-  $('#saveService').on('click', validateServiceConfigAndSave);
+  // check localstorage for myServices and myServices.date
+  if (Modernizr.localstorage && localStorage["myServices.date"] > (now - 60*60*maxHoursDifference)) {
+    // save data is still fresh (not older than X hours)
+    if (localStorage.getItem('myServices')) {myServices = JSON.parse(localStorage.getItem('myServices'));}
+    if (localStorage.getItem('myServicesColorAndDescription')) {myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));}
+  } else {
+    console.log('stale services, refresh from backend');
+    // get services from backend
+    $.getJSON('/api/v1/gethostsperservice.json', function( services ) {
+      if (services) {
+        // it's an obj/hash with a single service as key
+        myServices=services;
+        // save locally myServices
+          if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
+          // window.localStorage is available!
+          localStorage["myServices"] = JSON.stringify(myServices);
+          localStorage["myServices.date"] = now;
+        }
+      } else {
+        $("#services > tbody").html("");
+        $('#servicescount').text(0);
+        alertThis('No Services found. Check CMDB source or try adding one!','danger');
+      }
+      spinThatWheel(false);
+    });
+  }
+
+  // when changing service description OR color save it! (bind on tbale because rith now there are no rows!)
+  $('#servicestable').change(function(e){
+    // TODO change method of detecting which service property has changed
+    arr=$(e.target).attr('id').split("_");
+    console.log(arr);
+    var service=arr[0];  // service name
+    var property=arr[1]; // description or color
+    myServicesColorAndDescription[service][property]=$(e.target).val();
+    console.log('service '+property+' changed for '+service+', value: '+$(e.target).val());
+    if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
+      localStorage["myServicesColorAndDescription"] = JSON.stringify(myServicesColorAndDescription);
+    }
+    $("#saved").fadeIn(750);
+    $("#saved").fadeOut(1750);
+  });
 
   // fill tables
   updateCMDBList();
