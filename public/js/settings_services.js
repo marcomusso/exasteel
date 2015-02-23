@@ -4,7 +4,7 @@ var myCMDBs;
 
 var d=new Date();
 var now=Math.floor(d.getTime()/1000);
-var maxHoursDifference=6;
+var maxHoursDifference=1;
 
 function validateCMDBConfigAndSave() {
   console.log('check params and save cmdb');

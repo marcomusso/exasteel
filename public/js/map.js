@@ -1,5 +1,10 @@
 var myVDCS;
 var myServices;
+var myServicesColorAndDescription;
+
+var d=new Date();
+var now=Math.floor(d.getTime()/1000);
+var maxHoursDifference=0.2;
 
 var margins = {
   top: 10,
@@ -20,13 +25,34 @@ var svg;
   var refreshTimer;
   var counterTimer;
 
+function updateSwitches() {
+  $('#switches > tbody').html('');
+  for (var service in myServices) {
+    $('#switches > tbody').append('<tr><td><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'+service+'" data-size="small" data-on="'+service+' ON" data-off="'+service+' OFF"></td></tr>');
+    // enable bootstraptoogle
+    $('.myswitches').bootstrapToggle();
+  }
+  $('.myswitches').change(function() {
+    // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
+    console.log(myServices[$(this).attr('id')].listenHosts);
+    if ($(this).prop('checked')) {
+      for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
+        console.log('Hightlight ON for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("fill",myServicesColorAndDescription[$(this).attr('id')].color);
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0.8");
+      }
+    } else {
+      for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
+        console.log('Hightlight OFF for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
+        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0");
+      }
+    }
+  });
+}
+
 function initPage() {
   console.log("initPage called");
-  // Enable tooltips
-  // $('[data-toggle="tooltip"]').tooltip();
-
   if ($('#visualization').length) { $("#visualization").val(mySessionData['mapvisualization']); }
-
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
       myVDCS=vdcs;
@@ -45,7 +71,6 @@ function initPage() {
   }).fail(function(){
     alertThis('Error in getting VDC list','danger');
   });
-
   // if another vdc get selected...
   $('#vdc').change(function() {
     refreshPage();
@@ -56,36 +81,30 @@ function initPage() {
     setSessionData();
     refreshPage();
   });
-
-  // create switches based on locally saved services TODO check date
-  if (Modernizr.localstorage && localStorage["myServices"]) {
-    // window.localStorage is available!
-    myServices = JSON.parse(localStorage.getItem('myServices'));
-    // console.log(myServices);
-    for (var service in myServices) {
-      $('#switches tbody').append('<tr><td><input type="checkbox" class="myswitches" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="'+service+'" data-size="small" data-on="'+service+' ON" data-off="'+service+' OFF"></td></tr>');
-      // enable bootstraptoogle
-      $('.myswitches').bootstrapToggle();
-    }
+  // create switches based on locally saved services (refresh is TTL expired)
+  if (Modernizr.localstorage && localStorage["myServices.date"] > (now - 60*60*maxHoursDifference)) {
+    if (localStorage.getItem('myServices')) {myServices = JSON.parse(localStorage.getItem('myServices'));}
+    if (localStorage.getItem('myServicesColorAndDescription')) {myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));}
+    updateSwitches();
+  } else {
+    console.log('stale services, refresh from backend');
+    // get services from backend
+    $.getJSON('/api/v1/gethostsperservice.json', function( services ) {
+      if (services) {
+        // it's an obj/hash with a single service as key
+        myServices=services;
+        // save locally myServices
+        if (Modernizr.localstorage) {
+          localStorage["myServices"] = JSON.stringify(myServices);
+          localStorage["myServices.date"] = now;
+        }
+        updateSwitches();
+      } else {
+        alertThis('No Services found. Check CMDB source or try adding one!','danger');
+      }
+      spinThatWheel(false);
+    });
   }
-
-  $('.myswitches').change(function() {
-    // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
-    console.log(myServices[$(this).attr('id')].listenHosts);
-    if ($(this).prop('checked')) {
-      for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
-        console.log('Hightlight ON for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("fill",myServicesColorAndDescription[$(this).attr('id')].color);
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0.8");
-      }
-    } else {
-      for (idx = 0; idx < myServices[$(this).attr('id')].listenHosts.length; idx++) {
-        console.log('Hightlight OFF for '+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name'));
-        $('.service_'+lookupHostname(myServices[$(this).attr('id')].listenHosts[idx],'hostname2name')).attr("opacity","0");
-      }
-    }
-  });
-
   $('#autorefresh-switch').change(function() {
     // console.log('Toggle '+$(this).attr('id')+' to '+$(this).prop('checked'));
     if ($(this).prop('checked')) {
