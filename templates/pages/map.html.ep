@@ -23,33 +23,31 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
       overflow: auto;
     }
 
-    /* FORCE START */
-      .node text {
-        font-size: 11px sans-serif;
-        pointer-events: none;
-      }
-      text.parent {
-        fill: #1f77b4;
-      }
-      circle.node {
-        cursor: pointer;
-        stroke: #000000;
-        stroke-width: .5px;
-      }
-      line.link {
-        fill: none;
-        stroke: #9ecae1;
-        stroke-width: 1.5px;
-      }
-    /* FORCE END */
+    /* COLLAPSIBLE TREE START */
+      //.node {
+      //  cursor: pointer;
+      //}
+      //.node circle {
+      //  fill: #fff;
+      //  stroke: steelblue;
+      //  stroke-width: 1.5px;
+      //}
+      //.node text {
+      //  font: 10px sans-serif;
+      //}
+      //.link {
+      //  fill: none;
+      //  stroke: #ccc;
+      //  stroke-width: 1.5px;
+      //}
+    /* COLLAPSIBLE TREE END */
 
-    /* TREE START */
+    /* RADIAL TREE START */
       path.arc {
         cursor: move;
         fill: #fff;
         opacity: 0.5;
       }
-
       .node {
         font-size: 12px;
         pointer-events: none;
@@ -59,29 +57,14 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
         stroke: #ccc;
         stroke-width: 1.5px;
       }
-    /* TREE END */
-
-    /* BARS START */
-      .node rect {
-        cursor: pointer;
-        <%# fill: #fff;
-        fill-opacity: .5;
-        stroke: #3182bd;
-        stroke-width: 1.5px; %>
-      }
-      path.link {
-        fill: none;
-        stroke: #9ecae1;
-        stroke-width: 1.5px;
-      }
-    /* BARS END */
+    /* RADIAL TREE END */
   % end
 
 <div class="row">
   <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
     <select id="vdc" class="form-control" name="vdc"></select>
   </div>
-  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" style="overflow:auto;">
     <div id="tags"></div>
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
@@ -111,7 +94,7 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
           </table>
         </div>
         <div class="panel-footer">
-          Select:&nbsp;<a class="btn btn-xs btn-success" href="#" onclick=switchAll('on');>All</a>&nbsp;<a class="btn btn-xs btn-danger" onclick=switchAll('off');>None</a>
+          All:&nbsp;<a class="btn btn-xs btn-success" href="#" onclick=switchAll('on');>ON</a>&nbsp;<a class="btn btn-xs btn-danger" onclick=switchAll('off');>OFF</a>
         </div>
     </div>
   </div>
