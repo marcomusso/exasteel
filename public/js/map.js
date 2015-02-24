@@ -82,8 +82,8 @@ function getCurrentEnv() {
 
 function getExalogicControlStatus(d) {
   console.log(d);
-  var color=(1) ? "green" : "red";
-  return color;
+  arr=d.name.split(':');
+  return (arr[1]==='1') ? "lime" : "red";
 }
 
 function updateSwitches() {
@@ -342,7 +342,13 @@ function updateTree() {
       .attr("dy", ".31em")
       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
       .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-      .text(function(d) { return d.name.split(".",1)[0]; });
+      .text(function(d) {
+        var myname=d.name.split(".",1)[0];
+        if (d.name.match("ExalogicControl")) {
+          arr=d.name.split(':'); myname=arr[0];
+        }
+        return myname;
+      });
 }
 
 function tick() {

@@ -223,8 +223,12 @@ sub getVDCGuestsByCN {
     foreach my $server (@{$temp_hash_ref->{'server'}}) {
       my @guests;
       foreach my $guest (@{$server->{'vmIds'}}) {
+        my $isRunning;
+        if ($guest->{'name'} =~ /ExalogicControl/) {
+          $isRunning=':'.(getVmIdDetails(@vdcs,$guest->{'uri'})->{'vmRunState'} ? '1' : '0');
+        } else { $isRunning=''; }
         push @guests, {
-                        name => $guest->{'name'},
+                        name => $guest->{'name'}.$isRunning,
                         type => 'guest'
                       };
       }
@@ -361,6 +365,27 @@ sub getHostsPerService {
       }
     }
   );
+}
+
+sub getVmIdDetails() {
+  my @vdcs=shift;
+  my $url = shift;
+
+  my $temp_hash_ref;
+  my $username=$vdcs[0]{ovmm_username};
+  my $password=$vdcs[0]{ovmm_password};
+
+  my $ovmm_ua = Mojo::UserAgent->new;
+  $ovmm_ua->request_timeout(6);
+
+  $url =~ s/https:\/\//https:\/\/$username\:$password@/g;
+
+  my $data=$ovmm_ua->get($url => {Accept => 'application/json'});
+  if (my $res = $data->success) {
+     $temp_hash_ref=decode_json($res->body);
+  }
+
+  return $temp_hash_ref;
 }
 
 "I came here to find the Southern Oracle (Neverending Story, 1984)";
