@@ -42,7 +42,7 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h4 class="panel-title" data-toggle="tooltip" title="You can edit a service description or color, it will be saved right away!">
-            Services
+            Services (all environments)
           </h4>
         </div>
         <div class="panel-body">

@@ -116,14 +116,13 @@ function initPage() {
   $('#saveCMDB').on('click', validateCMDBConfigAndSave);
 
   // check localstorage for myServices and myServices.date
-  if (Modernizr.localstorage && localStorage["myServices.date"] > (now - 60*60*maxHoursDifference)) {
-    // save data is still fresh (not older than X hours)
+  if (Modernizr.localstorage) {
     if (localStorage.getItem('myServices')) {myServices = JSON.parse(localStorage.getItem('myServices'));}
     if (localStorage.getItem('myServicesColorAndDescription')) {myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));}
   } else {
     console.log('stale services, refresh from backend');
     // get services from backend
-    $.getJSON('/api/v1/gethostsperservice.json', function( services ) {
+    $.getJSON('/api/v1/gethostsperservice/PROD,SVIL,TEST,CLLD.json', function( services ) {
       if (services) {
         // it's an obj/hash with a single service as key
         myServices=services;

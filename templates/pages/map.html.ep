@@ -86,9 +86,8 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
     <select id="visualization" class="form-control" name="visualization">
-      <option value="tree">Radial Tree</option>
-      <option value="bars">Bars</option>
-      <option value="force">Force</option>
+      <option value="tree">Radial Guest Tree</option>
+      <option value="domain">Domain Tree</option>
     </select>
   </div>
   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
@@ -112,7 +111,7 @@ var mock='<%== ($self->param('mock')) ? 'on' : 'off' %>';
           </table>
         </div>
         <div class="panel-footer">
-          Select:&nbsp;<a class="btn btn-xs btn-default" href="#" onclick=switchAll('on');>All</a>&nbsp;<a class="btn btn-xs btn-default" onclick=switchAll('off');>None</a>
+          Select:&nbsp;<a class="btn btn-xs btn-success" href="#" onclick=switchAll('on');>All</a>&nbsp;<a class="btn btn-xs btn-danger" onclick=switchAll('off');>None</a>
         </div>
     </div>
   </div>
