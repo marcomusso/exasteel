@@ -90,7 +90,7 @@ sub startup {
     $r->route('/api/v1/vdcaccounts/:vdc', format => [qw(json)]) ->via('get') ->to('Public_API#VDCAccounts');
     $r->route('/api/v1/vdckpi/:vdc_name')                       ->via('get') ->to('Public_API#VDCKPI');
     $r->route('/api/v1/getvdcguestsbycn/:vdc_name')             ->via('get') ->to('Public_API#getVDCGuestsByCN');
-    $r->route('/api/v1/gethostsperservice')                     ->via('get') ->to('Public_API#getHostsPerService');
+    $r->route('/api/v1/gethostsperservice/:env')                ->via('get') ->to('Public_API#getHostsPerService');
   ###################################################################################################
 
   ###################################################################################################

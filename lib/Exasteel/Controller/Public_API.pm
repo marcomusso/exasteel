@@ -278,6 +278,7 @@ sub getHostsPerService {
   my $db=$self->db;
   my $log=$self->public_api_log;
   my $log_level=$self->log_level;
+  my $env=uc($self->param('env'));
 
   my %status=(status => 'OK', description => '' );
   my %result;
@@ -295,7 +296,9 @@ sub getHostsPerService {
   if ( @cmdb and (0+@cmdb)==1) {
     # basic auth
     my $cmdb_ua = Mojo::UserAgent->new;
-    my $cmdb_url='http://'.$cmdb[0]->{'cmdb_username'}.':'.$cmdb[0]->{'cmdb_password'}.'@'.$cmdb[0]->{'cmdb_endpoint'};
+    my $endpoint = $cmdb[0]->{'cmdb_endpoint'};
+    $endpoint =~ s/{env}/$env/g;
+    my $cmdb_url='http://'.$cmdb[0]->{'cmdb_username'}.':'.$cmdb[0]->{'cmdb_password'}.'@'.$endpoint;
 
     $log->debug("Exasteel::Controller::Public_API::getHostsPerService | URL: ".$cmdb_url) if $log_level>1;
     my $data=$cmdb_ua->get($cmdb_url);
