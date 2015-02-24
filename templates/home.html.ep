@@ -13,7 +13,7 @@
         <div class="panel panel-primary">
           <div class="panel-heading text-center">Welcome to Exasteel</div>
           <div class="panel-body">
-            Be sure to add some VDCs in <a class="btn btn-sm btn-default" href="/settings">Settings</a>, then you can explore their <a class="btn btn-sm btn-default" href="/kpi">KPIs</a>&nbsp;or the&nbsp;<a class="btn btn-sm btn-default" href="/map">Guest Map</a>.
+            Be sure to add some VDCs in <a class="btn btn-sm btn-default" href="/settings/vdc">Settings</a>, then you can explore their <a class="btn btn-sm btn-default" href="/kpi">KPIs</a>&nbsp;or the&nbsp;<a class="btn btn-sm btn-default" href="/map">Guest Map</a>.
           </div>
         </div>
       </div>
