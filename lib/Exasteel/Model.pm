@@ -4,19 +4,22 @@ use strict;
 use warnings;
 use MongoDB;
 use MongoDB::OID;
-use Mojo::Loader;
 use Mojo::Log;
 
 # Customize log file location and minimum log level
 my $log = Mojo::Log->new(path => 'log/model.log', level => 'debug');
 my $debug=1;
 
-# Reloadable Model, for future implementation
-my $modules = Mojo::Loader->search('Exasteel::Model');
-
-for my $module (@$modules) {
-  Mojo::Loader->load($module)
-}
+####################################
+# Removed for Mojolicious 6.x
+####################################
+# # Reloadable Model, for future implementation
+# use Mojo::Loader;
+# my $modules = Mojo::Loader->search('Exasteel::Model');
+# for my $module (@$modules) {
+#   Mojo::Loader->load($module)
+# }
+####################################
 
 my $mongoclient;
 my $mongodb;
