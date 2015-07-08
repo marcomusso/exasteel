@@ -91,9 +91,13 @@ function updateServiceList() {
         color: stringToColor(service)
       };
     }
-    $('#servicestable > tbody').append('<tr><td><strong>'+service+'</strong></td><td width=55%><input id="'+service+'_description" type="text" class="form-control" value="'+myServicesColorAndDescription[service].description+'"></td><td><input id='+service+'_color" value="'+myServicesColorAndDescription[service].color+'" type="color" /></td></tr>');
+    $('#servicestable > tbody').append('<tr><td><strong>'+service+'</strong></td><td width=55%><input id="'+service+'_description" type="text" class="form-control" value="'+myServicesColorAndDescription[service].description+'"></td><td><input id="'+service+'_color" value="'+myServicesColorAndDescription[service].color+'" type="color" /></td></tr>');
   }
   $('#servicescount').text(Object.keys(myServices).length);
+  // save myServicesColorAndDescription (basically for the first time)
+  if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
+    localStorage["myServicesColorAndDescription"] = JSON.stringify(myServicesColorAndDescription);
+  }
 }
 
 function initPage() {
@@ -118,7 +122,9 @@ function initPage() {
   // check localstorage for myServices and myServices.date
   if (Modernizr.localstorage) {
     if (localStorage.getItem('myServices')) {myServices = JSON.parse(localStorage.getItem('myServices'));}
-    if (localStorage.getItem('myServicesColorAndDescription')) {myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));}
+    if (localStorage.getItem('myServicesColorAndDescription')) {
+      myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));
+    }
   } else {
     console.log('stale services, refresh from backend');
     // get services from backend
