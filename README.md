@@ -59,8 +59,8 @@ A lot!
 
 # Screenshots
 
-![host2service](screenshot/radial_tree.png)
-![resources](screenshot/resources.png)
+![host2service](screenshots/radial_tree.png)
+![resources](screenshots/resources.png)
 
 ## Versioning
 
