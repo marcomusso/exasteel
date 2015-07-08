@@ -6,7 +6,7 @@ This started as a Mojolicious boilerplate, then turned into a Mojolicious demo a
 
 ## Prerequisites
 
-- [Mojolicious](http://mojolicio.us/) developed on lastet... (5.71 right now)
+- [Mojolicious](http://mojolicio.us/) developed on latest... (6.11 right now)
     - Mojolicious::Plugin::Config
 - [Bootstrap](http://getbootstrap.com/) (3.3.1)
 - [Font Awesome](http://fortawesome.github.io/Font-Awesome/) (4.2.0)
@@ -27,6 +27,40 @@ This started as a Mojolicious boilerplate, then turned into a Mojolicious demo a
 - Other software needed
     - pod2html to generate API docs from source (see script/generate_api_docs.sh)
     - git-cache-meta to handle permission in a git repo
+
+## Database
+
+See script/dbinit.js for a (very) basic model/collections description. Create a new database and its collections in mongo by giving this command:
+
+    mongo <scripts/dbinit.js
+
+# How to start
+
+You need a few things:
+
+* a recent Perl installation (let's say >=5.18.4), if you are not an admin on your computer I suggest ``perlbrew`` to create your own Perl (+modules) local installation; in this case you need quite a lot of space in your home dir (let's say a few hundreds MB)
+* then fire up `cpan` to install the required modules in a breeze:
+
+    cpan Mojolicious Mojolicious::Plugin::I18N Mojolicious::Plugin::RenderFile MongoDB DateTime Digest::MD5
+
+After a while you should have everything to try to start the app... In the cloned directory type:
+
+    morbo -v script/exasteel
+
+Which starts the development server for a Mojolicious app, it should respond with (the port can vary, see .conf file):
+
+    Server available at http://127.0.0.1:3000.
+
+Open your browser and... well, you know (probably you'll want to take a look at `script/dbinit.js` for the login credentials :).
+
+# TODO
+
+A lot!
+
+# Screenshots
+
+![host2service](screenshot/radial_tree.png)
+![resources](screenshot/resources.png)
 
 ## Versioning
 

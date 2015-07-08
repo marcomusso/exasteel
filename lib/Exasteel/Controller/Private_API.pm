@@ -130,7 +130,8 @@ sub getVDCs {
   if ( @vdcs and (0+@vdcs)>0) {
       if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs found $#vdcs VDCs"); }
   } else {
-    # no VDCs found
+    # TODO no VDCs found
+    $log->debug("Exasteel::Controller::Private_API::getVDCs | TODO: no VDCs found");
   }
 
   if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::getVDCs | vDCs: ".Dumper(@vdcs)); }
@@ -291,7 +292,7 @@ sub addCMDB {
   my $cmdbs_collection=$self->db->get_collection('cmdbs');
   my $id = $cmdbs_collection->update(
       { "display_name" => $params->{'display_name'} }, # where clause
-      { '$set' => {                            # set new values received via post
+      { '$set' => {                                    # set new values received via post
           "cmdb_endpoint"     => $params->{'cmdb_endpoint'},
           "cmdb_username"     => $params->{'cmdb_username'},
           "cmdb_password"     => $params->{'cmdb_password'},
@@ -300,7 +301,7 @@ sub addCMDB {
           "active"            => $params->{'active'},
         }
       },
-      { 'upsert' => 1 }                       # update or insert
+      { 'upsert' => 1 }                               # update or insert
   );
 
   $log->debug("Exasteel::Controller::Private_API::addCMDB | insert result: ".Dumper($id)) if ($log_level>0);
