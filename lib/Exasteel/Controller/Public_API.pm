@@ -185,8 +185,7 @@ sub getVDCGuestsByCN {
   my $self=shift;
   my $db=$self->db;
   my $log=$self->public_api_log;
-  # my $log_level=$self->log_level;
-  my $log_level=1;
+  my $log_level=$self->log_level;
   my $vdc=url_unescape($self->param('vdc_name'));
   my %status=(status => 'OK', description => '' );
 
@@ -222,7 +221,20 @@ sub getVDCGuestsByCN {
     $result{cnCount}=@{$temp_hash_ref->{'server'}};
     foreach my $server (@{$temp_hash_ref->{'server'}}) {
       my @guests;
-      foreach my $guest (@{$server->{'vmIds'}}) {
+      # the API returns an object and not an array when there is only one vm on a cn
+      if (ref $server->{'vmIds'} eq 'ARRAY') {
+        foreach my $guest (@{$server->{'vmIds'}}) {
+          my $isRunning;
+          if ($guest->{'name'} =~ /ExalogicControl/) {
+            $isRunning=':'.(getVmIdDetails(@vdcs,$guest->{'uri'})->{'vmRunState'} ? '1' : '0');
+          } else { $isRunning=''; }
+          push @guests, {
+                          name => $guest->{'name'}.$isRunning,
+                          type => 'guest'
+                        };
+        }
+      } else {
+        my $guest=$server->{'vmIds'};
         my $isRunning;
         if ($guest->{'name'} =~ /ExalogicControl/) {
           $isRunning=':'.(getVmIdDetails(@vdcs,$guest->{'uri'})->{'vmRunState'} ? '1' : '0');
@@ -232,6 +244,7 @@ sub getVDCGuestsByCN {
                         type => 'guest'
                       };
       }
+
       push $result{'children'}, {
                                  name => $server->{'hostname'},
                                  type => 'compute-node',
@@ -311,7 +324,7 @@ sub getHostsPerService {
       # our CMDB returns a CSV like this:
       #  id;project.id;name;bank;environment.name;infrastructure;type;version;family;status;domain;userName;listenPort;listenHosts;adminURL;adminHost;adminPort;scriptName;wlsAdminPasswd;t3protocol;url;
       # "1684361";"MAUP0";"MAUP0";"MB";"PROD";"Intranet";"EXA-WEBLOGIC";"10.3.6";"J2EE-AS";"OPERATING";"mch1036Domain";"wl10";"7914";"saxstp016,saxstp017,saxstp014,saxstp015,";"http://saxncp013:7917/console";"7917";"saxncp013";"";"";"";"";
-    
+
       # start converting a CSV into an hash
       my $record_number=0;
       my %index;
