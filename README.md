@@ -2,7 +2,7 @@
 
 This started as a Mojolicious boilerplate, then turned into a Mojolicious demo app then as a utility to visualize some KPI of an Exalogic infrastructure using D3.
 
-**This is currently work in progess**
+Current status: **work in progess**
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@ This started as a Mojolicious boilerplate, then turned into a Mojolicious demo a
 - [Bootstrap](http://getbootstrap.com/) (3.3.1)
 - [Font Awesome](http://fortawesome.github.io/Font-Awesome/) (4.2.0)
 
-- Librerie javascript:
+- Javascript libraries:
     - [jquery (>=2.0.3)](http://jquery.com) (2.1.1)
     - [D3](http://d3js.org/) (3.4.13)
       - [d3-tip](http://labratrevenge.com/d3-tip) (0.6.6)
@@ -19,18 +19,18 @@ This started as a Mojolicious boilerplate, then turned into a Mojolicious demo a
     - [intro.js](http://usablica.github.io/intro.js/) v0.9.0
     - [Bootstrap Toggle](http://www.bootstraptoggle.com/) v2.2.0
 
-- Additional Perl modules
+- Additional Perl modules (optional)
     - IO:Socket (1.36)
     - MIME::Lite (3.030)
     - EV (4.18)
 
 - Other software needed
-    - pod2html to generate API docs from source (see script/generate_api_docs.sh)
-    - git-cache-meta to handle permission in a git repo
+    - `pod2html` to generate API docs from source (see `script/generate_api_docs.sh`)
+    - `git-cache-meta` to handle permission in a git repo
 
 ## Database
 
-See script/dbinit.js for a (very) basic model/collections description. Create a new database and its collections in mongo by giving this command:
+See `script/dbinit.js` for a (very) basic model/collections description. Create a new database and its collections in mongo by giving this command:
 
     mongo <scripts/dbinit.js
 
@@ -38,7 +38,7 @@ See script/dbinit.js for a (very) basic model/collections description. Create a 
 
 You need a few things:
 
-* a recent Perl installation (let's say >=5.18.4), if you are not an admin on your computer I suggest ``perlbrew`` to create your own Perl (+modules) local installation; in this case you need quite a lot of space in your home dir (let's say a few hundreds MB)
+* a recent Perl installation (let's say >=5.18.4), if you are not an admin on your computer I suggest `perlbrew` to create your own Perl (+modules) local installation; in this case you need quite a lot of space in your home dir (let's say a few hundreds MB)
 * then fire up `cpan` to install the required modules in a breeze:
 
     cpan Mojolicious Mojolicious::Plugin::I18N Mojolicious::Plugin::RenderFile MongoDB DateTime Digest::MD5
@@ -47,7 +47,7 @@ After a while you should have everything to try to start the app... In the clone
 
     morbo -v script/exasteel
 
-Which starts the development server for a Mojolicious app, it should respond with (the port can vary, see .conf file):
+Which starts the development server for a Mojolicious app, it should respond with (the port can vary, see `exasteel.conf` file):
 
     Server available at http://127.0.0.1:3000.
 
