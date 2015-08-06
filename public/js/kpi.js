@@ -284,9 +284,7 @@ function fillKPI(element) {
 
 function initPage() {
   console.log( "initPage called" );
-  // Enable tooltips
-  $("body").tooltip({ selector: '[title]' });
-
+  alertThis('This page is mocked. Work in progress.','warning');
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
       MyVDCS=vdcs;

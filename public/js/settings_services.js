@@ -102,8 +102,6 @@ function updateServiceList() {
 
 function initPage() {
   console.log( "initPage called" );
-  // Enable tooltips
-  $("body").tooltip({ selector: '[title]' });
 
   $('#addCMDB').click(function() {
     $('#display_name').val('');

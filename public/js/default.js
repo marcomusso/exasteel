@@ -174,6 +174,8 @@ $("document").ready(function() {
   spinThatWheel(false);
   refreshIndicator(false);
   $("#saved").fadeOut(0);
+  // Enable tooltips
+    $("body").tooltip({ selector: '[title]' });
   // let's get session data and call initPage()
     $.getJSON( "/api/getsession.json", function( data ) {
       $.each( data, function( key, val ) {

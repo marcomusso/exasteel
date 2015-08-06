@@ -131,8 +131,6 @@ function updateSwitches() {
 
 function initPage() {
   console.log("initPage called");
-  // Enable tooltips
-  $("body").tooltip({ selector: '[title]', html: true });
   if ($('#visualization').length) { $("#visualization").val(mySessionData['mapvisualization']); }
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
