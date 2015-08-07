@@ -215,23 +215,23 @@ function drawGraph() {
                    svg.append("g")
                       .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
                    break;
-    case 'tree': d3.select('#map').on("mousemove", mousemove).on("mouseup", mouseup);
-                 rx = w / 2;
-                 ry = h / 2;
-                 rotate=0;
-                 cluster = d3.layout.cluster()
-                   .size([360, ry - 120])
-                   .sort(null);
-                 diagonal = d3.svg.diagonal.radial()
-                   .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
-                 vis = svg.append("svg:svg")
-                   .append("svg:g")
-                   .attr("transform", "translate(" + rx + "," + ry + ")");
-                 vis.append("svg:path")
-                   .attr("class", "arc")
-                   .attr("d", d3.svg.arc().innerRadius(ry - 115).outerRadius(ry - 10).startAngle(0).endAngle(2 * Math.PI))
-                   .on("mousedown", mousedown);
-                  break;
+    case 'radial': d3.select('#map').on("mousemove", mousemove).on("mouseup", mouseup);
+                   rx = w / 2;
+                   ry = h / 2;
+                   rotate=0;
+                   cluster = d3.layout.cluster()
+                     .size([360, ry - 120])
+                     .sort(null);
+                   diagonal = d3.svg.diagonal.radial()
+                     .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+                   vis = svg.append("svg:svg")
+                     .append("svg:g")
+                     .attr("transform", "translate(" + rx + "," + ry + ")");
+                   vis.append("svg:path")
+                     .attr("class", "arc")
+                     .attr("d", d3.svg.arc().innerRadius(ry - 115).outerRadius(ry - 10).startAngle(0).endAngle(2 * Math.PI))
+                     .on("mousedown", mousedown);
+                    break;
     default: break;
   }
 
@@ -250,9 +250,9 @@ function drawGraph() {
                      root.children.forEach(collapse);
                      updateTree(root);
                      break;
-      case 'tree': nodes = cluster.nodes(json);
-                   updateRadial();
-                   break;
+      case 'radial': nodes = cluster.nodes(json);
+                     updateRadial();
+                     break;
       default: break;
     }
   });

@@ -96,8 +96,12 @@ var stringToColor = function(str) {
   }
 // Enable/Disable refresh indicator
   function refreshIndicator(state) {
-    $(".refresh_indicator").toggleClass('invisible');
-    if (state) { counterobj = document.getElementById("counter"); }
+    if (state) {
+      $(".refresh_indicator").removeClass('invisible');
+      counterobj = document.getElementById("counter");
+    } else {
+      $(".refresh_indicator").addClass('invisible');
+    }
   }
 // themes
   var themes = {
