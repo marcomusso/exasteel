@@ -128,7 +128,7 @@ var stringToColor = function(str) {
       alert( "Error saving session, please contact support." );
     });
   }
-// talk to the user!
+// talk to the user! TODO: add time parameter
   function alertThis(message,severity,icon) {
     if (icon === undefined) {
       icon='fa fa-warning';

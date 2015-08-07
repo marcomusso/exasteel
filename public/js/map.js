@@ -172,7 +172,7 @@ function initPage() {
         localStorage["myServices"] = JSON.stringify(myServices);
       }
       if (localStorage.getItem("myServicesColorAndDescription")===null) {
-        alertThis('Unable to load color labels','danger');
+        alertThis('Unable to load color labels! Please go to Admin->Settings->Services to define color mapping.','warning');
       } else {
         myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));
       }

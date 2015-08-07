@@ -85,7 +85,7 @@ function updateCMDBList() {
 function updateServiceList() {
   $("#servicestable > tbody").html("");
   for (var service in myServices) {
-    if (typeof myServicesColorAndDescription[service] == 'undefined') {
+    if (typeof myServicesColorAndDescription[service] === 'undefined') {
       myServicesColorAndDescription[service]={
         description: 'No description available.',
         color: stringToColor(service)
@@ -145,7 +145,7 @@ function initPage() {
     });
   }
 
-  // when changing service description OR color save it! (bind on tbale because rith now there are no rows!)
+  // when changing service description OR color save it! (bind on table because right now there are no rows!)
   $('#servicestable').change(function(e){
     // TODO change method of detecting which service property has changed
     arr=$(e.target).attr('id').split("_");
