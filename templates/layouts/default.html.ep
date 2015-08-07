@@ -33,7 +33,7 @@
     <%# intro.js per l'help contestuale %>
       %= javascript '/intro.js-1.0.0/minified/intro.min.js'
       %= stylesheet '/intro.js-1.0.0/minified/introjs.min.css'
-      
+
     <%# bootstrap %>
       %= javascript "/bootstrap-3.3.2/js/bootstrap.min.js"
       %= stylesheet "/bootstrap-3.3.2/css/bootstrap.css"
@@ -134,7 +134,7 @@
           <span class="navbar-text"><i id="saved"   class="fa fa-check-square fa-inverse"></i></span>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><div id="nav3" class="navbar-text refresh_indicator">Auto refresh (<span id="counter">--</span>s)</div></li>
+          <li><div id="nav3" class="refresh_indicator">Refresh in <span id="counter">__</span>s</div></li>
           % if (defined $self->session->{username} and $self->session->{username} ne '') {
             <li><p class="text-center">&nbsp;&nbsp;<a class="btn btn-sm btn-primary navbar-btn pull-right" href='<%= url_for "auth_logout" %>'><i class="fa fa-sign-out"></i>&nbsp;Logout <%= $self->session->{username} %></a></li>
           % }
