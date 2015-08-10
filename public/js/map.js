@@ -210,11 +210,8 @@ function drawGraph() {
       .attr("height", h);
 
   switch($('#visualization').val()) {
-    case 'domain': console.log('domain tree');
-                   // tree = d3.layout.tree().size([height, width]);
-                   // diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
-                   // svg.append("g").attr("transform", "translate(" + margins.left + "," + margins.top + ")");
-                   break;
+    case 'domain': console.log('domain');
+                   // break;
     case 'radial': d3.select('#map').on("mousemove", mousemove).on("mouseup", mouseup);
                    rx = w / 2;
                    ry = h / 2;
@@ -237,19 +234,8 @@ function drawGraph() {
 
   d3.json('/api/v1/getvdcguestsbycn/'+encodeURIComponent($('#vdc').val())+'.json', function(error, json) {
     switch($('#visualization').val()) {
-      case 'domain': root = json;
-                     root.x0 = height / 2;
-                     root.y0 = 0;
-                     function collapse(d) {
-                       if (d.children) {
-                         d._children = d.children;
-                         d._children.forEach(collapse);
-                         d.children = null;
-                       }
-                     }
-                     // root.children.forEach(collapse);
-                     // updateTree(root);
-                     break;
+      case 'domain': console.log('domain update');
+                     // break;
       case 'radial': nodes = cluster.nodes(json);
                      updateRadial();
                      break;
@@ -361,6 +347,7 @@ function updateRadial() {
       });
 }
 
+// TODO: function to be removed/rewritten for the second vis
 function updateTree(source) {
  // Compute the new tree layout.
   var nodes = tree.nodes(root).reverse(),
