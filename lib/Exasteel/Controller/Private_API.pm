@@ -270,9 +270,8 @@ sub addCMDB {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addCMDB | params: ".Dumper($params)); }
 
-  # TODO support option port parameter
-  if ($params->{'cmdb_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
-    $description='Invalid CMDB endpoint (should be hostname:port).';
+  if ($params->{'cmdb_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-)(:\d+)?/i) {
+    $description='Invalid CMDB endpoint (should be hostname[:port]).';
     $params->{'cmdb_endpoint'}='';
   }
   if ($params->{'cmdb_username'} eq '' or $params->{'cmdb_password'} eq '') {
