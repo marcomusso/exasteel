@@ -67,17 +67,19 @@ function getCurrentEnv() {
     for (i=0; i<myVDCS.length; i++) {
       if (myVDCS[i].display_name===$('#vdc').val()) { tags=myVDCS[i].tags.split(","); }
     }
-    var patt = new RegExp(/env\:([a-z]*)/g);
+    // http://stackoverflow.com/questions/1520800/why-regexp-with-global-flag-in-javascript-give-wrong-results
+    var patt = new RegExp('env\:([a-z]*)','i');
     // TODO add different env to this array and then flatten it joining its elemtes with ","
     for (i=0; i<tags.length; i++) {
       if (patt.test(tags[i])) {
-        aEnv[aEnv.length]=tags[i].match(/env\:([a-z]*)/g)[0].split(":")[1];
+        // console.log(tags[i]+' is an environment tag');
+        aEnv[aEnv.length]=tags[i].match(patt)[0].split(":")[1];
       }
     }
   }
   // default env=prod if no tag env: defined (especially on page first load)
   if (aEnv.length>0) { env=aEnv.join(","); } else { env='prod'; }
-  return env;
+  return env.toUpperCase();
 }
 
 function getExalogicControlStatus(d) {
@@ -159,6 +161,13 @@ function initPage() {
   $('#visualization').change(function() {
     mySessionData['mapvisualization']=$("#visualization").val();
     setSessionData();
+    refreshPage();
+  });
+  // if the user wants to change the environment
+  $('#environment').change(function() {
+    mySessionData['environment']=$("#environment").val();
+    setSessionData();
+    // TODO reload services...
     refreshPage();
   });
   // get services from backend, for a specific environment as defined in the "env:" tag
