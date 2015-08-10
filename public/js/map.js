@@ -163,13 +163,6 @@ function initPage() {
     setSessionData();
     refreshPage();
   });
-  // if the user wants to change the environment
-  $('#environment').change(function() {
-    mySessionData['environment']=$("#environment").val();
-    setSessionData();
-    // TODO reload services...
-    refreshPage();
-  });
   // get services from backend, for a specific environment as defined in the "env:" tag
   $.getJSON('/api/v1/gethostsperservice/'+getCurrentEnv()+'.json', function( services ) {
     if (services) {
@@ -217,12 +210,10 @@ function drawGraph() {
       .attr("height", h);
 
   switch($('#visualization').val()) {
-    case 'domain': tree = d3.layout.tree()
-                       .size([height, width]);
-                   diagonal = d3.svg.diagonal()
-                       .projection(function(d) { return [d.y, d.x]; });
-                   svg.append("g")
-                      .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+    case 'domain': console.log('domain tree');
+                   // tree = d3.layout.tree().size([height, width]);
+                   // diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
+                   // svg.append("g").attr("transform", "translate(" + margins.left + "," + margins.top + ")");
                    break;
     case 'radial': d3.select('#map').on("mousemove", mousemove).on("mouseup", mouseup);
                    rx = w / 2;
@@ -256,8 +247,8 @@ function drawGraph() {
                          d.children = null;
                        }
                      }
-                     root.children.forEach(collapse);
-                     updateTree(root);
+                     // root.children.forEach(collapse);
+                     // updateTree(root);
                      break;
       case 'radial': nodes = cluster.nodes(json);
                      updateRadial();
@@ -272,17 +263,16 @@ function drawGraph() {
 function refreshPage() {
   console.log( "refreshPage called" );
   spinThatWheel(true);
-
   // get services from backend, for a specific environment as defined in the "env:" tag
   $.getJSON('/api/v1/gethostsperservice/'+getCurrentEnv()+'.json', function( services ) {
     if (services) {
       // it's an obj/hash with a single service as key
       myServices=services;
       // save locally myServices
-      if (Modernizr.localstorage) {
-        myServices=sortObjectByKey(myServices);
-        localStorage["myServices"] = JSON.stringify(myServices);
-      }
+        if (Modernizr.localstorage) {
+          myServices=sortObjectByKey(myServices);
+          localStorage["myServices"] = JSON.stringify(myServices);
+        }
       updateSwitches();
       // update tags
         $('#tags').html('');
@@ -294,12 +284,11 @@ function refreshPage() {
             }
           }
         }
-
       // if autorefresh enabled start another timer
-      if ($('#autorefresh-switch').prop('checked')) {
-        currentsecond=countdownfrom+1;
-        counterTimer=setTimeout(countdown,1000);
-      }
+        if ($('#autorefresh-switch').prop('checked')) {
+          currentsecond=countdownfrom+1;
+          counterTimer=setTimeout(countdown,1000);
+        }
       // update D3 bounded data
       drawGraph();
     } else {
