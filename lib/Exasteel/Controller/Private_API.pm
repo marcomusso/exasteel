@@ -270,23 +270,14 @@ sub addCMDB {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addCMDB | params: ".Dumper($params)); }
 
-  if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
+  if ($params->{'cmdb_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
     $description='Invalid OVMM endpoint (should be hostname:port).';
-    $params->{'ovmm_endpoint'}='';
+    $params->{'cmdb_endpoint'}='';
   }
-  if ($params->{'ovmm_username'} eq '' or $params->{'ovmm_password'} eq '') {
+  if ($params->{'cmdb_username'} eq '' or $params->{'cmdb_password'} eq '') {
     $description='Invalid OVMM username/password (please fill both).';
-    $params->{'ovmm_username'}='';
-    $params->{'ovmm_password'}='';
-  }
-  if ($params->{'emoc_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
-    $description='Invalid EMOC endpoint (should be hostname:port).';
-    $params->{'emoc_endpoint'}='';
-  }
-  if ($params->{'emoc_username'} eq '' or $params->{'emoc_password'} eq '') {
-    $description='Invalid OVMM username/password (please fill both).';
-    $params->{'emoc_username'}='';
-    $params->{'emoc_password'}='';
+    $params->{'cmdb_username'}='';
+    $params->{'cmdb_password'}='';
   }
 
   my $cmdbs_collection=$self->db->get_collection('cmdbs');
