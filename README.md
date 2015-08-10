@@ -30,9 +30,9 @@ Current status: **work in progess**
 
 ## Database
 
-See `script/dbinit.js` for a (very) basic model/collections description. Create a new database and its collections in mongo by giving this command:
+See `script/dbinit.js` for a (very) basic model/collections description. Create a new database and its collections in mongo by giving this command (I suppose that you have a running mongod):
 
-    mongo <scripts/dbinit.js
+    mongo < scripts/dbinit.js
 
 # How to start
 
