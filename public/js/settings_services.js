@@ -1,7 +1,9 @@
 var myServices;
 var myServicesColorAndDescription={};
 var myCMDBs;
-
+// these are the environments returned from your CMDB
+// TODO get them from an API to avoid hardcoding them here!
+var allEnv='PROD,SVIL,TEST,CERT,CLLD,LABO,FORM,PTES,UTES';
 var d=new Date();
 var now=Math.floor(d.getTime()/1000);
 var maxHoursDifference=1;
@@ -63,9 +65,9 @@ function updateCMDBList() {
         var vdc_name;
         // console.log(cmdb[i]._id.$oid); // mongo OID for this vdc entry
         if (cmdb[i].tags) {
-          var atags=cmdb[i].tags.split(',');
-          for (var j=0; j<atags.length; j++) {
-            tags+='<span class="label label-info">'+atags[j]+'</span>&nbsp;';
+          var aTags=cmdb[i].tags.split(',');
+          for (var j=0; j<aTags.length; j++) {
+            tags+='<span class="label label-info">'+aTags[j]+'</span>&nbsp;';
           }
         } else { tags='No tags defined'; }
         if (!cmdb[i].description) { cmdb[i].description='N/A'; }
@@ -126,16 +128,16 @@ function initPage() {
   } else {
     console.log('stale services, refresh from backend');
     // get services from backend
-    $.getJSON('/api/v1/gethostsperservice/PROD,SVIL,TEST,CLLD.json', function( services ) {
+    $.getJSON('/api/v1/gethostsperservice/'+allEnv+'.json', function( services ) {
       if (services) {
         // it's an obj/hash with a single service as key
         myServices=services;
         // save locally myServices
           if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
-          // window.localStorage is available!
-          localStorage["myServices"] = JSON.stringify(myServices);
-          localStorage["myServices.date"] = now;
-        }
+            // window.localStorage is available!
+            localStorage["myServices"] = JSON.stringify(myServices);
+            localStorage["myServices.date"] = now;
+          }
       } else {
         $("#services > tbody").html("");
         $('#servicescount').text(0);
