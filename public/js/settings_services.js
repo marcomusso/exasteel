@@ -3,7 +3,7 @@ var myServicesColorAndDescription={};
 var myCMDBs;
 // these are the environments returned from your CMDB
 // TODO get them from an API to avoid hardcoding them here!
-var allEnv='PROD,SVIL,TEST,CERT,CLLD,LABO,FORM,PTES,UTES';
+var allEnv='*';
 var d=new Date();
 var now=Math.floor(d.getTime()/1000);
 var maxHoursDifference=1;
@@ -121,30 +121,38 @@ function initPage() {
 
   // check localstorage for myServices and myServices.date
   if (Modernizr.localstorage) {
-    if (localStorage.getItem('myServices')) {myServices = JSON.parse(localStorage.getItem('myServices'));}
-    if (localStorage.getItem('myServicesColorAndDescription')) {
-      myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));
-    }
-  } else {
-    console.log('stale services, refresh from backend');
-    // get services from backend
-    $.getJSON('/api/v1/gethostsperservice/'+allEnv+'.json', function( services ) {
-      if (services) {
-        // it's an obj/hash with a single service as key
-        myServices=services;
-        // save locally myServices
-          if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
-            // window.localStorage is available!
-            localStorage["myServices"] = JSON.stringify(myServices);
-            localStorage["myServices.date"] = now;
-          }
-      } else {
-        $("#services > tbody").html("");
-        $('#servicescount').text(0);
-        alertThis('No Services found. Check CMDB source or try adding one!','danger');
+    var lsDate=localStorage.getItem('myServices.date') ? localStorage.getItem('myServices.date') : 0;
+    console.log(lsDate);
+    if (now-lsDate<=maxHoursDifference*60*60) {
+      // load services, colors and descriptions from local storage
+      if (localStorage.getItem('myServices')) {
+        myServices = JSON.parse(localStorage.getItem('myServices'));
       }
-      spinThatWheel(false);
-    });
+      if (localStorage.getItem('myServicesColorAndDescription')) {
+        myServicesColorAndDescription = JSON.parse(localStorage.getItem('myServicesColorAndDescription'));
+      }
+    } else {
+      console.log('stale services, refresh from backend');
+      // get services from backend
+      $.getJSON('/api/v1/gethostsperservice/'+allEnv+'.json', function( services ) {
+        if (services) {
+          // it's an obj/hash with a single service as key
+          myServices=sortObjectByKey(services);
+          // save locally myServices
+            if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
+              // window.localStorage is available!
+              localStorage["myServices"] = JSON.stringify(myServices);
+              localStorage["myServices.date"] = now;
+            }
+        } else {
+          $("#services > tbody").html("");
+          $('#servicescount').text(0);
+          alertThis('No Services found. Check CMDB source or try adding one!','danger');
+        }
+        updateServiceList();
+        spinThatWheel(false);
+      });
+    }
   }
 
   // when changing service description OR color save it! (bind on table because right now there are no rows!)
@@ -158,6 +166,7 @@ function initPage() {
     console.log('service '+property+' changed for '+service+', value: '+$(e.target).val());
     if (Modernizr.localstorage && localStorage["exasteel"] === "lives") {
       localStorage["myServicesColorAndDescription"] = JSON.stringify(myServicesColorAndDescription);
+      localStorage["myServices.date"] = now;
     }
     $("#saved").fadeIn(750);
     $("#saved").fadeOut(1750);
@@ -165,7 +174,7 @@ function initPage() {
 
   // fill tables
   updateCMDBList();
-  updateServiceList();
+  if (myServices) { updateServiceList(); }
 }
 
 function refreshPage() {
