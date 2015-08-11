@@ -250,7 +250,8 @@ function drawGraph() {
 
   switch($('#visualization').val()) {
     case 'domain': console.log('domain');
-                   // break;
+                   alertThis('This visualization is not yet available','warning');
+                   break;
     case 'radial': d3.select('#map').on("mousemove", mousemove).on("mouseup", mouseup);
                    rx = w / 2;
                    ry = h / 2;
@@ -274,7 +275,7 @@ function drawGraph() {
   d3.json('/api/v1/getvdcguestsbycn/'+encodeURIComponent($('#vdc').val())+'.json', function(error, json) {
     switch($('#visualization').val()) {
       case 'domain': console.log('domain update');
-                     // break;
+                     break;
       case 'radial': nodes = cluster.nodes(json);
                      updateRadial();
                      break;
