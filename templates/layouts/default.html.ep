@@ -109,8 +109,6 @@
                   <li><a href="#">TBD</a></li>
                 </ul>
               </li>
-              <li class="divider"></li>
-              <li><a tabindex="-1" onclick="javascript:alertThis('Don\'t use Internet Explorer','success');" href="javascript:void(0);">Heal the world</a></li>
             </ul>
           </li>
             % if (defined $self->session->{role} and $self->session->{role} eq 'admin') {
@@ -124,8 +122,6 @@
                     <li><a href="/settings/services">CMDBs & Services</a></li>
                   </ul>
                 </li>
-                <li class="divider"></li>
-                <li><a href="#">TBD</a></li>
               </ul>
             </li>
             % }
