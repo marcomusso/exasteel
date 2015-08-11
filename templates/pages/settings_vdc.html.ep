@@ -108,8 +108,8 @@
               <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                   <div class="input-group">
-                    <span title="HTTPS by default" class="input-group-addon">EMOC API endpoint</span>
-                    <input id="emoc_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+                    <span title="HTTPS by default.<br>Do not add http[s]://" class="input-group-addon">EMOC API endpoint</span>
+                    <input id="emoc_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname>[:port]">
                   </div><br>
                   <div class="input-group">
                     <span class="input-group-addon">EMOC username</span>
@@ -122,8 +122,8 @@
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                   <div class="input-group">
-                    <span title="HTTPS by default" class="input-group-addon">OVM API endpoint</span>
-                    <input id="ovmm_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname><port>">
+                    <span title="HTTPS by default.<br>Do not add http[s]://" class="input-group-addon">OVM API endpoint</span>
+                    <input id="ovmm_endpoint" name="endpoint" type="url" class="form-control" placeholder="<hostname>[:port]">
                   </div><br>
                   <div class="input-group">
                     <span class="input-group-addon">OVM username</span>
@@ -150,7 +150,7 @@
         <br>
         <div class="input-group">
           <span class="input-group-addon">Ignored accounts</span>
-          <input id="ignored_accounts" name="ignored_accounts" type="text" class="form-control" placeholder="space separated account names">
+          <input id="ignored_accounts" name="ignored_accounts" type="text" class="form-control" placeholder="space separated account names (optional)">
         </div>
         <br>
       </div>

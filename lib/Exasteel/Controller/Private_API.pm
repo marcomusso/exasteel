@@ -177,8 +177,8 @@ sub addVDC {
 
   if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
 
-  if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
-    $description='Invalid OVMM endpoint (should be hostname:port).';
+  if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-)(:\d+)?/i) {
+    $description='Invalid OVMM endpoint (should be http://<hostname>[:port]/...).';
     $status = 'ERROR';
     $params->{'ovmm_endpoint'}='';
   }
@@ -188,8 +188,8 @@ sub addVDC {
     $params->{'ovmm_username'}='';
     $params->{'ovmm_password'}='';
   }
-  if ($params->{'emoc_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
-    $description='Invalid EMOC endpoint (should be hostname:port).';
+  if ($params->{'emoc_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-)(:\d+)?/i) {
+    $description='Invalid EMOC endpoint (should be http://<hostname>[:port]/...).';
     $params->{'emoc_endpoint'}='';
   }
   if ($params->{'emoc_username'} eq '' or $params->{'emoc_password'} eq '') {
