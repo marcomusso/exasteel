@@ -235,14 +235,16 @@ sub getVDCGuestsByCN {
         }
       } else {
         my $guest=$server->{'vmIds'};
-        my $isRunning;
-        if ($guest->{'name'} =~ /ExalogicControl/) {
-          $isRunning=':'.(getVmIdDetails(@vdcs,$guest->{'uri'})->{'vmRunState'} ? '1' : '0');
-        } else { $isRunning=''; }
-        push @guests, {
-                        name => $guest->{'name'}.$isRunning,
-                        type => 'guest'
-                      };
+        my $isRunning='';
+        if ($guest->{'name'}) {
+          if ($guest->{'name'} =~ /ExalogicControl/) {
+            $isRunning=':'.(getVmIdDetails(@vdcs,$guest->{'uri'})->{'vmRunState'} ? '1' : '0');
+          }
+          push @guests, {
+                          name => $guest->{'name'}.$isRunning,
+                          type => 'guest'
+                        };
+        }
       }
 
       push $result{'children'}, {
