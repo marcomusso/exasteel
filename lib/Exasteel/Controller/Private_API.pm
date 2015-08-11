@@ -206,7 +206,7 @@ sub addVDC {
           "emoc_password"     => $params->{'emoc_password'},
           "ovmm_endpoint"     => $params->{'ovmm_endpoint'},
           "ovmm_username"     => $params->{'ovmm_username'},
-          "ovmm_password"     => $params->{'ovmm_password'},
+          "ovmm_password"     => $params->{'ovmm_password'}, # TODO how can we hanle encryption & salt for this password since it's not a user-inserted one?
           "asset_description" => $params->{'asset_description'},
           "tags"              => $params->{'tags'},
           "ignored_accounts"  => $params->{'ignored_accounts'},
