@@ -1,5 +1,5 @@
 % layout 'default';
-% title 'vDC details - Exasteel';
+% title 'VDC details - Exasteel';
 
 <%# Javascript  %>
   %= javascript '/js/vdcdetails.js'

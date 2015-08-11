@@ -2,18 +2,18 @@ var MyVDCS;
 
 function validateConfigAndSave() {
   console.log('check params and save emoc');
-  $('#addvDCmodal').modal('hide');
+  $('#addVDCmodal').modal('hide');
   var editedVDC={};
-  editedVDC['display_name']=$('#display_name').val();
-  editedVDC['asset_description']=$('#asset_description').val();
-  editedVDC['emoc_endpoint']=$('#emoc_endpoint').val();
-  editedVDC['emoc_username']=$('#emoc_username').val();
-  editedVDC['emoc_password']=$('#emoc_password').val();
-  editedVDC['ovmm_endpoint']=$('#ovmm_endpoint').val();
-  editedVDC['ovmm_username']=$('#ovmm_username').val();
-  editedVDC['ovmm_password']=$('#ovmm_password').val();
-  editedVDC['tags']=$('#tags').val();
-  editedVDC['ignored_accounts']=$('#ignored_accounts').val();
+  editedVDC.display_name=$('#display_name').val();
+  editedVDC.asset_description=$('#asset_description').val();
+  editedVDC.emoc_endpoint=$('#emoc_endpoint').val();
+  editedVDC.emoc_username=$('#emoc_username').val();
+  editedVDC.emoc_password=$('#emoc_password').val();
+  editedVDC.ovmm_endpoint=$('#ovmm_endpoint').val();
+  editedVDC.ovmm_username=$('#ovmm_username').val();
+  editedVDC.ovmm_password=$('#ovmm_password').val();
+  editedVDC.tags=$('#tags').val();
+  editedVDC.ignored_accounts=$('#ignored_accounts').val();
   // console.log(editedVDC);
   $.post('/api/v1/vdc/'+encodeURIComponent($('#display_name').val())+'.json', JSON.stringify(editedVDC))
   .fail(function() {
@@ -21,37 +21,39 @@ function validateConfigAndSave() {
   })
   .done(function(result){
     if (result.description!=='') {
-      alertThis('VDC saved ('+result.description+')','warning');
+      alertThis('VDC added ('+result.description+')','warning');
+    } else {
+      alertThis('VDC added successfully!','success');
     }
   });
   // on save:
   // get relevant data (accounts/static KPI) via API and cache it in mongo...
   // refresh table
-  updatevDCList();
+  updateVDCList();
 }
 
 function checkEndpoint() {
   console.log('password entered, check endpoint access and get description');
 }
 
-function removevDCs(id) {
-  console.log('removevDCs '+id+' from list AND db (via DELETE API)');
+function removeVDCs(id) {
+  console.log('removeVDCs '+id+' from list AND db (via DELETE API)');
   // TODO are you sure????
   $.ajax({
     url: '/api/v1/vdc/'+encodeURIComponent(id)+'.json',
     type: 'DELETE',
     success: function(result) {
-      alertThis('Deleted successfully','success');
+      alertThis('VDC deleted successfully!','success');
     },
     error: function(jqXHR, textStatus, errorThrown ) {
-      alertThis('Error deleting: '+errorThrown,'danger');
+      alertThis('Error deleting VDC: '+errorThrown,'danger');
     }
   });
-  updatevDCList();
+  updateVDCList();
 }
 
-function editvDCs(index) {
-  console.log('edit vDCs');
+function editVDCs(index) {
+  console.log('edit VDCs');
   // fill fields
     $('#display_name').val(MyVDCS[index].display_name);
     $('#emoc_endpoint').val(MyVDCS[index].emoc_endpoint);
@@ -64,10 +66,10 @@ function editvDCs(index) {
     $('#tags').val(MyVDCS[index].tags);
     $('#ignored_accounts').val(MyVDCS[index].ignored_accounts);
   // show modal
-  $('#addvDCmodal').modal('show');
+  $('#addVDCmodal').modal('show');
 }
 
-function updatevDCList() {
+function updateVDCList() {
   spinThatWheel(true);
   $.getJSON('/api/v1/getvdcs.json', function( vdcs ) {
     if (vdcs) {
@@ -86,13 +88,13 @@ function updatevDCList() {
         } else { tags='No tags defined'; }
         if (!vdcs[i].asset_description) { vdcs[i].asset_description='N/A'; }
         if (vdcs[i].display_name) { vdc_name=vdcs[i].display_name.replace(/ /g,'_'); }
-        $('#vdcstable tbody').append('<tr><td><strong><a href="/vdc/'+vdc_name+'">'+vdcs[i].display_name+'</a></strong></td><td width=15%>'+vdcs[i].asset_description+'</td><td>'+vdcs[i].emoc_endpoint+'</td><td>'+vdcs[i].ovmm_endpoint+'</td><td>'+tags+'</td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editvDCs(\''+i+'\');"><i class="fa fa-pencil"></i></a></td><td width=5%><a class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove" onclick="removevDCs(\''+vdcs[i]._id.$oid+'\');"><i class="fa fa-trash"></i></a></td></tr>');
+        $('#vdcstable tbody').append('<tr><td><strong><a href="/vdc/'+vdc_name+'">'+vdcs[i].display_name+'</a></strong></td><td width=15%>'+vdcs[i].asset_description+'</td><td>'+vdcs[i].emoc_endpoint+'</td><td>'+vdcs[i].ovmm_endpoint+'</td><td>'+tags+'</td><td style="text-align:center"><a class="btn btn-xs btn-primary" data-toggle="tooltip" title="Edit" onclick="editVDCs(\''+i+'\');"><i class="fa fa-pencil"></i></a></td><td width=5%><a class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove" onclick="removeVDCs(\''+vdcs[i]._id.$oid+'\');"><i class="fa fa-trash"></i></a></td></tr>');
       }
       $('#vdcscount').text(vdcs.length);
     } else {
       $("#vdcs > tbody").html("");
       $('#vdcscount').text(0);
-      alertThis('No vDCs found. Try adding one!','danger');
+      alertThis('No VDCs found. Try adding one!','danger');
     }
     spinThatWheel(false);
   });
@@ -104,9 +106,9 @@ function initPage() {
   $( "#settings_container .form-control" ).change(function() {
     console.log("form changed: "+$(this).attr('id')+" = "+ $(this).val());
     switch($(this).attr('id')) {
-      case 'units': mySessionData['units']=$(this).val();
+      case 'units': mySessionData.units=$(this).val();
                     break;
-      case 'theme': mySessionData['theme']=$(this).val();
+      case 'theme': mySessionData.theme=$(this).val();
                     break;
       default: break;
     }
@@ -116,7 +118,7 @@ function initPage() {
     setSessionData();
   });
 
-  $('#addvDC').click(function() {
+  $('#addVDC').click(function() {
     $('#display_name').val('');
     $('#emoc_endpoint').val('');
     $('#emoc_username').val('');
@@ -127,15 +129,15 @@ function initPage() {
     $('#asset_description').val('');
     $('#tags').val('');
     $('#ignored_accounts').val('');
-    $('#addvDCmodal').modal('show');
+    $('#addVDCmodal').modal('show');
   });
 
   $('#emoc_password').on('click', checkEndpoint);
 
-  $('#savevDC').on('click', validateConfigAndSave);
+  $('#saveVDC').on('click', validateConfigAndSave);
 
   // fill vdcstable
-  updatevDCList();
+  updateVDCList();
 }
 
 function refreshPage() {

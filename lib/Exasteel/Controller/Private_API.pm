@@ -128,7 +128,7 @@ sub getVDCs {
   my @vdcs=$find_result->all;
 
   if ( @vdcs and (0+@vdcs)>0) {
-      if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs found $#vdcs VDCs"); }
+      if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getVDCs found ".($#vdcs+1)." VDCs"); }
   } else {
     # TODO no VDCs found
     $log->debug("Exasteel::Controller::Private_API::getVDCs | TODO: no VDCs found");
@@ -175,14 +175,16 @@ sub addVDC {
 
   my $params=$self->req->json;
 
-  if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
+  if ($log_level>1) { $log->debug("Exasteel::Controller::Private_API::addVDCs | params: ".Dumper($params)); }
 
   if ($params->{'ovmm_endpoint'} !~ m/^(?!-)[A-Z\d-]{1,63}(?<!-):\d+/i) {
     $description='Invalid OVMM endpoint (should be hostname:port).';
+    $status = 'ERROR';
     $params->{'ovmm_endpoint'}='';
   }
   if ($params->{'ovmm_username'} eq '' or $params->{'ovmm_password'} eq '') {
     $description='Invalid OVMM username/password (please fill both).';
+    $status = 'ERROR';
     $params->{'ovmm_username'}='';
     $params->{'ovmm_password'}='';
   }
@@ -192,32 +194,33 @@ sub addVDC {
   }
   if ($params->{'emoc_username'} eq '' or $params->{'emoc_password'} eq '') {
     $description='Invalid OVMM username/password (please fill both).';
+    $status = 'ERROR';
     $params->{'emoc_username'}='';
     $params->{'emoc_password'}='';
   }
 
-  my $vdcs_collection=$self->db->get_collection('vdcs');
-  my $id = $vdcs_collection->update(
-      { "display_name" => $vdc_display_name}, # where clause
-      { '$set' => {                           # set new values received via post
-          "display_name"      => $params->{'display_name'},
-          "emoc_endpoint"     => $params->{'emoc_endpoint'},
-          "emoc_username"     => $params->{'emoc_username'},
-          "emoc_password"     => $params->{'emoc_password'},
-          "ovmm_endpoint"     => $params->{'ovmm_endpoint'},
-          "ovmm_username"     => $params->{'ovmm_username'},
-          "ovmm_password"     => $params->{'ovmm_password'}, # TODO how can we hanle encryption & salt for this password since it's not a user-inserted one?
-          "asset_description" => $params->{'asset_description'},
-          "tags"              => $params->{'tags'},
-          "ignored_accounts"  => $params->{'ignored_accounts'},
-        }
-      },
-      { 'upsert' => 1 }                       # update or insert
-  );
-
-  $log->debug("Exasteel::Controller::Private_API::addVDCs | insert result: ".Dumper($id)) if ($log_level>0);
-
-  if ($id->{'err'}) { $status = 'ERROR'; $description=$id->{'err'}; }
+  if ( $description eq '' ) {
+    my $vdcs_collection=$self->db->get_collection('vdcs');
+    my $id = $vdcs_collection->update(
+        { "display_name" => $vdc_display_name}, # where clause
+        { '$set' => {                           # set new values received via post
+            "display_name"      => $params->{'display_name'},
+            "emoc_endpoint"     => $params->{'emoc_endpoint'},
+            "emoc_username"     => $params->{'emoc_username'},
+            "emoc_password"     => $params->{'emoc_password'},
+            "ovmm_endpoint"     => $params->{'ovmm_endpoint'},
+            "ovmm_username"     => $params->{'ovmm_username'},
+            "ovmm_password"     => $params->{'ovmm_password'}, # TODO how can we hanle encryption & salt for this password since it's not a user-inserted one?
+            "asset_description" => $params->{'asset_description'},
+            "tags"              => $params->{'tags'},
+            "ignored_accounts"  => $params->{'ignored_accounts'},
+          }
+        },
+        { 'upsert' => 1 }                       # update or insert
+    );
+    $log->debug("Exasteel::Controller::Private_API::addVDCs | insert result: ".Dumper($id)) if ($log_level>0);
+    if ($id->{'err'}) { $status = 'ERROR'; $description=$id->{'err'}; }
+  }
 
   $self->respond_to(
     json => { json => { "status" => $status, "description" => $description } }

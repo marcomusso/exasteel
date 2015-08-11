@@ -10,7 +10,7 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h4 class="panel-title">
-            Virtual Data Centers<span class="pull-right"><button id="addvDC" class="btn btn-xs btn-default" data-toggle="tooltip" title="Add vDC"><i class="fa fa-plus"></i></button></span>
+            Virtual Data Centers<span class="pull-right"><button id="addVDC" class="btn btn-xs btn-default" data-toggle="tooltip" title="Add VDC" data-placement="left"><i class="fa fa-plus"></i></button></span>
           </h4>
         </div>
         <div class="panel-body">
@@ -32,7 +32,7 @@
                 </tfoot>
             </table>
         </div>
-        <div class="panel-footer text-center">Found <span id="vdcscount">0</span> vDCs.</div>
+        <div class="panel-footer text-center">Found <span id="vdcscount">0</span> VDCs.</div>
       </div>
     </div>
   </div>
@@ -86,18 +86,18 @@
   </div>
 </div>
 
-<%# Modal for inserting vDC data %>
-<div class="modal fade" id="addvDCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<%# Modal for inserting VDC data %>
+<div class="modal fade" id="addVDCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit vDC</h4>
+        <h4 class="modal-title" id="myModalLabel">Edit VDC</h4>
       </div>
       <div class="modal-body">
         <div class="input-group">
           <span class="input-group-addon">Display name</span>
-          <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My vDC">
+          <input id="display_name" name="display_name" type="text" class="form-control" placeholder="example: My VDC">
         </div>
         <br>
         <div class="panel panel-default">
@@ -156,7 +156,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button id="savevDC" type="button" class="btn btn-primary">Save changes</button>
+        <button id="saveVDC" type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
