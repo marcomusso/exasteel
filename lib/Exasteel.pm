@@ -55,7 +55,7 @@ sub startup {
       public_api_log  => sub { return $public_api_log }
     );
     $self->helper(
-      log_level  => sub { return 2 }
+      log_level  => sub { return 1 }
     );
   #################################################################################
 

@@ -121,7 +121,7 @@
                   <a tabindex="-1" href="#">Settings</a>
                   <ul class="dropdown-menu">
                     <li><a href="/settings/vdc">VDCs</a></li>
-                    <li><a href="/settings/services">Services</a></li>
+                    <li><a href="/settings/services">CMDBs & Services</a></li>
                   </ul>
                 </li>
                 <li class="divider"></li>

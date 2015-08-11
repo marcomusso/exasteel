@@ -233,12 +233,12 @@ sub getCMDBs {
 
   if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getCMDBs"); }
 
-  my $cmdb_collection=$self->db->get_collection('cmdb');
+  my $cmdb_collection=$self->db->get_collection('cmdbs');
   my $find_result=$cmdb_collection->find({});
   my @cmdb=$find_result->all;
 
   if ( @cmdb and (0+@cmdb)>0) {
-      if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getCMDBs found $#cmdb CMDBs"); }
+      if ($log_level>0) { $log->debug("Exasteel::Controller::Private_API::getCMDBs found ".($#cmdb+1)." CMDBs"); }
   } else {
     $status{'status'}="ERROR";
     $status{'description'}="No CMDB endpoints";
@@ -262,6 +262,7 @@ sub addCMDB {
   my $db=$self->db;
   my $log=$self->private_api_log;
   my $log_level=$self->log_level;
+  $log_level = 2;
 
   my %status=(status => 'OK', description => '' );
   my $description='';
@@ -275,7 +276,7 @@ sub addCMDB {
     $params->{'cmdb_endpoint'}='';
   }
   if ($params->{'cmdb_username'} eq '' or $params->{'cmdb_password'} eq '') {
-    $description='Invalid OVMM username/password (please fill both).';
+    $description='Invalid CMDB username/password (please fill both).';
     $params->{'cmdb_username'}='';
     $params->{'cmdb_password'}='';
   }
@@ -289,7 +290,7 @@ sub addCMDB {
           "cmdb_password"     => $params->{'cmdb_password'},
           "description"       => $params->{'description'},
           "tags"              => $params->{'tags'},
-          "active"            => $params->{'active'},
+          "active"            => $params->{'active'} eq "true" ? true : false,
         }
       },
       { 'upsert' => 1 }                               # update or insert

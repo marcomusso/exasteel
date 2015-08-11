@@ -1,6 +1,7 @@
 var myVDCS;
 var myServices;
 var myServicesColorAndDescription;
+var initialize=true;
 
 var d=new Date();
 var now=Math.floor(d.getTime()/1000);
@@ -198,6 +199,44 @@ function initPage() {
   });
 }
 
+function refreshPage() {
+  console.log( "refreshPage called" );
+  spinThatWheel(true);
+  // get services from backend, for a specific environment as defined in the "env:" tag
+  $.getJSON('/api/v1/gethostsperservice/'+getCurrentEnv()+'.json', function( services ) {
+    if (services) {
+      // it's an obj/hash with a single service as key
+      myServices=services;
+      // save locally myServices
+        if (Modernizr.localstorage) {
+          myServices=sortObjectByKey(myServices);
+          localStorage["myServices"] = JSON.stringify(myServices);
+        }
+      updateSwitches();
+      // update tags
+        $('#tags').html('');
+        for (v=0; v<myVDCS.length; v++) {
+          if (myVDCS[v].display_name===$('#vdc').val()) {
+            var tags=myVDCS[v].tags.split(',');
+            for (t = 0; t < tags.length; t++) {
+              $('#tags').append('<span class="label label-info">'+tags[t]+'</span>&nbsp;');
+            }
+          }
+        }
+      // if autorefresh enabled start another timer
+        if ($('#autorefresh-switch').prop('checked')) {
+          currentsecond=countdownfrom+1;
+          counterTimer=setTimeout(countdown,1000);
+        }
+      // update D3 bounded data
+      drawGraph();
+    } else {
+      alertThis('No Services found. Check CMDB source or try adding one!','danger');
+    }
+    spinThatWheel(false);
+  });
+}
+
 function drawGraph() {
   $('#map').html('');
   width=$('#map').width();    // before margins
@@ -246,44 +285,7 @@ function drawGraph() {
   spinThatWheel(false);
 }
 
-function refreshPage() {
-  console.log( "refreshPage called" );
-  spinThatWheel(true);
-  // get services from backend, for a specific environment as defined in the "env:" tag
-  $.getJSON('/api/v1/gethostsperservice/'+getCurrentEnv()+'.json', function( services ) {
-    if (services) {
-      // it's an obj/hash with a single service as key
-      myServices=services;
-      // save locally myServices
-        if (Modernizr.localstorage) {
-          myServices=sortObjectByKey(myServices);
-          localStorage["myServices"] = JSON.stringify(myServices);
-        }
-      updateSwitches();
-      // update tags
-        $('#tags').html('');
-        for (v=0; v<myVDCS.length; v++) {
-          if (myVDCS[v].display_name===$('#vdc').val()) {
-            var tags=myVDCS[v].tags.split(',');
-            for (t = 0; t < tags.length; t++) {
-              $('#tags').append('<span class="label label-info">'+tags[t]+'</span>&nbsp;');
-            }
-          }
-        }
-      // if autorefresh enabled start another timer
-        if ($('#autorefresh-switch').prop('checked')) {
-          currentsecond=countdownfrom+1;
-          counterTimer=setTimeout(countdown,1000);
-        }
-      // update D3 bounded data
-      drawGraph();
-    } else {
-      alertThis('No Services found. Check CMDB source or try adding one!','danger');
-    }
-    spinThatWheel(false);
-  });
-}
-
+// 1st vis: radial
 function updateRadial() {
   link = vis.selectAll("path.link")
       .data(cluster.links(nodes))
@@ -347,129 +349,111 @@ function updateRadial() {
       });
 }
 
-// TODO: function to be removed/rewritten for the second vis
-function updateTree(source) {
- // Compute the new tree layout.
-  var nodes = tree.nodes(root).reverse(),
-      links = tree.links(nodes);
-
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
-
-  // Update the nodes…
-  var node = svg.selectAll("g.node")
-      .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-  // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .on("click", click);
-
-  nodeEnter.append("circle")
-      .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-  nodeEnter.append("text")
-      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-      .attr("dy", ".35em")
-      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-      .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
-
-  // Transition nodes to their new position.
-  var nodeUpdate = node.transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-  nodeUpdate.select("circle")
-      .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-  nodeUpdate.select("text")
-      .style("fill-opacity", 1);
-
-  // Transition exiting nodes to the parent's new position.
-  var nodeExit = node.exit().transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-      .remove();
-
-  nodeExit.select("circle")
-      .attr("r", 1e-6);
-
-  nodeExit.select("text")
-      .style("fill-opacity", 1e-6);
-
-  // Update the links…
-  var link = svg.selectAll("path.link")
-      .data(links, function(d) { return d.target.id; });
-
-  // Enter any new links at the parent's previous position.
-  link.enter().insert("path", "g")
-      .attr("class", "link")
-      .attr("d", function(d) {
-        var o = {x: source.x0, y: source.y0};
-        return diagonal({source: o, target: o});
-      });
-
-  // Transition links to their new position.
-  link.transition()
-      .duration(duration)
-      .attr("d", diagonal);
-
-  // Transition exiting nodes to the parent's new position.
-  link.exit().transition()
-      .duration(duration)
-      .attr("d", function(d) {
-        var o = {x: source.x, y: source.y};
-        return diagonal({source: o, target: o});
+// 2nd vis: TODO adapt this function
+function plot(params) {
+  if (initialize) { initialize=false; }
+  serversWithOldData=[];
+  xScale = d3.scale.linear()
+               .domain([0, allServersInfo.length])
+               .range([0, width]);
+  yScale = d3.scale.linear()
+             .domain([0, allServersInfo.length/50])
+             .range([0, height]);
+  // enter() - bound data to obj
+    // BARS
+    this.selectAll(".bar")
+      .data(params.data)
+      .enter()
+        .append("rect")
+        .classed("bar", true)
+        .on("mouseover", function(d,i) {
+          var myDate=new Date(d.last_cpu_sample_date*1000);
+          var lastCPU=new Date(d.last_cpu_sample_date*1000);
+          var lastAPP=new Date(d.last_app_sample_date*1000);
+          var host=d.hostname;
+          if (!host) { host='HOST NON DEFINITO'; } else { host = host.toLowerCase(); }
+          if (d.last_cpu_sample_date > soglia_warning) {
+            $('#serverinfo').removeClass('dati_non_aggiornati');
+          } else {
+            if (d.last_cpu_sample_date > soglia_critical) {
+              $('#serverinfo').removeClass('dati_non_aggiornati');
+            } else {
+              $('#serverinfo').addClass('dati_non_aggiornati');
+            }
+          }
+          $('#serverinfo').html('<strong>'+host+'</strong> ('+d.group_name+')<br>Data ultimo campione CPU: '+lastCPU.toLocaleString()+'<br>Data ultimo campione APP: '+lastAPP.toLocaleString(),'info');
+        });
+  // update  - update bars and labels
+    // BARS
+    this.selectAll(".bar")
+      // data already bounded and .update is implicit
+      .attr("x", function(d,i){
+        return xScale(i);
       })
+      .attr("y", function(d,i){
+        return 0;
+      })
+      .attr("width", function(d,i){
+        return 4;
+      })
+      .attr("height", function(d,i){
+        return 20;
+      })
+      .attr("fill", function(d,i){
+        if (d.last_cpu_sample_date > soglia_warning) {
+          return 'green';
+        } else {
+          if (d.last_cpu_sample_date > soglia_critical) {
+            return 'yellow';
+          } else {
+            if (d.hostname) { serversWithOldData[serversWithOldData.length]=d.hostname.toLowerCase(); }
+            return 'red';
+          }
+        }
+      });
+  // exit()  - remove unnecessary obj not bounded to data
+    this.selectAll(".bar")
+      .data(params.data)
+      .exit()
       .remove();
-
-  // Stash the old positions for transition.
-  nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
 }
 
-function tick() {
-  link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+// function tick() {
+//   link.attr("x1", function(d) { return d.source.x; })
+//       .attr("y1", function(d) { return d.source.y; })
+//       .attr("x2", function(d) { return d.target.x; })
+//       .attr("y2", function(d) { return d.target.y; });
 
-  node.attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; });
-}
+//   node.attr("cx", function(d) { return d.x; })
+//       .attr("cy", function(d) { return d.y; });
+// }
 
 // Toggle children on click.
-function click(d) {
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  updateTree(d);
-}
+// function click(d) {
+//   if (d.children) {
+//     d._children = d.children;
+//     d.children = null;
+//   } else {
+//     d.children = d._children;
+//     d._children = null;
+//   }
+//   updateTree(d);
+// }
 
 // Returns a list of all nodes under the root.
-function flatten(root) {
-  var nodes = [], i = 0;
+// function flatten(root) {
+//   var nodes = [], i = 0;
 
-  function recurse(node) {
-    if (node.children) node.size = node.children.reduce(function(p, v) { return p + recurse(v); }, 0);
-    if (!node.id) node.id = ++i;
-    nodes.push(node);
-    return node.size;
-  }
+//   function recurse(node) {
+//     if (node.children) node.size = node.children.reduce(function(p, v) { return p + recurse(v); }, 0);
+//     if (!node.id) node.id = ++i;
+//     nodes.push(node);
+//     return node.size;
+//   }
 
-  root.size = recurse(root);
-  return nodes;
-}
+//   root.size = recurse(root);
+//   return nodes;
+// }
 
 function color(d) {
   if (d._children) {

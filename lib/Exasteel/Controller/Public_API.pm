@@ -307,8 +307,8 @@ sub getHostsPerService {
   $log->debug("Exasteel::Controller::Public_API::getHostsPerService | Request by $ua @ $ip") if $log_level>0;
 
   # get active CMDB from MongoDB
-  my $cmdb_collection=$self->db->get_collection('cmdb');
-  my $find_result=$cmdb_collection->find({"display_name" => 'CMDB Intesa Sanpaolo'});
+  my $cmdb_collection=$self->db->get_collection('cmdbs');
+  my $find_result=$cmdb_collection->find( { "active" => true } );
   my @cmdb=$find_result->all;
 
   # there is at least one cmdb configured as active

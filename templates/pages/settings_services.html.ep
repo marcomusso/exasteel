@@ -76,8 +76,8 @@
         </div>
         <div class="modal-body">
           <div class="input-group text-center">
-            <span class="input-group-addon">Active
-            <input id="active" class="form-control" type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No"></span>
+            <span class="input-group-addon">Active:
+            <input id="active" class="form-control" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No" data-size="small"></span>
           </div>
           <br>
           <div class="input-group">
@@ -111,7 +111,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button id="savevDC" type="button" class="btn btn-primary">Save changes</button>
+          <button id="saveCMDB" type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
